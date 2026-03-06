@@ -1,0 +1,4 @@
+npm run start
+
+port 5173 = frontend _ vite(node.js)
+post 8000 = backend _ laravel project
