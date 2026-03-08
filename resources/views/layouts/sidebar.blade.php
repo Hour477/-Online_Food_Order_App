@@ -1,21 +1,11 @@
-<!-- resources/views/layouts/sidebar.blade.php -->
+﻿<!-- resources/views/layouts/sidebar.blade.php -->
 
 <aside id="app-sidebar" class="fixed inset-y-0 left-0 z-50 w-72 h-screen overflow-hidden bg-white dark:bg-gray-950 border-r border-gray-200 dark:border-gray-800 
              flex flex-col shadow-xl transform transition-all duration-300 ease-in-out -translate-x-full lg:translate-x-0 lg:sticky lg:top-0 lg:inset-y-auto">
 
     <!-- Brand / Logo -->
     <div class="brand-wrap p-6 border-b border-gray-200 dark:border-gray-800 flex items-center gap-4">
-        <div class="text-5xl font-black text-indigo-500 tracking-tighter">
-            🍽
-        </div>
-        <div class="brand-text">
-            <h1 class="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight">
-                Restaurant POS
-            </h1>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5 font-medium">
-                Management System
-            </p>
-        </div>
+       
     </div>
 
     <!-- Navigation -->
@@ -32,8 +22,7 @@
                              : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/70' }}">
                     
                     <!-- Active indicator bar -->
-                    <span class="absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-indigo-600 scale-y-75 group-hover:scale-y-100 transition-transform origin-left
-                                 {{ request()->routeIs('dashboard') ? 'scale-y-100' : '' }}"></span>
+                    <span class="absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-indigo-600 scale-y-0 group-hover:scale-y-75 transition-transform origin-left {{ request()->routeIs('dashboard') ? 'scale-y-100' : '' }}"></span>
 
                     <svg class="w-6 h-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -51,8 +40,7 @@
                           {{ request()->routeIs('categories.*') 
                              ? 'text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/30' 
                              : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/70' }}">
-                    <span class="absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-indigo-600 scale-y-75 group-hover:scale-y-100 transition-transform origin-left
-                                 {{ request()->routeIs('categories.*') ? 'scale-y-100' : '' }}"></span>
+                    <span class="absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-indigo-600 scale-y-0 group-hover:scale-y-75 transition-transform origin-left {{ request()->routeIs('categories.*') ? 'scale-y-100' : '' }}"></span>
                     <svg class="w-6 h-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                     </svg>
@@ -69,8 +57,7 @@
                           {{ request()->routeIs('menu_items.*') || request()->routeIs('menu-items.*') 
                              ? 'text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/30' 
                              : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/70' }}">
-                    <span class="absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-indigo-600 scale-y-75 group-hover:scale-y-100 transition-transform origin-left
-                                 {{ request()->routeIs('menu_items.*') || request()->routeIs('menu-items.*') ? 'scale-y-100' : '' }}"></span>
+                    <span class="absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-indigo-600 scale-y-0 group-hover:scale-y-75 transition-transform origin-left {{ request()->routeIs('menu_items.*') || request()->routeIs('menu-items.*') ? 'scale-y-100' : '' }}"></span>
                     <svg class="w-6 h-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                     </svg>
@@ -81,16 +68,13 @@
 
             <!-- Orders (dropdown) -->
             @if(in_array(auth()->user()->role, ['waiter', 'admin']))
-            <li class="orders-menu {{ request()->routeIs('orders.*') ? 'is-open' : '' }}">
+            <li class="sidebar-folder orders-menu {{ request()->routeIs('orders.*') ? 'is-open' : '' }}">
                 <button type="button"
                         aria-expanded="{{ request()->routeIs('orders.*') ? 'true' : 'false' }}"
-                        class="orders-toggle-btn orders-toggle group relative w-full flex items-center justify-between gap-4 px-5 py-3.5 rounded-2xl font-medium transition-all duration-200
-                               {{ request()->routeIs('orders.*') 
-                                  ? 'text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/30' 
-                                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/70' }}">
+                        data-folder="orders"
+                        class="sidebar-folder-toggle orders-toggle-btn orders-toggle group relative w-full flex items-center justify-between gap-4 px-5 py-3.5 rounded-2xl font-medium transition-all duration-200 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/70">
                     
-                    <span class="orders-indicator absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-indigo-600 scale-y-75 group-hover:scale-y-100 transition-transform origin-left
-                                 {{ request()->routeIs('orders.*') ? 'scale-y-100' : '' }}"></span>
+                    <span class="folder-indicator orders-indicator absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-indigo-600 scale-y-0 group-hover:scale-y-75 transition-transform origin-left {{ request()->routeIs('orders.*') ? 'scale-y-100' : '' }}"></span>
 
                     <div class="flex items-center gap-4">
                         <svg class="w-6 h-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -107,7 +91,7 @@
                     </svg>
                 </button>
 
-                <ul class="orders-submenu mt-1.5 space-y-1 pl-11 {{ request()->routeIs('orders.*') ? '' : 'hidden' }}">
+                <ul class="sidebar-submenu orders-submenu mt-1.5 space-y-1 pl-11 {{ request()->routeIs('orders.*') ? '' : 'hidden' }}">
                     <li>
                         <a href="{{ request()->route('orders') ? route('orders.show', request()->route('orders')) : route('orders.index') }}"
                            class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors
@@ -140,8 +124,7 @@
                           {{ request()->routeIs('kitchen') 
                              ? 'text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/30' 
                              : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/70' }}">
-                    <span class="absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-indigo-600 scale-y-75 group-hover:scale-y-100 transition-transform origin-left
-                                 {{ request()->routeIs('kitchen') ? 'scale-y-100' : '' }}"></span>
+                    <span class="absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-indigo-600 scale-y-0 group-hover:scale-y-75 transition-transform origin-left {{ request()->routeIs('kitchen') ? 'scale-y-100' : '' }}"></span>
                     <svg class="w-6 h-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h-4m-6 0H5" />
                     </svg>
@@ -158,8 +141,7 @@
                           {{ request()->routeIs('reports.*') 
                              ? 'text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/30' 
                              : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/70' }}">
-                    <span class="absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-indigo-600 scale-y-75 group-hover:scale-y-100 transition-transform origin-left
-                                 {{ request()->routeIs('reports.*') ? 'scale-y-100' : '' }}"></span>
+                    <span class="absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-indigo-600 scale-y-0 group-hover:scale-y-75 transition-transform origin-left {{ request()->routeIs('reports.*') ? 'scale-y-100' : '' }}"></span>
                     <svg class="w-6 h-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                     </svg>
@@ -176,8 +158,7 @@
                           {{ request()->routeIs('tables.*') 
                              ? 'text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/30' 
                              : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/70' }}">
-                    <span class="absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-indigo-600 scale-y-75 group-hover:scale-y-100 transition-transform origin-left
-                                 {{ request()->routeIs('tables.*') ? 'scale-y-100' : '' }}"></span>
+                    <span class="absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-indigo-600 scale-y-0 group-hover:scale-y-75 transition-transform origin-left {{ request()->routeIs('tables.*') ? 'scale-y-100' : '' }}"></span>
                     <i class="fas fa-table w-6 h-6 flex-shrink-0 text-center"></i>
                     <span class="sidebar-text">Tables</span>
                 </a>
@@ -192,13 +173,45 @@
                           {{ request()->routeIs('customers.*') 
                              ? 'text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/30' 
                              : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/70' }}">
-                    <span class="absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-indigo-600 scale-y-75 group-hover:scale-y-100 transition-transform origin-left
-                                 {{ request()->routeIs('customers.*') ? 'scale-y-100' : '' }}"></span>
+                    <span class="absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-indigo-600 scale-y-0 group-hover:scale-y-75 transition-transform origin-left {{ request()->routeIs('customers.*') ? 'scale-y-100' : '' }}"></span>
                     <svg class="w-6 h-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                     </svg>
                     <span class="sidebar-text">Customers</span>
                 </a>
+            </li>
+            @endif
+
+            <!-- Business Settings -->
+            @if(auth()->user()->role === 'admin')
+            <li class="sidebar-folder settings-menu {{ request()->routeIs('settings.*') ? 'is-open' : '' }}">
+                <button type="button"
+                        aria-expanded="{{ request()->routeIs('settings.*') ? 'true' : 'false' }}"
+                        data-folder="settings"
+                        class="sidebar-folder-toggle settings-toggle-btn group relative w-full flex items-center justify-between gap-4 px-5 py-3.5 rounded-2xl font-medium transition-all duration-200 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/70">
+                    <span class="folder-indicator settings-indicator absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-indigo-600 scale-y-0 group-hover:scale-y-75 transition-transform origin-left {{ request()->routeIs('settings.*') ? 'scale-y-100' : '' }}"></span>
+
+                    <div class="flex items-center gap-4">
+                        <i class="fas fa-cogs w-6 h-6 flex-shrink-0 text-center"></i>
+                        <span class="sidebar-text">Business Settings</span>
+                    </div>
+                    <svg class="chevron w-5 h-5 transition-transform {{ request()->routeIs('settings.*') ? 'rotate-180' : '' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+
+                <ul class="sidebar-submenu settings-submenu mt-1.5 space-y-1 pl-11 {{ request()->routeIs('settings.*') ? '' : 'hidden' }}">
+                    <li>
+                        <a href="{{ route('settings.index') }}"
+                           class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors
+                                  {{ request()->routeIs('settings.*')
+                                     ? 'bg-indigo-500/10 text-indigo-700 dark:text-indigo-300'
+                                     : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/50' }}">
+                            <i class="fas fa-sliders-h w-5 text-center"></i>
+                            Settings
+                        </a>
+                    </li>
+                </ul>
             </li>
             @endif
 
@@ -224,3 +237,4 @@
     </div>
 
 </aside>
+

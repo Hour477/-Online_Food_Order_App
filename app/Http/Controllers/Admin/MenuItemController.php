@@ -15,7 +15,7 @@ class MenuItemController extends Controller
         $categories = Category::all();
         $menu_items = MenuItem::with('category')
             ->latest()
-            ->paginate(15); 
+            ->paginate(4); 
 
         return view('menu_items.index', compact('menu_items', 'categories'));
     }
@@ -56,12 +56,15 @@ class MenuItemController extends Controller
     public function show(string $id)
     {
         //
+        $menu_items = MenuItem::findOrFail($id);
+        return view('menu_items.show', compact('menu_items'));
     }
 
-    public function edit(string $id)
+    public function edit($id)
     {
-        $menu_items = MenuItem::findOrFail($id);
-        $categories = Category::all();
+        $menu_items = MenuItem::with('categories')
+        ->where('category_id','status') 
+        ->select('id','');
         return view('menu_items.edit', compact('menu_items', 'categories'));
     }
 

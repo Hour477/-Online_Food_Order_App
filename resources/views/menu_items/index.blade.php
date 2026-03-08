@@ -5,18 +5,55 @@
 <div class="mx-auto">
 
     <!-- Header + Create Button -->
+    
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
-        <h3 class="text-2xl font-bold text-gray-900 dark:text-white">
+        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-8">
             Menu Items
         </h3>
+        
+        
+        <div class="mt-4">
+                <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+            <form action="{{ route('menu_items.index') }}" method="GET" class="relative flex-1 sm:min-w-[300px]">
+                <input type="hidden" name="status" value="{{ request('status') }}">
+                <input type="text" 
+                       name="search"
+                       id="search"
+                       value="{{ request('search') }}"
+                       placeholder="Search menu_items..." 
+                       class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors shadow-sm text-sm">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+                <button type="submit"
+                        class="absolute inset-y-0 right-0 px-3 text-sm font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300">
+                    Search
+                </button>
+            </form>
 
-        <a href="{{ route('menu_items.create') }}"
+            <div class="flex gap-2">
+                <select onchange="window.location.href=this.value" 
+                        class="block w-full sm:w-40 rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-indigo-500 focus:border-indigo-500 py-2.5 shadow-sm">
+                    <option value="{{ route('menu_items.index', ['status' => '', 'search' => request('search')]) }}">All Status</option>
+                    <option value="{{ route('menu_items.index', ['status' => 'available', 'search' => request('search')]) }}" {{ request('status') == 'available' ? 'selected' : '' }}>Available</option>
+                    <option value="{{ route('menu_items.index', ['status' => 'unavailable', 'search' => request('search')]) }}" {{ request('status') == 'unavailable' ? 'selected' : '' }}>Unavailable</option>
+                </select>   
+
+            </div>
+
+            <a href="{{ route('menu_items.create') }}"
            class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 rounded-lg shadow-sm transition-colors">
             <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
             </svg>
             Add Menu Item
         </a>
+        </div>
+        </div>
+
+        
     </div>
 
     <!-- Table Card -->
@@ -94,9 +131,14 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                {{-- show ,edit and delete--}}
+                                <a href="{{ route('menu_items.show', $item->id) }}">
+                                    <i class="fa-regular fa-eye text-emerald-600 hover:text-emerald-900 dark:text-emerald-400 dark:hover:text-emerald-300 mr-3 transition-colors duration-150"></i>
+                                </a>
+                                
                                 <a href="{{ route('menu_items.edit', $item->id) }}"
-                                   class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-colors mr-2">
-                                    Edit
+                                   <i class="fa-regular fa-pen-to-square text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-3
+                                            transition-colors duration-150"> </i>
                                 </a>
 
                                 <form action="{{ route('menu_items.destroy', $item->id) }}" method="POST" class="inline-block">
@@ -104,8 +146,8 @@
                                     @method('DELETE')
                                     <button type="submit"
                                             onclick="return confirm('Are you sure you want to delete this menu item? This cannot be undone.')"
-                                            class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors">
-                                        Delete
+                                    <i class="fas fa-trash-alt ml-1.5 text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 transition-colors duration-150"></i>
+                                            
                                     </button>
                                 </form>
                             </td>
@@ -127,16 +169,14 @@
 
                 </tbody>
             </table>
+            
+            <div class="px-6 py-4 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-200 dark:border-gray-700">
+                {{ $menu_items->links() }}
+            </div>
         </div>
-
     </div>
-
     <!-- Optional: Pagination (if you added paginate in controller) -->
-    @if($menu_items->hasPages())
-        <div class="mt-6">
-            {{ $menu_items->links() }}
-        </div>
-    @endif
+   
 
 </div>
 

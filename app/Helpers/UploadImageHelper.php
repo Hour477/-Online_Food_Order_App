@@ -1,12 +1,9 @@
-
-
 <?php
-namespace App\Hepler;
+namespace App\Helpers;
 
-use Illuminate\Support\Facades\Facade;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
-class UploadHelper {
+class UploadImageHelper {
     public static function upload(string $dir, string $format, $image = null)
     {
         if ($image != null) {
@@ -27,7 +24,7 @@ class UploadHelper {
         if (Storage::disk('public')->exists($dir . $old_image)) {
             Storage::disk('public')->delete($dir . $old_image);
         }
-        $imageName = ImageManager::upload($dir, $format, $image);
+        $imageName = UploadImageHelper::upload($dir, $format, $image);
         return $imageName;
     }
 

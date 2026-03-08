@@ -3,7 +3,7 @@
 
 @section('content')
     {{-- Create New Customer --}}
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="mx-auto">
         <!-- Header -->
         <div class="mb-10 text-center sm:text-left">
             <h1 class="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">

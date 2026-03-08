@@ -7,17 +7,7 @@
     <!-- Left: Logo / Brand -->
     <div class="flex items-center gap-3">
         <!-- Logo icon -->
-        <div class="text-3xl sm:text-4xl font-black text-indigo-400 tracking-tight drop-shadow-md">
-            🍽
-        </div>
-        <div>
-            <span class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-                Restaurant POS
-            </span>
-            <span class="hidden sm:inline text-xs text-gray-600 dark:text-gray-500 ml-1.5">
-                v1.0
-            </span>
-        </div>
+        
     </div>
 
     <!-- Right: User Area + Actions -->
@@ -31,17 +21,7 @@
                     <i class="fas fa-moon text-xl" id="theme-icon"></i>
                 </button>
 
-                {{-- <button class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white focus:outline-none relative" title="Notifications">
-                    <i class="fas fa-bell text-xl"></i>
-                    <!-- Notification badge -->
-                    <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                        0
-                    </span>
-                </button>
-
-                <button class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white focus:outline-none" title="Cart">
-                    <i class="fas fa-shopping-cart text-xl"></i>
-                </button> --}}
+              
             </div>
 
             <!-- User Dropdown (Authenticated) -->
