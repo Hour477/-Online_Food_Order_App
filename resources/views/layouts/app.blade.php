@@ -65,9 +65,9 @@
 
             <!-- Page Content -->
             <main class="flex-1 overflow-y-auto p-4 lg:p-6 bg-gray-50 dark:bg-gray-900">
-                <div class="container mx-auto">
+                
                     @yield('content')
-                </div>
+
             </main>
 
         </div>

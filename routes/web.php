@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\CustomerController; // Moved to Admin
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\MenuItemController; // Moved to Admin
 use App\Http\Controllers\Admin\ReportController;   // Moved to Admin
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\TableController;    // Moved to Admin
 use App\Http\Controllers\Auth\AuthController;
 // use App\Http\Controllers\Waiter\CartController;
@@ -62,6 +63,8 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('customers', CustomerController::class); 
       
         Route::resource('orders', OrderController::class)->only(['index', 'show','create', 'store']);
+        
+        Route::resource('settings', SettingController::class);
         
         
     

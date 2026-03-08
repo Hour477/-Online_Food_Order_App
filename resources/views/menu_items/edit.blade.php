@@ -2,7 +2,7 @@
 
 @section('content')
 
-<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+<div class="py-10">
 
     <!-- Header -->
     <div class="mb-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
