@@ -4,8 +4,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="icon" type="image/x-icon" href="{{ asset('Restaurant-System.ico') }}">
-    <title>{{ config('app.name', 'Restaurant POS') }}</title>
+    @php
+        $guestTitle = \App\Models\Setting::where('key', 'resturant_name')->value('value');
+        $guestFavicon = \App\Models\Setting::where('key', 'favicon')->value('value');
+    @endphp
+    <link rel="icon" type="image/x-icon" href="{{ !empty($guestFavicon) ? asset('storage/settings/' . $guestFavicon) : asset('Restaurant-System.ico') }}">
+    <title>{{ $guestTitle ?: config('app.name', 'Restaurant POS') }}</title>
+    
+    
     <script>
         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');

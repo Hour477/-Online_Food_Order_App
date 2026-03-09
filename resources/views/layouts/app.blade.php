@@ -12,9 +12,12 @@
     </script>
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    <link rel="icon" type="image/x-icon" href="{{ asset('Restaurant-System.ico') }}">
-    <title>{{ config('app.name', 'Restaurant POS') }}</title>
+    @php
+        $appTitle = \App\Models\Setting::where('key', 'resturant_name')->value('value');
+        $appFavicon = \App\Models\Setting::where('key', 'favicon')->value('value');
+    @endphp
+    <link rel="icon" type="image/x-icon" href="{{ !empty($appFavicon) ? asset('storage/settings/' . $appFavicon) : asset('Restaurant-System.ico') }}">
+    <title>{{ $appTitle ?: config('app.name', 'Restaurant POS') }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -69,6 +72,8 @@
                     @yield('content')
 
             </main>
+
+            @include('layouts.footer')
 
         </div>
 

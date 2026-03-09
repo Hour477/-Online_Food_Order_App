@@ -1,11 +1,32 @@
-﻿<!-- resources/views/layouts/sidebar.blade.php -->
+@php
+    $sidebarSettings = \App\Models\Setting::query()
+        ->whereIn('key', ['logo', 'resturant_name'])
+        ->pluck('value', 'key');
+    $sidebarLogo = $sidebarSettings['logo'] ?? null;
+    $sidebarName = $sidebarSettings['resturant_name'] ?? config('app.name');
+@endphp 
+<!-- resources/views/layouts/sidebar.blade.php -->
 
 <aside id="app-sidebar" class="fixed inset-y-0 left-0 z-50 w-72 h-screen overflow-hidden bg-white dark:bg-gray-950 border-r border-gray-200 dark:border-gray-800 
              flex flex-col shadow-xl transform transition-all duration-300 ease-in-out -translate-x-full lg:translate-x-0 lg:sticky lg:top-0 lg:inset-y-auto">
 
     <!-- Brand / Logo -->
-    <div class="brand-wrap p-6 border-b border-gray-200 dark:border-gray-800 flex items-center gap-4">
-       
+    <div class="brand-wrap p-4 border-b border-gray-200 dark:border-gray-800 flex items-center  ">
+        @if(!empty($sidebarLogo))
+            <img
+                src="{{ asset('storage/settings/' . $sidebarLogo) }}"
+                alt="{{ $sidebarName }}"
+                class="h-11 w-11 rounded-xl object-contain bg-gray-100 dark:bg-gray-800 p-1"
+            >
+        @else
+            <div class="h-11 w-11 rounded-xl bg-indigo-600/10 text-indigo-600 dark:text-indigo-300 flex items-center justify-center">
+                <i class="fas fa-utensils"></i>
+            </div>
+        @endif
+        <div class="min-w-0">
+            <p class="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate ml-2">{{ $sidebarName }}</p>
+            
+        </div>
     </div>
 
     <!-- Navigation -->
@@ -115,24 +136,24 @@
                 </ul>
             </li>
             @endif
-
-            <!-- Kitchen View -->
-            @if(in_array(auth()->user()->role, ['kitchen', 'admin']))
+            
+            <!-- Tables -->
+            @if(auth()->user()->role === 'admin')
             <li>
-                <a href="{{ route('kitchen') }}"
+                <a href="{{ route('tables.index') }}"
                    class="sidebar-link group relative flex items-center gap-4 px-5 py-3.5 rounded-2xl font-medium transition-all duration-200
-                          {{ request()->routeIs('kitchen') 
+                          {{ request()->routeIs('tables.*') 
                              ? 'text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/30' 
                              : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/70' }}">
-                    <span class="absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-indigo-600 scale-y-0 group-hover:scale-y-75 transition-transform origin-left {{ request()->routeIs('kitchen') ? 'scale-y-100' : '' }}"></span>
+                    <span class="absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-indigo-600 scale-y-0 group-hover:scale-y-75 transition-transform origin-left {{ request()->routeIs('tables.*') ? 'scale-y-100' : '' }}"></span>
                     <svg class="w-6 h-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h-4m-6 0H5" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
                     </svg>
-                    <span class="sidebar-text">Kitchen View</span>
+                    <span class="sidebar-text">Tables</span>
                 </a>
             </li>
             @endif
-
+            
             <!-- Reports -->
             @if(auth()->user()->role === 'admin')
             <li>
@@ -146,21 +167,6 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                     </svg>
                     <span class="sidebar-text">Reports</span>
-                </a>
-            </li>
-            @endif
-
-            <!-- Tables -->
-            @if(in_array(auth()->user()->role, ['waiter', 'admin']))
-            <li>
-                <a href="{{ route('tables.index') }}"
-                   class="sidebar-link group relative flex items-center gap-4 px-5 py-3.5 rounded-2xl font-medium transition-all duration-200
-                          {{ request()->routeIs('tables.*') 
-                             ? 'text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/30' 
-                             : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/70' }}">
-                    <span class="absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-indigo-600 scale-y-0 group-hover:scale-y-75 transition-transform origin-left {{ request()->routeIs('tables.*') ? 'scale-y-100' : '' }}"></span>
-                    <i class="fas fa-table w-6 h-6 flex-shrink-0 text-center"></i>
-                    <span class="sidebar-text">Tables</span>
                 </a>
             </li>
             @endif

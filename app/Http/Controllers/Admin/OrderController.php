@@ -2,7 +2,7 @@
 // admin can view all orders, filter by status, and update order status (e.g., mark as completed or cancelled).
 
 
-namespace App\Http\Controllers\Waiter;
+namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Customer;
@@ -20,11 +20,36 @@ use Illuminate\Validation\ValidationException;
 
 class OrderController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $orderNo = $request->get('order_no');
+        $customerName = $request->get('customer_name');
+        $amount = $request->get('amount');
+        $startDate = $request->get('start_date');
+        $endDate = $request->get('end_date');
+
         $orders = Order::with('customer', 'table')
+            ->when($orderNo, function ($query, $orderNo) {
+                $query->where('order_no', 'like', '%' . $orderNo . '%');
+            })
+            ->when($customerName, function ($query, $customerName) {
+                $query->whereHas('customer', function ($q) use ($customerName) {
+                    $q->where('name', 'like', '%' . $customerName . '%');
+                });
+            })
+            ->when($amount !== null && $amount !== '', function ($query) use ($amount) {
+                $normalizedAmount = str_replace(',', '', trim((string) $amount));
+                $query->where('total_amount', 'like', '%' . $normalizedAmount . '%');
+            })
+            ->when($startDate, function ($query, $startDate) {
+                $query->whereDate('created_at', '>=', $startDate);
+            })
+            ->when($endDate, function ($query, $endDate) {
+                $query->whereDate('created_at', '<=', $endDate);
+            })
             ->latest()
-            ->paginate(20);
+            ->paginate(10)
+            ->withQueryString();
 
         return view('orders.index', compact('orders'));
     }
@@ -185,20 +210,14 @@ class OrderController extends Controller
         $order_items = OrderItem::where('order_id', $id)->first();
         $orders = Order::with(['orderItems.menuItem', 'table', 'customer', 'user'])->findOrFail($id);
         $total_amount = $orders->total_amount;
-        return view('orders.show', compact('orders', 'order_items', 'total_amount'));
+        $menuItems = MenuItem::where('status', 'available')
+            ->orderBy('name')
+            ->get(['id', 'name', 'price']);
+
+        return view('orders.show', compact('orders', 'order_items', 'total_amount', 'menuItems'));
     }
        
     
-
-    public function kitchen()
-    {
-       $orders = Order::with(['orderItems.menuItem', 'table'])
-        ->whereIn('status', ['pending', 'preparing', 'ready', 'completed'])
-        ->orderBy('created_at', 'asc')
-        ->get();
-
-        return view('orders.kitchen', compact('orders'));
-    }
 
     public function updateStatus(Order $orders, Request $request)
     {

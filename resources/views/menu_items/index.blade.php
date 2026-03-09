@@ -32,7 +32,8 @@
                     Search
                 </button>
             </form>
-
+            {{-- Price --}}
+            
             <div class="flex gap-2">
                 <select onchange="window.location.href=this.value" 
                         class="block w-full sm:w-40 rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-indigo-500 focus:border-indigo-500 py-2.5 shadow-sm">
@@ -170,8 +171,8 @@
                 </tbody>
             </table>
             
-            <div class="px-6 py-4 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-200 dark:border-gray-700">
-                {{ $menu_items->links() }}
+             <div class="px-6 py-4 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-200 dark:border-gray-700">
+                    {{ $menu_items->links() }}
             </div>
         </div>
     </div>

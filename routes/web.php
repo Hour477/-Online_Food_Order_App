@@ -8,10 +8,13 @@ use App\Http\Controllers\Admin\ReportController;   // Moved to Admin
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\TableController;    // Moved to Admin
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Frontend\CustomerAuthController;
+use App\Http\Controllers\Frontend\CustomerPortalController;
+use App\Http\Controllers\Kitchen\KitchenController;
 // use App\Http\Controllers\Waiter\CartController;
 use App\Http\Controllers\UserController; // Still in base folder
-use App\Http\Controllers\Waiter\OrderController;      // Moved to Waiter
-use App\Http\Controllers\Waiter\OrderItemsController; // Moved to Waiter
+use App\Http\Controllers\Admin\OrderController;      // Moved to Waiter
+use App\Http\Controllers\Admin\OrderItemsController; // Moved to Waiter
 use App\Http\Controllers\Waiter\CartController; // Waiter cart API
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -20,6 +23,19 @@ use Illuminate\Support\Facades\Route;
 | AUTH REQUIRED
 |--------------------------------------------------------------------------
 */
+
+Route::prefix('frontend')->name('frontend.')->group(function () {
+    // Route::get('/login', [CustomerAuthController::class, 'showLoginForm'])->name('login');
+    // Route::post('/otp/send', [CustomerAuthController::class, 'sendOtp'])->name('otp.send');
+    // Route::get('/otp/verify', [CustomerAuthController::class, 'showVerifyForm'])->name('verify.form');
+    // Route::post('/otp/verify', [CustomerAuthController::class, 'verifyOtp'])->name('verify.submit');
+
+    Route::middleware('frontend.customer.auth')->group(function () {
+        Route::get('/dashboard', [CustomerPortalController::class, 'dashboard'])->name('dashboard');
+        Route::get('/orders/{order}/track', [CustomerPortalController::class, 'track'])->name('orders.track');
+        Route::post('/logout', [CustomerAuthController::class, 'logout'])->name('logout');
+    });
+});
 
 // Public auth routes
 Route::middleware(['guest'])->group(function () {
@@ -47,6 +63,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
         Route::get('/orders/{orders}/show', [OrderController::class, 'show'])->name('orders.show');
         Route::patch('/orders/{orders}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+        Route::post('/orders/{order}/items', [OrderItemsController::class, 'store'])->name('orders.items.store');
     
 
 
@@ -68,7 +85,7 @@ Route::middleware(['auth'])->group(function () {
         
         
     
-        Route::get('/kitchen', [OrderController::class, 'kitchen'])->name('kitchen');
+        Route::get('/kitchen', [KitchenController::class, 'index'])->name('kitchen');
         Route::get('/reports/orders', [ReportController::class, 'orders'])->name('reports.orders');
         Route::get('/reports/income', [ReportController::class, 'income'])->name('reports.income');
     });
@@ -76,7 +93,7 @@ Route::middleware(['auth'])->group(function () {
     // 4. Waiter-only remaining routes
     Route::middleware(['role:waiter,waiter'])->group(function () {
         Route::resource('customers', CustomerController::class);
-        Route::resource('order_items', OrderItemsController::class)->only(['store', 'destroy']);
+        Route::resource('order_items', OrderItemsController::class)->only(['destroy']);
         Route::patch('/order-items/{orderItem}/qty', [OrderItemsController::class, 'updateQty'])->name('order-items.qty');
         Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.status');
         

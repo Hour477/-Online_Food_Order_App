@@ -6,7 +6,7 @@
 
     <!-- Left: Logo / Brand -->
     <div class="flex items-center gap-3">
-        <!-- Logo icon -->
+            
         
     </div>
 
@@ -15,7 +15,17 @@
 
         @auth
             <!-- Quick Actions (optional: notifications, cart, etc.) -->
+            <div class="hidden md:flex items-center gap-2 mr-2">
+                <a href="{{ route('orders.create') }}" 
+                   class="p-2 text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 transition-colors" 
+                   title="New Order">
+                    <i class="fas fa-plus-circle text-xl"></i>
+                </a>
+                <div class="h-6 w-px bg-gray-200 dark:bg-gray-700 mx-1"></div>
+            </div>
+            
             <div class="flex items-center gap-4">
+
                 <button id="theme-toggle" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white focus:outline-none" title="Toggle dark mode">
                     {{-- icon dark mode --}}
                     <i class="fas fa-moon text-xl" id="theme-icon"></i>
@@ -26,6 +36,7 @@
 
             <!-- User Dropdown (Authenticated) -->
             <div class="relative group user-menu">
+
                 <button type="button"
                         aria-expanded="false"
                         class="user-menu-toggle flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-full transition hover:opacity-80">

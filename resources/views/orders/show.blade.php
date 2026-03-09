@@ -2,7 +2,7 @@
 
 @section('content')
 
-<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="mx-auto">
 
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 mb-10">
@@ -81,10 +81,17 @@
 
             <!-- Ordered Items -->
             <div class="bg-white dark:bg-gray-800 rounded-2xl shadow border border-gray-200 dark:border-gray-700 p-6">
-                <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
-                    <i class="fas fa-receipt text-indigo-600"></i>
-                    Ordered Items
-                </h2>
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                    <h2 class="text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-3">
+                        <i class="fas fa-receipt text-indigo-600"></i>
+                        Ordered Items
+                    </h2>
+
+                    <a  class="inline-flex items-center px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-900/30 dark:text-indigo-400 dark:hover:bg-indigo-900/50 rounded-lg transition-colors
+                    ">
+                        Add Item
+                    </a>
+                </div>
 
                 @if($orders->items->isEmpty())
                     <div class="text-center py-12 text-gray-500 dark:text-gray-400">

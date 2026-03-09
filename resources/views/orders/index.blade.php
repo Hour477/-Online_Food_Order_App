@@ -23,6 +23,78 @@
         
     </div>
 
+    <form action="{{ route('orders.index') }}" method="GET" class="mb-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
+            <div>
+                <label for="order_no" class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">Order no</label>
+                <input
+                    id="order_no"
+                    type="text"
+                    name="order_no"
+                    value="{{ request('order_no') }}"
+                    placeholder="Search Order no"
+                    class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                >
+            </div>
+            <div>
+                <label for="customer_name" class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">Customer name</label>
+                <input
+                    id="customer_name"
+                    type="text"
+                    name="customer_name"
+                    value="{{ request('customer_name') }}"
+                    placeholder="Search Customer name"
+                    class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                >
+            </div>
+            <div>
+                <label for="amount" class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">Amount</label>
+                <input
+                    id="amount"
+                    type="text"
+                    name="amount"
+                    value="{{ request('amount') }}"
+                    placeholder="Search Amount (e.g. 20 or 20.90)"
+                    class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                >
+            </div>
+            <div>
+                <label for="start_date" class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">Start date</label>
+                <input
+                    id="start_date"
+                    type="date"
+                    name="start_date"
+                    value="{{ request('start_date') }}"
+                    class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                >
+            </div>
+            <div>
+                <label for="end_date" class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">End date</label>
+                <input
+                    id="end_date"
+                    type="date"
+                    name="end_date"
+                    value="{{ request('end_date') }}"
+                    class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                >
+            </div>
+            <div class="flex gap-2">
+                <button
+                    type="submit"
+                    class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm transition-colors"
+                >
+                    Search
+                </button>
+                <a
+                    href="{{ route('orders.index') }}"
+                    class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 dark:text-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg transition-colors"
+                >
+                    Reset
+                </a>
+            </div>
+        </div>
+    </form>
+
     <!-- Table Card -->
     <div class="bg-white dark:bg-gray-800 shadow-sm rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
 
@@ -34,9 +106,7 @@
                         <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider dark:text-gray-300">
                             Order ID
                         </th>
-                        <td scope="col" class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider dark:text-gray-300">
-                            Order Type
-                        </td>
+                        
                         <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider dark:text-gray-300">
                             Order No
                         </th>
@@ -62,13 +132,18 @@
                     @forelse($orders as $order)
                         <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150">
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                #{{ $order->id }}
+                               
+                                <a href="{{ route('orders.show', $order->id) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 ml-2">
+                                         #{{ $order->id }}
+                                </a>
+
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                {{ $order->order_type ?? 'N/A' }}
-                            </td>
+                           
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
-                                {{ $order->order_no }}
+                                <a href="{{ route('orders.show', $order->id) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 ml-2">
+                                    #{{ $order->order_no }}
+                                </a>
+                                
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
                                 {{ $order->customer?->name ?? 'Walk-in' }}
@@ -148,17 +223,19 @@
                     @endforelse
 
                 </tbody>
+                
             </table>
+            @if($orders->hasPages())
+                    <div class="px-6 py-4 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-200 dark:border-gray-700">
+                        {{ $orders->links() }}
+                    </div>
+                @endif
         </div>
 
     </div>
 
-    <!-- Pagination (if using paginate in controller) -->
-    @if($orders->hasPages())
-        <div class="mt-6">
-            {{ $orders->links() }}
-        </div>
-    @endif
+    
+    
 
 </div>
 

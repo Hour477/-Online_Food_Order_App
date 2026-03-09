@@ -62,7 +62,7 @@
             </div>
 
             <!-- Menu Items Grid -->
-            <div id="menu-items" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div id="menu-items" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
                 @forelse($menuItems as $item)
                     <div class="menu-item bg-white dark:bg-gray-800 rounded-2xl shadow border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-[1.02] group"
                          data-category="{{ $item->category_id }}">
@@ -98,7 +98,8 @@
                                         data-id="{{ $item->id }}"
                                         data-name="{{ addslashes($item->name) }}"
                                         data-price="{{ $item->price }}">
-                                    + Add
+                                    <i class="fas fa-plus mr-2"></i>
+                                    
                                 </button>
                             </div>
                         </div>
