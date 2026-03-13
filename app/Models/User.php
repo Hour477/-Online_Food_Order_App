@@ -21,8 +21,13 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role', // admin, waiter, kitchen, cashier
+
     ];
+    // relationship to user to role
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
 
     /**
      * The attributes that should be hidden for serialization.

@@ -9,7 +9,7 @@
         $guestFavicon = \App\Models\Setting::where('key', 'favicon')->value('value');
     @endphp
     <link rel="icon" type="image/x-icon" href="{{ !empty($guestFavicon) ? asset('storage/settings/' . $guestFavicon) : asset('Restaurant-System.ico') }}">
-    <title>{{ $guestTitle ?: config('app.name', 'Restaurant POS') }}</title>
+    
     
     
     <script>

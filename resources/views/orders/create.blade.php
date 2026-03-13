@@ -1,4 +1,4 @@
-@extends('layouts.app')
+    @extends('layouts.app')
 
 @section('content')
 
@@ -94,11 +94,11 @@
                                 </div>
 
                                 <button type="button"
-                                        class="add-to-cart-btn px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-xl shadow-sm transition-all transform hover:scale-105 active:scale-95"
+                                        class="add-to-cart-btn px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-xl shadow-sm transition-all transform hover:scale-105 active:scale-95"
                                         data-id="{{ $item->id }}"
                                         data-name="{{ addslashes($item->name) }}"
                                         data-price="{{ $item->price }}">
-                                    <i class="fas fa-plus mr-2"></i>
+                                    <i class="fas fa-plus"></i>
                                     
                                 </button>
                             </div>

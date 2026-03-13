@@ -9,11 +9,16 @@ use App\Models\Payment;
 
 class ReportController extends Controller
 {
-    public function orders(){
-        return view('reports.orders', [
-            'orders' => Order::latest()->get()
-        ]);
+    public function index()
+    {
+        return view('payments.index');
     }
+
+    // public function orders(){
+    //     return view('reports.orders', [
+    //         'orders' => Order::latest()->get()
+    //     ]);
+    // }
 
     public function income(){
         $income = Payment::selectRaw('DATE(created_at) as date, SUM(total_amount) as total')

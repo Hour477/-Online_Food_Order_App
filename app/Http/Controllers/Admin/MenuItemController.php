@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\MenuItem;
-    use Illuminate\Http\Request;
+
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+
+use Devrabiul\ToastMagic\Facades\ToastMagic;
 
 class MenuItemController extends Controller
 {
@@ -95,16 +98,21 @@ class MenuItemController extends Controller
     public function show(string $id)
     {
         //
-        $menu_items = MenuItem::findOrFail($id);
-        return view('menu_items.show', compact('menu_items'));
+        $menu_item = MenuItem::findOrFail($id);
+        return view('menu_items.show', compact('menu_item'));
     }
 
     public function edit($id)
     {
-        $menu_items = MenuItem::with('category')
-            ->where('category_id', 'status')
-            ->select('id', '');
-        return view('menu_items.edit', compact('menu_items', 'categories'));
+        
+        $categories = Category::all();
+        $menu_item = MenuItem::with('category')
+        
+            ->select('id', 'name', 'description', 'price', 'status', 'image', 'category_id')
+            ->findOrFail($id);
+        
+            
+        return view('menu_items.edit', compact('menu_item', 'categories'));
     }
 
     public function update(Request $request, string $id)
@@ -132,6 +140,8 @@ class MenuItemController extends Controller
         }
 
         $menuItem->update($validated);
+        ToastMagic::success('Menu item updated successfully');
+
 
         return redirect()->route('menu_items.index')
             ->with('success', 'Menu item updated successfully!');
@@ -144,6 +154,7 @@ class MenuItemController extends Controller
             Storage::disk('public')->delete($item->image);
         }
         $item->delete();
+        ToastMagic::success('Menu item deleted successfully');
         return redirect()->route('menu_items.index')
             ->with('success', 'Menu item deleted successfully!');
     }

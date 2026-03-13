@@ -26,7 +26,7 @@
         <div class="flex flex-wrap gap-3">
             <a href="{{ route('orders.index') }}"
                class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-xl shadow-sm hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 transition">
-                ← Back to Orders
+                &larr; Back to Orders
             </a>
 
         </div>
@@ -48,8 +48,8 @@
                     <div>
                         <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Table</dt>
                         <dd class="mt-1 text-lg font-medium text-gray-900 dark:text-white">
-                            Table {{ $orders->table?->table_number ?? '—' }}
-                            ({{ $orders->table?->capacity ?? '—' }} seats)
+                            Table {{ $orders->table?->table_number ?? '-' }}
+                            ({{ $orders->table?->capacity ?? '-' }} seats)
                         </dd>
                     </div>
 
@@ -87,27 +87,56 @@
                         Ordered Items
                     </h2>
 
-                    <a  class="inline-flex items-center px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-900/30 dark:text-indigo-400 dark:hover:bg-indigo-900/50 rounded-lg transition-colors
-                    ">
-                        Add Item
-                    </a>
+                    <form action="{{ route('orders.items.store', $orders->id) }}" method="POST" class="flex flex-wrap items-center gap-2">
+                        @csrf
+                        <select name="menu_item_id" class="px-3 py-2 text-sm border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white" required>
+                            <option value="">Select item</option>
+                            @foreach($menuItems as $menuItem)
+                                <option value="{{ $menuItem->id }}">{{ $menuItem->name }} (${{ number_format($menuItem->price, 2) }})</option>
+                            @endforeach
+                        </select>
+                        <input type="number" name="quantity" min="1" value="1" class="w-20 px-3 py-2 text-sm border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white" required>
+                        <button type="submit" class="inline-flex items-center px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-900/30 dark:text-indigo-400 dark:hover:bg-indigo-900/50 rounded-lg transition-colors">
+                            Add Item
+                        </button>
+                    </form>
                 </div>
 
-                @if($orders->items->isEmpty())
+                @if($orders->orderItems->isEmpty())
                     <div class="text-center py-12 text-gray-500 dark:text-gray-400">
                         <i class="fas fa-receipt text-6xl opacity-30 mb-4"></i>
                         <p class="text-lg">No items added yet</p>
                     </div>
                 @else
                     <div class="space-y-5">
-                        @foreach($orders->items as $item)
+                        @foreach($orders->orderItems as $item)
                             <div class="flex justify-between items-start border-b border-gray-200 dark:border-gray-700 pb-5 last:border-b-0 last:pb-0">
                                 <div class="flex-1">
                                     <div class="font-medium text-gray-900 dark:text-white">
                                         {{ $item->menuItem?->name ?? 'Unknown Item' }}
                                     </div>
                                     <div class="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                                        ${{ number_format($item->price, 2) }} × {{ $item->quantity }}
+                                        ${{ number_format($item->price, 2) }} x {{ $item->quantity }}
+                                    </div>
+                                    <div class="flex items-center gap-2 mt-3">
+                                        <form action="{{ route('order-items.qty', $item->id) }}" method="POST">
+                                            @csrf
+                                            @method('PATCH')
+                                            <input type="hidden" name="action" value="decrease">
+                                            <button type="submit" class="px-2 py-1 text-xs border border-gray-300 rounded dark:border-gray-600">-</button>
+                                        </form>
+                                        <span class="text-sm text-gray-600 dark:text-gray-300">{{ $item->quantity }}</span>
+                                        <form action="{{ route('order-items.qty', $item->id) }}" method="POST">
+                                            @csrf
+                                            @method('PATCH')
+                                            <input type="hidden" name="action" value="increase">
+                                            <button type="submit" class="px-2 py-1 text-xs border border-gray-300 rounded dark:border-gray-600">+</button>
+                                        </form>
+                                        <form action="{{ route('order-items.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Remove this item?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="px-2 py-1 text-xs text-red-600 border border-red-300 rounded dark:border-red-700">Remove</button>
+                                        </form>
                                     </div>
                                 </div>
                                 <div class="text-right font-bold text-emerald-600 dark:text-emerald-400">
@@ -147,8 +176,6 @@
                     <div class="flex justify-between text-2xl font-bold pt-4 border-t border-gray-200 dark:border-gray-700">
                         <dt class="text-gray-900 dark:text-white">Grand Total</dt>
                         <dd class="text-emerald-600 dark:text-emerald-400">
-                            {{-- Grand Total form table order_items --}}
-
                             ${{ number_format($orders->total_amount ?? 0, 2) }}
                         </dd>
                     </div>
@@ -173,7 +200,7 @@
                             <option value="completed" {{ $orders->status === 'completed' ? 'selected' : '' }}>Completed</option>
                             <option value="cancelled" {{ $orders->status === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
                         </select>
-                        
+
                         <button type="submit" class="py-3 px-6 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition">
                             Update
                         </button>

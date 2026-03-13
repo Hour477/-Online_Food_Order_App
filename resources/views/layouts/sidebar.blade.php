@@ -34,7 +34,7 @@
         <ul class="space-y-1.5">
 
             <!-- Dashboard -->
-            @if(auth()->user()->role === 'admin')
+           
             <li>
                 <a href="{{ route('dashboard') }}"
                    class="sidebar-link group relative flex items-center gap-4 px-5 py-3.5 rounded-2xl font-medium transition-all duration-200
@@ -51,10 +51,10 @@
                     <span class="sidebar-text">Dashboard</span>
                 </a>
             </li>
-            @endif
+            
 
             <!-- Categories -->
-            @if(auth()->user()->role === 'admin')
+            
             <li>
                 <a href="{{ route('categories.index') }}"
                    class="sidebar-link group relative flex items-center gap-4 px-5 py-3.5 rounded-2xl font-medium transition-all duration-200
@@ -68,10 +68,10 @@
                     <span class="sidebar-text">Categories</span>
                 </a>
             </li>
-            @endif
+            
 
             <!-- Menu Items -->
-            @if(auth()->user()->role === 'admin')
+            
             <li>
                 <a href="{{ route('menu_items.index') }}"
                    class="sidebar-link group relative flex items-center gap-4 px-5 py-3.5 rounded-2xl font-medium transition-all duration-200
@@ -85,10 +85,10 @@
                     <span class="sidebar-text">Menu Items</span>
                 </a>
             </li>
-            @endif
+            
 
             <!-- Orders (dropdown) -->
-            @if(in_array(auth()->user()->role, ['waiter', 'admin']))
+            
             <li class="sidebar-folder orders-menu {{ request()->routeIs('orders.*') ? 'is-open' : '' }}">
                 <button type="button"
                         aria-expanded="{{ request()->routeIs('orders.*') ? 'true' : 'false' }}"
@@ -135,10 +135,10 @@
                     </li>
                 </ul>
             </li>
-            @endif
+            
             
             <!-- Tables -->
-            @if(auth()->user()->role === 'admin')
+            
             <li>
                 <a href="{{ route('tables.index') }}"
                    class="sidebar-link group relative flex items-center gap-4 px-5 py-3.5 rounded-2xl font-medium transition-all duration-200
@@ -152,10 +152,10 @@
                     <span class="sidebar-text">Tables</span>
                 </a>
             </li>
-            @endif
+            
             
             <!-- Reports -->
-            @if(auth()->user()->role === 'admin')
+            
             <li>
                 <a href="{{ route('reports.income') }}"
                    class="sidebar-link group relative flex items-center gap-4 px-5 py-3.5 rounded-2xl font-medium transition-all duration-200
@@ -169,10 +169,30 @@
                     <span class="sidebar-text">Reports</span>
                 </a>
             </li>
-            @endif
+            
+
+             
+            
+            <li>
+                <a href="{{ route('payment.index') }}"
+                   class="sidebar-link group relative flex items-center gap-4 px-5 py-3.5 rounded-2xl font-medium transition-all duration-200
+                          {{ request()->routeIs('payment.*') 
+                             ? 'text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/30' 
+                             : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/70' }}">
+                    <span class="absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-indigo-600 scale-y-0 group-hover:scale-y-75 transition-transform origin-left {{ request()->routeIs('payment.*') ? 'scale-y-100' : '' }}"></span>
+                    <svg class="w-6 h-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                     </svg>
+                    <span class="sidebar-text">Payments</span>
+                    
+                </a>
+            </li>
+            
+            
+
 
             <!-- Customers -->
-            @if(in_array(auth()->user()->role, ['admin', 'waiter']))
+            
             <li>
                 <a href="{{ route('customers.index') }}"
                    class="sidebar-link group relative flex items-center gap-4 px-5 py-3.5 rounded-2xl font-medium transition-all duration-200
@@ -186,10 +206,10 @@
                     <span class="sidebar-text">Customers</span>
                 </a>
             </li>
-            @endif
+            
 
             <!-- Business Settings -->
-            @if(auth()->user()->role === 'admin')
+            
             <li class="sidebar-folder settings-menu {{ request()->routeIs('settings.*') ? 'is-open' : '' }}">
                 <button type="button"
                         aria-expanded="{{ request()->routeIs('settings.*') ? 'true' : 'false' }}"
@@ -219,7 +239,7 @@
                     </li>
                 </ul>
             </li>
-            @endif
+            
 
         </ul>
     </nav>

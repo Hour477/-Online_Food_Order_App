@@ -13,18 +13,18 @@ return new class extends Migration
             $table->string('order_no')->unique();
             $table->enum('order_type', ['dine_in', 'takeaway', 'delivery'])->default('dine_in');
             $table->foreignId('customer_id')
-                  ->nullable()
-                  ->constrained()
-                  ->nullOnDelete();
+                ->nullable()
+                ->constrained()
+                ->nullOnDelete();
 
             $table->foreignId('table_id')
-                  ->nullable()
-                  ->constrained('tables')
-                  ->cascadeOnDelete();
+                ->nullable()
+                ->constrained('tables')
+                ->cascadeOnDelete();
 
             $table->foreignId('user_id')
-                  ->constrained('users')
-                  ->cascadeOnDelete();
+                ->constrained('users')
+                ->cascadeOnDelete();
 
             $table->enum('status', [
                 'pending',
@@ -33,6 +33,10 @@ return new class extends Migration
                 'paid',
                 'cancelled'
             ])->default('pending');
+
+            $table->foreignId('table_id')->nullable()->change();
+
+
 
             $table->timestamps();
         });

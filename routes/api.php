@@ -1,9 +1,11 @@
 
 <?php
-use App\Http\Controllers\Api\OrderController;
+
+
 use Illuminate\Support\Facades\Route;
 
-Route::get('/orders', [OrderController::class, 'index']);
-Route::post('/orders', [OrderController::class, 'store']);
-Route::get('/orders/{order}', [OrderController::class, 'show']);
-Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus']);
+use App\Http\Controllers\Api\ApiOrderController;
+
+
+Route::get('/orders', [ApiOrderController::class, 'index']);
+Route::get('/orders/{id}', [ApiOrderController::class, 'show']);

@@ -78,7 +78,8 @@
                     class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                 >
             </div>
-            <div class="flex gap-2">
+            <div >
+                <label for="end_date" class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">Search Filter</label>
                 <button
                     type="submit"
                     class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm transition-colors"

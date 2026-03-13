@@ -61,29 +61,42 @@ class OrderItemsController extends Controller
 
     private function updateOrderTotal(Order $order)
     {
-        $total = $order->orderItems()->sum('subtotal');
-        $order->update(['total_amount' => $total]);
+        $subtotal = $order->orderItems()->sum('subtotal');
+        $tax = $subtotal * 0.10;
+        $total = $subtotal + $tax;
+
+        $order->update([
+            'subtotal' => $subtotal,
+            'tax' => $tax,
+            'total_amount' => $total,
+        ]);
     }
 
-    public function update(Request $request, OrderItem $id)
+    public function updateQty(Request $request, OrderItem $orderItem)
     {
-        $item = OrderItem::findOrFail($id);
+        $request->validate([
+            'action' => 'required|in:increase,decrease',
+        ]);
 
-            if($request->action == 'inrease')
-                {
-                    $item->quantity += 1;
-                }
+        if ($request->action === 'increase') {
+            $orderItem->quantity += 1;
+        }
 
-            if($request->action == 'decrease' && $item->quantity > 1)
-                {
-                    $item->quantity -= 1;
-                }
-            $item->save();
-            $item->refresh(); // Ensure the item is reloaded with updated quantity
-            $item->update(['subtotal' => $item->price * $item->quantity]);
-            $this->updateOrderTotal($item->order);
+        if ($request->action === 'decrease' && $orderItem->quantity > 1) {
+            $orderItem->quantity -= 1;
+        }
 
-            return back()->with('success', 'Item quantity updated');
+        $orderItem->subtotal = $orderItem->price * $orderItem->quantity;
+        $orderItem->save();
+        $this->updateOrderTotal($orderItem->order);
+
+        return back()->with('success', 'Item quantity updated');
+    }
+
+    // Backward-compatible entrypoint if old routes/forms still point to update().
+    public function update(Request $request, OrderItem $orderItem)
+    {
+        return $this->updateQty($request, $orderItem);
     }
    
 }

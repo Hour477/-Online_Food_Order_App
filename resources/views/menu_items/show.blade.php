@@ -33,6 +33,7 @@
                     <img src="{{ asset('storage/' . $menu_item->image) }}" 
                          alt="{{ $menu_item->name }}" 
                          class="w-full h-64 object-cover">
+                    
                 @else
                     <div class="w-full h-64 bg-gray-100 dark:bg-gray-700 flex flex-col items-center justify-center text-gray-400">
                         <i class="fas fa-image text-5xl mb-3"></i>

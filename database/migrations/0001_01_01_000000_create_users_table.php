@@ -9,12 +9,15 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
+
+    //  The Table all User Using System
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('role')->default('staff');
+        //   foriegkey to table roles
+            $table->foreignId('role_id')->nullable()->constrained('roles')->nullOnDelete();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

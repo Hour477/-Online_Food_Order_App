@@ -17,43 +17,47 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-        public function login(Request $request)
-    {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
+     public function login(Request $request)
+{
+    $credentials = $request->validate([
+        'email' => ['required', 'email'],
+        'password' => ['required'],
+    ]);
 
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
-            $request->session()->regenerate();
+    if (Auth::attempt($credentials, $request->boolean('remember'))) {
+        $request->session()->regenerate();
 
-            $user = Auth::user();
+        $user = Auth::user();
 
-            switch ($user->role) {
-                case 'admin':
-                    return redirect()->route('dashboard');
+        // Use role->slug or role->name
+        $role = $user->role->slug; // or $user->role->name
 
-                case 'waiter':
-                    return redirect()->route('orders.create');
+        switch ($role) {
+            case 'admin':
+                return redirect()->route('dashboard');
 
-                case 'kitchen':
-                    return redirect()->route('kitchen');
+            case 'waiter':
+                return redirect()->route('orders.create');
 
-                case 'cashier':
-                    return redirect()->route('checkout');
+            case 'kitchen':
+                return redirect()->route('kitchen');
 
-                default:
-                    Auth::logout();
-                    return redirect('/login');
-            }
+            case 'cashier':
+                return redirect()->route('checkout');
+
+            case 'customer':
+                return redirect()->route('home'); // optional customer dashboard
+
+            default:
+                Auth::logout();
+                return redirect('/login');
         }
-
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.'
-        ])->onlyInput('email');
     }
 
-
+    return back()->withErrors([
+        'email' => 'The provided credentials do not match our records.'
+    ])->onlyInput('email');
+}
     public function logout(Request $request)
     {
         Auth::logout();

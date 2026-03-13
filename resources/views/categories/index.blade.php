@@ -30,9 +30,9 @@
                     </button>
                 </form>
 
-                <div class="flex gap-2">
+                <div class="flex gap-4  ">
                     <select onchange="window.location.href=this.value"
-                        class="block w-full sm:w-40 rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-indigo-500 focus:border-indigo-500 py-2.5 shadow-sm">
+                        class="pl-2 block w-full sm:w-40 rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-indigo-500 focus:border-indigo-500 py-2.5 shadow-sm">
                         <option value="{{ route('categories.index', ['status' => '', 'search' => request('search')]) }}">All
                             Status</option>
                         <option
@@ -47,10 +47,9 @@
 
                 <a href="{{ route('categories.create') }}"
                     class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 rounded-lg shadow-sm transition-colors">
-                    <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
-                    Add Category
                 </a>
             </div>
 
@@ -96,10 +95,14 @@
                         @forelse($categories as $category)
                             <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150">
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
-                                    {{ $category->id }}
+                                    #{{ $category->id }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
-                                    {{ $category->name }}
+                                    <a href="{{ route('categories.edit', $category->id) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">
+                                        {{ $category->name }}
+                                    </a>
+                                    
+                                    
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
                                     {{ $category->description ?? '—' }}
@@ -121,10 +124,8 @@
 
                                     <a href="{{ route('categories.edit', $category->id) }}" 
                                         <i class="fa-regular fa-pen-to-square text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-3
-                                            transition-colors duration-150"> </i>
-
-
-
+                                            transition-colors duration-150"> 
+                                        </i>
                                     </a>
                                     
 
@@ -146,7 +147,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
+                                <td colspan="5" class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
                                     <svg class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" fill="none"
                                         viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

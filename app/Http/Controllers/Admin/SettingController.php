@@ -7,7 +7,7 @@ use App\Models\Setting;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-
+use Devrabiul\ToastMagic\Facades\ToastMagic;
 class SettingController extends Controller
 {
     /**
@@ -92,7 +92,7 @@ class SettingController extends Controller
             $fileName = \App\Helpers\UploadImageHelper::update('settings/', $oldFavicon, 'png', $request->file('favicon'));
             Setting::updateOrCreate(['key' => 'favicon'], ['value' => $fileName]);
         }
-
+        ToastMagic::success('Settings updated successfully');
         return redirect()->route('settings.index')->with('success', 'Settings updated successfully.');
     }
 

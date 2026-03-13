@@ -23,6 +23,7 @@ return new class extends Migration
                 ->nullable()
                 ->constrained()
                 ->nullOnDelete();
+                
             
             $table->integer('quantity');
             $table->decimal('price',10,2);

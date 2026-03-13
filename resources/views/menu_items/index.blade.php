@@ -36,7 +36,7 @@
             
             <div class="flex gap-2">
                 <select onchange="window.location.href=this.value" 
-                        class="block w-full sm:w-40 rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-indigo-500 focus:border-indigo-500 py-2.5 shadow-sm">
+                    class="block w-full sm:w-40 rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-indigo-500 focus:border-indigo-500 py-2.5 shadow-sm">
                     <option value="{{ route('menu_items.index', ['status' => '', 'search' => request('search')]) }}">All Status</option>
                     <option value="{{ route('menu_items.index', ['status' => 'available', 'search' => request('search')]) }}" {{ request('status') == 'available' ? 'selected' : '' }}>Available</option>
                     <option value="{{ route('menu_items.index', ['status' => 'unavailable', 'search' => request('search')]) }}" {{ request('status') == 'unavailable' ? 'selected' : '' }}>Unavailable</option>
@@ -74,9 +74,7 @@
                         <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider dark:text-gray-300">
                             Name
                         </th>
-                        <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider dark:text-gray-300">
-                            Description
-                        </th>
+                        
                         <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider dark:text-gray-300">
                             Category
                         </th>
@@ -96,24 +94,29 @@
 
                     @forelse($menu_items as $item)
                         <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                {{ $item->id }}
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 ">
+                                <a href="{{ route('menu_items.show', $item->id)}}">
+                                    #{{ $item->id }}
+                                </a>                            
                             </td>
                             <th class="px-6 py-4 whitespace-nowrap">
-                                @if($item->image)
+                                <a href="{{ route('menu_items.show', $item->id) }}">
+                                         @if($item->image)
                                     <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->name }}" class="w-10 h-10 rounded-md object-cover">
                                 @else
                                     <div class="w-10 h-10 rounded-md bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
                                         <i class="fas fa-image text-gray-400"></i>
                                     </div>
                                 @endif
+                                </a>
+                               
                             </th>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
-                                {{ $item->name }}
+                                <a href="{{ route('menu_items.show', $item->id) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 ml-2">
+                                    {{ $item->name }}
+                                </a>
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
-                                {{ $item->description ?? '—' }}
-                            </td>
+                           
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
                                 {{ $item->category?->name ?? '—' }}
                             </td>

@@ -38,3 +38,13 @@
         padding-right: 0.75rem;
     }
 }
+
+input{
+    font-weight: 500;
+}
+select{
+    font-weight: 500;
+}
+textarea{
+    font-weight: 500;
+}

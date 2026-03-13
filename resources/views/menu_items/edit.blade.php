@@ -11,7 +11,7 @@
                 Edit Menu Item
             </h1>
             <p class="mt-2 text-gray-600 dark:text-gray-400">
-                Update "{{ $menu_items->name }}" details
+                Update "{{ $menu_item->name }}" details
             </p>
         </div>
 
@@ -29,7 +29,7 @@
 
         <div class="p-6 lg:p-8">
 
-            <form action="{{ route('menu_items.update', $menu_items->id) }}" method="POST" enctype="multipart/form-data" class="space-y-8">
+            <form action="{{ route('menu_items.update', $menu_item->id) }}" method="POST" enctype="multipart/form-data" class="space-y-8">
                 @csrf
                 @method('PUT')
 
@@ -45,7 +45,7 @@
                         <input type="text"
                                name="name"
                                id="name"
-                               value="{{ old('name', $menu_items->name) }}"
+                               value="{{ old('name', $menu_item->name) }}"
                                required
                                autofocus
                                class="block w-full pl-11 pr-4 py-3.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
@@ -68,7 +68,8 @@
                         <select name="category_id" id="category_id" required
                                 class="block w-full pl-11 pr-10 py-3.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition appearance-none">
                             @foreach($categories as $cat)
-                                <option value="{{ $cat->id }}" {{ old('category_id', $menu_items->category_id) == $cat->id ? 'selected' : '' }}>
+                                <option value="{{ $cat->id }}"
+                                     {{ old('category_id', $menu_item->category_id) == $cat->id ? 'selected' : '' }}>
                                     {{ $cat->name }}
                                 </option>
                             @endforeach
@@ -96,7 +97,7 @@
                         <input type="number" step="0.01" min="0"
                                name="price"
                                id="price"
-                               value="{{ old('price', $menu_items->price) }}"
+                               value="{{ old('price', $menu_item->price) }}"
                                required
                                class="block w-full pl-10 pr-4 py-3.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
                                placeholder="e.g. 7.00">
@@ -117,8 +118,10 @@
                         </div>
                         <select name="status" id="status" required
                                 class="block w-full pl-11 pr-10 py-3.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition appearance-none">
-                            <option value="available" {{ old('status', $menu_items->status) == 'available' ? 'selected' : '' }}>available</option>
-                            <option value="unavailable" {{ old('status', $menu_items->status) == 'unavailable' ? 'selected' : '' }}>unavailable</option>
+                            <option value="available" 
+                                {{ old('status', $menu_item->status) == 'available' ? 'selected' : '' }}>available</option>
+                            <option value="unavailable"
+                             {{ old('status', $menu_item->status) == 'unavailable' ? 'selected' : '' }}>unavailable</option>
                         </select>
                         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
                             <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -138,7 +141,7 @@
                                     name="description" 
                                     id="description" 
                                     rows="4" 
-                                    placeholder="Provide a detailed description of the dish...">{{ old('description', $menu_items->description) }}</textarea>
+                                    placeholder="Provide a detailed description of the dish...">{{ old('description', $menu_item->description) }}</textarea>
                     
                         </textarea>
                 </div>
@@ -153,10 +156,10 @@
                                
                                class="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 dark:file:bg-indigo-900/30 dark:file:text-indigo-400 hover:file:bg-indigo-100 dark:hover:file:bg-indigo-900/50 transition">
                     </div>
-                    @if($menu_items->image)
+                    @if($menu_item->image)
                         <div class="mt-3">
                             <p class="text-sm text-gray-500 dark:text-gray-400">Current image:</p>
-                            <img src="{{ asset('storage/' . $menu_items->image) }}" alt="{{ $menu_items->name }}" class="mt-2 h-32 w-32 object-cover rounded-lg shadow">
+                            <img src="{{ asset('storage/' . $menu_item->image) }}" alt="{{ $menu_item->name }}" class="mt-2 h-32 w-32 object-cover rounded-lg shadow">
                         </div>
                     @endif
                     @error('image')

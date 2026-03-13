@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Category;
+use Devrabiul\ToastMagic\Facades\ToastMagic;
+use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
@@ -17,8 +18,8 @@ class CategoryController extends Controller
             ->when($search, function ($query, $search) {
                 // using keyword $search for call in .blade.php
                 $query->where(function ($q) use ($search) {
-                    $q->where('name', 'like', '%' . $search . '%')
-                        ->orWhere('description', 'like', '%' . $search . '%');
+                    $q->where('name', 'like', '%' . $search . '%');
+                      
                 });
             })
             // using keywork $status
@@ -33,9 +34,10 @@ class CategoryController extends Controller
                 }
             });
 
-        $categories = $query->latest()->paginate($request->get('per_page', 5))
+        $categories = $query->latest()->paginate($request->get('per_page', 10))
             ->withQueryString();
 
+        
         return view('categories.index', compact('categories'));
     }
 
@@ -53,8 +55,8 @@ class CategoryController extends Controller
         ]);
 
         Category::create($validated);
-        return redirect()->route('categories.index')
-            ->with('success', 'Category created successfully!');
+        ToastMagic::success('categories created successfully');
+        return redirect()->route('categories.index');
     }
 
     public function show(string $id)
@@ -78,15 +80,16 @@ class CategoryController extends Controller
 
         $category = Category::findOrFail($id);
         $category->update($validated);
-        
-        return redirect()->route('categories.index')
-            ->with('success', 'Category updated successfully!');
+        ToastMagic::success('categories created successfully');
+        return redirect()->route('categories.index');
+            
     }
 
     public function destroy(string $id)
     {
         Category::destroy($id);
-        return redirect()->route('categories.index')
-            ->with('success', 'Category deleted successfully!');
+        ToastMagic::success('Delete category successfully');
+        return redirect()->route('categories.index');
+            
     }
 }
