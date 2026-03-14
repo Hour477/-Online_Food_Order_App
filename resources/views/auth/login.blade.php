@@ -1,4 +1,4 @@
-@extends('layouts.guest')  <!-- Use a minimal guest layout without sidebar/navbar -->
+@extends('customerOrder.layouts.app')  <!-- Use a minimal guest layout without sidebar/navbar -->
 
 @section('content')
 

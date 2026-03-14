@@ -41,7 +41,7 @@
         </div>
 
         <!-- Sidebar -->
-        @include('layouts.sidebar')
+        @include('admin.layouts.sidebar')
 
         
         <!-- Main Content Area -->
@@ -62,7 +62,7 @@
                     </button>
 
                     <!-- Navbar Content -->
-                    @include('layouts.navbar')
+                    @include('admin.layouts.navbar')
 
                 </div>
             </header>
@@ -74,7 +74,7 @@
 
             </main>
 
-            @include('layouts.footer')
+            @include('admin.layouts.footer')
 
         </div>
 

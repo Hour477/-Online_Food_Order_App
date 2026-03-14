@@ -36,7 +36,7 @@
             <!-- Dashboard -->
            
             <li>
-                <a href="{{ route('dashboard') }}"
+                <a href="{{ route('admin.dashboard') }}"
                    class="sidebar-link group relative flex items-center gap-4 px-5 py-3.5 rounded-2xl font-medium transition-all duration-200
                           {{ request()->routeIs('dashboard') 
                              ? 'text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/30' 
@@ -56,7 +56,7 @@
             <!-- Categories -->
             
             <li>
-                <a href="{{ route('categories.index') }}"
+                <a href="{{ route('admin.categories.index') }}"
                    class="sidebar-link group relative flex items-center gap-4 px-5 py-3.5 rounded-2xl font-medium transition-all duration-200
                           {{ request()->routeIs('categories.*') 
                              ? 'text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/30' 
@@ -73,7 +73,7 @@
             <!-- Menu Items -->
             
             <li>
-                <a href="{{ route('menu_items.index') }}"
+                <a href="{{ route('admin.menu_items.index') }}"
                    class="sidebar-link group relative flex items-center gap-4 px-5 py-3.5 rounded-2xl font-medium transition-all duration-200
                           {{ request()->routeIs('menu_items.*') || request()->routeIs('menu-items.*') 
                              ? 'text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/30' 
@@ -89,13 +89,13 @@
 
             <!-- Orders (dropdown) -->
             
-            <li class="sidebar-folder orders-menu {{ request()->routeIs('orders.*') ? 'is-open' : '' }}">
+            <li class="sidebar-folder orders-menu {{ request()->routeIs('admin.orders.*') ? 'is-open' : '' }}">
                 <button type="button"
-                        aria-expanded="{{ request()->routeIs('orders.*') ? 'true' : 'false' }}"
+                        aria-expanded="{{ request()->routeIs('admin.orders.*') ? 'true' : 'false' }}"
                         data-folder="orders"
                         class="sidebar-folder-toggle orders-toggle-btn orders-toggle group relative w-full flex items-center justify-between gap-4 px-5 py-3.5 rounded-2xl font-medium transition-all duration-200 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/70">
                     
-                    <span class="folder-indicator orders-indicator absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-indigo-600 scale-y-0 group-hover:scale-y-75 transition-transform origin-left {{ request()->routeIs('orders.*') ? 'scale-y-100' : '' }}"></span>
+                    <span class="folder-indicator orders-indicator absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-indigo-600 scale-y-0 group-hover:scale-y-75 transition-transform origin-left {{ request()->routeIs('admin.orders.*') ? 'scale-y-100' : '' }}"></span>
 
                     <div class="flex items-center gap-4">
                         <svg class="w-6 h-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -103,30 +103,30 @@
                         </svg>
                         <span class="sidebar-text">
                             Orders
-                            @if(auth()->user()->role === 'admin') <span class="text-xs opacity-75 ml-1">(Manage)</span> @endif
-                            @if(auth()->user()->role === 'waiter') <span class="text-xs opacity-75 ml-1">(Staff)</span> @endif
+                            {{-- @if(auth()->user()->role === 'admin') <span class="text-xs opacity-75 ml-1">(Manage)</span> @endif
+                            @if(auth()->user()->role === 'waiter') <span class="text-xs opacity-75 ml-1">(Staff)</span> @endif --}}
                         </span>
                     </div>
-                    <svg class="chevron w-5 h-5 transition-transform {{ request()->routeIs('orders.*') ? 'rotate-180' : '' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg class="chevron w-5 h-5 transition-transform {{ request()->routeIs('admin.orders.*') ? 'rotate-180' : '' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
                 </button>
 
-                <ul class="sidebar-submenu orders-submenu mt-1.5 space-y-1 pl-11 {{ request()->routeIs('orders.*') ? '' : 'hidden' }}">
+                <ul class="sidebar-submenu orders-submenu mt-1.5 space-y-1 pl-11 {{ request()->routeIs('admin.orders.*') ? '' : 'hidden' }}">
                     <li>
-                        <a href="{{ request()->route('orders') ? route('orders.show', request()->route('orders')) : route('orders.index') }}"
+                        <a href="{{ request()->route('admin.orders') ? route('admin.orders.show', request()->route('admin.orders')) : route('admin.orders.index') }}"
                            class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors
-                                  {{ request()->routeIs('orders.index') || request()->routeIs('orders.show') 
+                                  {{ request()->routeIs('admin.orders.index') || request()->routeIs('admin.orders.show') 
                                      ? 'bg-indigo-500/10 text-indigo-700 dark:text-indigo-300' 
                                      : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/50' }}">
-                            <i class="fas fa-{{ request()->route('orders') ? 'eye' : 'list' }} w-5 text-center"></i>
-                            {{ request()->route('orders') ? 'Current Order' : 'All Orders' }}
+                            <i class="fas fa-{{ request()->route('admin.orders') ? 'eye' : 'list' }} w-5 text-center"></i>
+                            {{ request()->route('admin.orders') ? 'Current Order' : 'All Orders' }}
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('orders.create') }}"
+                        <a href="{{ route('admin.orders.create') }}"
                            class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors
-                                  {{ request()->routeIs('orders.create') 
+                                  {{ request()->routeIs('admin.orders.create') 
                                      ? 'bg-indigo-500/10 text-indigo-700 dark:text-indigo-300' 
                                      : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/50' }}">
                             <i class="fas fa-plus w-5 text-center"></i>
@@ -140,9 +140,9 @@
             <!-- Tables -->
             
             <li>
-                <a href="{{ route('tables.index') }}"
+                <a href="{{ route('admin.tables.index') }}"
                    class="sidebar-link group relative flex items-center gap-4 px-5 py-3.5 rounded-2xl font-medium transition-all duration-200
-                          {{ request()->routeIs('tables.*') 
+                          {{ request()->routeIs('admin.tables.*') 
                              ? 'text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/30' 
                              : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/70' }}">
                     <span class="absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-indigo-600 scale-y-0 group-hover:scale-y-75 transition-transform origin-left {{ request()->routeIs('tables.*') ? 'scale-y-100' : '' }}"></span>
@@ -157,7 +157,7 @@
             <!-- Reports -->
             
             <li>
-                <a href="{{ route('reports.income') }}"
+                <a href="{{ route('admin.reports.income') }}"
                    class="sidebar-link group relative flex items-center gap-4 px-5 py-3.5 rounded-2xl font-medium transition-all duration-200
                           {{ request()->routeIs('reports.*') 
                              ? 'text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/30' 
@@ -174,7 +174,7 @@
              
             
             <li>
-                <a href="{{ route('payment.index') }}"
+                <a href="{{ route('admin.payment.index') }}"
                    class="sidebar-link group relative flex items-center gap-4 px-5 py-3.5 rounded-2xl font-medium transition-all duration-200
                           {{ request()->routeIs('payment.*') 
                              ? 'text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/30' 
@@ -194,7 +194,7 @@
             <!-- Customers -->
             
             <li>
-                <a href="{{ route('customers.index') }}"
+                <a href="{{ route('admin.customers.index') }}"
                    class="sidebar-link group relative flex items-center gap-4 px-5 py-3.5 rounded-2xl font-medium transition-all duration-200
                           {{ request()->routeIs('customers.*') 
                              ? 'text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/30' 
@@ -210,27 +210,27 @@
 
             <!-- Business Settings -->
             
-            <li class="sidebar-folder settings-menu {{ request()->routeIs('settings.*') ? 'is-open' : '' }}">
+            <li class="sidebar-folder settings-menu {{ request()->routeIs('admin.settings.*') ? 'is-open' : '' }}">
                 <button type="button"
-                        aria-expanded="{{ request()->routeIs('settings.*') ? 'true' : 'false' }}"
+                        aria-expanded="{{ request()->routeIs('admin.settings.*') ? 'true' : 'false' }}"
                         data-folder="settings"
                         class="sidebar-folder-toggle settings-toggle-btn group relative w-full flex items-center justify-between gap-4 px-5 py-3.5 rounded-2xl font-medium transition-all duration-200 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/70">
-                    <span class="folder-indicator settings-indicator absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-indigo-600 scale-y-0 group-hover:scale-y-75 transition-transform origin-left {{ request()->routeIs('settings.*') ? 'scale-y-100' : '' }}"></span>
+                    <span class="folder-indicator settings-indicator absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-indigo-600 scale-y-0 group-hover:scale-y-75 transition-transform origin-left {{ request()->routeIs('admin.settings.*') ? 'scale-y-100' : '' }}"></span>
 
                     <div class="flex items-center gap-4">
                         <i class="fas fa-cogs w-6 h-6 flex-shrink-0 text-center"></i>
                         <span class="sidebar-text">Business Settings</span>
                     </div>
-                    <svg class="chevron w-5 h-5 transition-transform {{ request()->routeIs('settings.*') ? 'rotate-180' : '' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg class="chevron w-5 h-5 transition-transform {{ request()->routeIs('admin.settings.*') ? 'rotate-180' : '' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
                 </button>
 
-                <ul class="sidebar-submenu settings-submenu mt-1.5 space-y-1 pl-11 {{ request()->routeIs('settings.*') ? '' : 'hidden' }}">
+                <ul class="sidebar-submenu settings-submenu mt-1.5 space-y-1 pl-11 {{ request()->routeIs('admin.settings.*') ? '' : 'hidden' }}">
                     <li>
-                        <a href="{{ route('settings.index') }}"
+                        <a href="{{ route('admin.settings.index') }}"
                            class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors
-                                  {{ request()->routeIs('settings.*')
+                                  {{ request()->routeIs('admin.settings.*')
                                      ? 'bg-indigo-500/10 text-indigo-700 dark:text-indigo-300'
                                      : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/50' }}">
                             <i class="fas fa-sliders-h w-5 text-center"></i>

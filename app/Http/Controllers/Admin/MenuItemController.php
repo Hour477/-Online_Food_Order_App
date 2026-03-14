@@ -57,7 +57,7 @@ class MenuItemController extends Controller
             
             
 
-        return view('menu_items.index', compact('menu_items', 'categories'));
+        return view('admin.menu_items.index', compact('menu_items', 'categories'));
 
     }
 
@@ -65,7 +65,7 @@ class MenuItemController extends Controller
     public function create()
     {
         $categories = Category::all();
-        return view('menu_items.create', compact('categories'));
+        return view('admin.menu_items.create', compact('categories'));
     }
 
     public function store(Request $request)
@@ -91,7 +91,7 @@ class MenuItemController extends Controller
 
         MenuItem::create($data);
 
-        return redirect()->route('menu_items.index')
+        return redirect()->route('admin.menu_items.index')
             ->with('success', 'Menu item created successfully!');
     }
 
@@ -99,7 +99,7 @@ class MenuItemController extends Controller
     {
         //
         $menu_item = MenuItem::findOrFail($id);
-        return view('menu_items.show', compact('menu_item'));
+        return view('admin.menu_items.show', compact('menu_item'));
     }
 
     public function edit($id)
@@ -112,7 +112,7 @@ class MenuItemController extends Controller
             ->findOrFail($id);
         
             
-        return view('menu_items.edit', compact('menu_item', 'categories'));
+        return view('admin.menu_items.edit', compact('menu_item', 'categories'));
     }
 
     public function update(Request $request, string $id)
@@ -143,7 +143,7 @@ class MenuItemController extends Controller
         ToastMagic::success('Menu item updated successfully');
 
 
-        return redirect()->route('menu_items.index')
+        return redirect()->route('admin.menu_items.index')
             ->with('success', 'Menu item updated successfully!');
     }
 
@@ -155,7 +155,7 @@ class MenuItemController extends Controller
         }
         $item->delete();
         ToastMagic::success('Menu item deleted successfully');
-        return redirect()->route('menu_items.index')
+        return redirect()->route('admin.menu_items.index')
             ->with('success', 'Menu item deleted successfully!');
     }
 }

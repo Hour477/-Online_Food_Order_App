@@ -14,11 +14,11 @@ class ReportController extends Controller
         return view('payments.index');
     }
 
-    // public function orders(){
-    //     return view('reports.orders', [
-    //         'orders' => Order::latest()->get()
-    //     ]);
-    // }
+    public function orders(){
+        return view('reports.orders', [
+            'orders' => Order::latest()->get()
+        ]);
+    }
 
     public function income(){
         $income = Payment::selectRaw('DATE(created_at) as date, SUM(total_amount) as total')
@@ -28,4 +28,5 @@ class ReportController extends Controller
 
         return view('reports.income', compact('income'));
     }
+    
 }

@@ -16,7 +16,7 @@
         @auth
             <!-- Quick Actions (optional: notifications, cart, etc.) -->
             <div class="hidden md:flex items-center gap-2 mr-2">
-                <a href="{{ route('orders.create') }}" 
+                <a href="{{ route('admin.orders.create') }}" 
                    class="p-2 text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 transition-colors" 
                    title="New Order">
                     <i class="fas fa-plus-circle text-xl"></i>

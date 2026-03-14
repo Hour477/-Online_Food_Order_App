@@ -20,7 +20,7 @@ class DashboardController extends Controller
 
         $totalAvailableTable = Table::where('status', 'available')->count();
 
-        return view('dashboard.index', compact('totalOrders', 'ordersToday', 'totalAvailableTable'));
+        return view('admin.dashboard.index', compact('totalOrders', 'ordersToday', 'totalAvailableTable'));
     }
 
     // Total Order

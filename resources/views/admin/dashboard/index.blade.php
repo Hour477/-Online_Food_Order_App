@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('admin.layouts.app')
 
 @section('content')
 
@@ -147,12 +147,12 @@
                 Quick Actions
             </h2>
             <div class="grid grid-cols-2 gap-4">
-                <a href="{{ route('orders.create') }}"
+                <a href="{{ route('admin.orders.create') }}"
                    class="flex flex-col items-center justify-center p-6 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition group hover:shadow-xl hover:-translate-y-2 hover:ring-2 hover:ring-indigo-500/30">
                     <i class="fas fa-plus-circle text-4xl text-indigo-600 mb-3 group-hover:scale-125 group-hover:rotate-6 transition-all duration-300"></i>
                     <span class="font-medium text-indigo-700 dark:text-indigo-300">New Order</span>
                 </a>
-                <a href="{{ route('tables.index') }}"
+                <a href="{{ route('admin.tables.index') }}"
                    class="flex flex-col items-center justify-center p-6 bg-emerald-50 dark:bg-emerald-900/30 rounded-xl hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition group hover:shadow-xl hover:-translate-y-2 hover:ring-2 hover:ring-emerald-500/30">
                     <i class="fas fa-chair text-4xl text-emerald-600 mb-3 group-hover:scale-125 group-hover:rotate-6 transition-all duration-300"></i>
                     <span class="font-medium text-emerald-700 dark:text-emerald-300">Manage Tables</span>

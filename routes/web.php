@@ -1,88 +1,109 @@
 <?php
 
-use App\Http\Controllers\Admin\CategoryController; // Moved to Admin
-use App\Http\Controllers\Admin\CustomerController; // Moved to Admin
-use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\MenuItemController; // Moved to Admin
-use App\Http\Controllers\Admin\ReportController;   // Moved to Admin
-use App\Http\Controllers\Admin\SettingController;
-use App\Http\Controllers\Admin\TableController;    // Moved to Admin
-use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Frontend\CustomerAuthController;
-use App\Http\Controllers\Frontend\CustomerPortalController;
-use App\Http\Controllers\Kitchen\KitchenController;
-// use App\Http\Controllers\Waiter\CartController;
-use App\Http\Controllers\UserController; // Still in base folder
-// use App\Http\Controllers\Api\ApiOrderController;
-
-use App\Http\Controllers\Admin\OrderController;      // Moved to Waiter
-use App\Http\Controllers\Admin\OrderItemsController; // Moved to Waiter
-use App\Http\Controllers\Admin\CartController; // Waiter cart API
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\AuthController;
+
+// ── Admin controllers ────────────────────────────────────────
+use App\Http\Controllers\Admin\{
+    DashboardController,
+    UserController,
+    CategoryController,
+    MenuItemController,
+    TableController,
+    CustomerController,
+    OrderController as AdminOrderController,
+    SettingController,
+    ReportController
+};
+
+// ── Customer (public) controllers ────────────────────────────
+use App\Http\Controllers\CustomerOrder\{
+    customerMenuController,
+    customerCartController,
+    customerCheckoutController,
+    customerOrderController
+};
+
+// ── Optional: Waiter/Staff area ──────────────────────────────
+// use App\Http\Controllers\Waiter\{
+//     OrderController as WaiterOrderController,
+//     CartController as WaiterCartController,
+//     // ...
+// };
+
 /*
 |--------------------------------------------------------------------------
-| AUTH REQUIRED
+| Authentication Routes
 |--------------------------------------------------------------------------
 */
+Route::middleware('guest')->group(function () {
 
-Route::prefix('frontend')->name('frontend.')->group(function () {
-    // Route::get('/login', [CustomerAuthController::class, 'showLoginForm'])->name('login');
-    // Route::post('/otp/send', [CustomerAuthController::class, 'sendOtp'])->name('otp.send');
-    // Route::get('/otp/verify', [CustomerAuthController::class, 'showVerifyForm'])->name('verify.form');
-    // Route::post('/otp/verify', [CustomerAuthController::class, 'verifyOtp'])->name('verify.submit');
-
-    Route::middleware('frontend.customer.auth')->group(function () {
-        Route::get('/dashboard', [CustomerPortalController::class, 'dashboard'])->name('dashboard');
-        Route::get('/orders/{order}/track', [CustomerPortalController::class, 'track'])->name('orders.track');
-        Route::post('/logout', [CustomerAuthController::class, 'logout'])->name('logout');
-    });
-});
-
-// Public auth routes
-Route::middleware(['guest'])->group(function () {
-    
-    Route::get('/', [AuthController::class, 'showLoginForm'])->name('login');
-    // note check condition login user 
-    Route::post('/', [AuthController::class, 'login']);
+    Route::get('/login',    [AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login',   [AuthController::class, 'login']);
     Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
-    Route::post('/register', [AuthController::class, 'register']);
-
+    Route::post('/register',[AuthController::class, 'register']);
 });
-Route::post('/login', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
+Route::middleware('auth')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+});
 
-Route::middleware(['auth'])->group(function () {
+/*
+|--------------------------------------------------------------------------
+| Public Customer Routes (no auth required)
+|--------------------------------------------------------------------------
+*/
+Route::redirect('/', '/menu');
+Route::prefix('menu')->name('customerOrder.')->group(function () {
+    Route::get('/',[customerMenuController::class, 'index'])->name('menu.index');
+});
 
-    // 1. Put the CREATE/STORE routes FIRST (Specific routes)
-    
+Route::prefix('cart')->name('customerOrder.cart.')->group(function () {
+    Route::get('/',     [customerCartController::class, 'index'])->name('index');
+    Route::post('/add',    [customerCartController::class, 'add'])->name('add');
+    Route::post('/update', [customerCartController::class, 'update'])->name('update');
+    Route::post('/remove', [customerCartController::class, 'remove'])->name('remove');
+    Route::post('/clear',  [customerCartController::class, 'clear'])->name('clear');
+    Route::post('/reorder',[customerCartController::class, 'reorder'])->name('reorder');
+});
 
-    // 3. Admin-only routes
-    Route::middleware(['role:admin'])->group(function () {
-        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-        Route::post('/dashboard', [DashboardController::class,'totalOrders'])->name('dashboard');
-        Route::resource('users', UserController::class);
-        Route::resource('categories', CategoryController::class);
-        Route::resource('menu_items', MenuItemController::class);
-        Route::resource('tables', TableController::class);
-        Route::resource('customers', CustomerController::class); 
-      
-        // Route::resource('/api/orders', OrderController::class);
-        // Route::resource('/api/orders', ApiOrderController::class);
-        Route::resource('orders', OrderController::class);
-        Route::resource('settings', SettingController::class);
-        
-        
-    
-        Route::get('/kitchen', [KitchenController::class, 'index'])->name('kitchen');
-        Route::get('/reports/orders', [ReportController::class, 'orders'])->name('reports.orders');
-        Route::get('/reports/income', [ReportController::class, 'income'])->name('reports.income');
-        Route::resource('payment', ReportController::class);
+Route::prefix('checkout')->name('customerOrder.checkout.')->group(function () {
+    Route::get('/',           [customerCheckoutController::class, 'index'])->name('index');
+    Route::post('/place',     [customerCheckoutController::class, 'place'])->name('place');
+    Route::get('/confirmation',[customerCheckoutController::class, 'confirmation'])->name('confirmation');
+});
+
+Route::get('/orders/history', [customerOrderController::class, 'history'])
+    ->name('customerOrder.orders.history');
+
+/*
+|--------------------------------------------------------------------------
+| Admin Area (auth + role:admin)
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'role:admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::post('/dashboard/stats', [DashboardController::class, 'totalOrders'])->name('dashboard.stats');
+
+    Route::resource('users',        UserController::class);
+    Route::resource('categories',   CategoryController::class);
+    Route::resource('menu_items',   MenuItemController::class);
+    Route::resource('tables',       TableController::class);
+    Route::resource('customers',    CustomerController::class);
+    Route::resource('orders',       AdminOrderController::class);
+    Route::resource('settings',     SettingController::class);
+
+    // Reports
+    Route::prefix('reports')->name('reports.')->group(function () {
+        Route::get('/orders', [ReportController::class, 'orders'])->name('orders');
+        Route::get('/income', [ReportController::class, 'income'])->name('income');
     });
 
-   
-    
-
-    
-
+    // If you still use payment resource (uncommon naming)
+    Route::resource('payment', ReportController::class);
+    Route::resource('settings', ReportController::class);
 });
