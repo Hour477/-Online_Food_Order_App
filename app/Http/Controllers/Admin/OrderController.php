@@ -51,7 +51,7 @@ class OrderController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        return view('orders.index', compact('orders'));
+        return view('admin.orders.index', compact('orders'));
     }
 
     public function create()
@@ -72,7 +72,7 @@ class OrderController extends Controller
         
        
         
-        return view('orders.create', compact('categories', 'menuItems', 'tables', 'customers', 'cart', 'subtotal', 'order_types'));
+        return view('admin.orders.create', compact('categories', 'menuItems', 'tables', 'customers', 'cart', 'subtotal', 'order_types'));
     }
 
     
@@ -188,7 +188,7 @@ class OrderController extends Controller
             });
 
             return redirect()
-                ->route('orders.show', $order->id)
+                ->route('admin.orders.show', $order->id)
                 ->with('success', 'Order #' . $order->order_no . ' created successfully!');
 
         } catch (ValidationException $e) {
@@ -214,7 +214,7 @@ class OrderController extends Controller
             ->orderBy('name')
             ->get(['id', 'name', 'price']);
 
-        return view('orders.show', compact('orders', 'order_items', 'total_amount', 'menuItems'));
+        return view('admin.orders.show', compact('orders', 'order_items', 'total_amount', 'menuItems'));
     }
        
     
@@ -230,7 +230,7 @@ class OrderController extends Controller
         ]);
 
         return redirect()
-            ->route('orders.show', $orders->id)
+            ->route('admin.orders.show', $orders->id)
             ->with('success', 'Order status updated to ' . $validated['status']);
     }
 }

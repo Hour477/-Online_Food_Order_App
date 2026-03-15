@@ -11,12 +11,12 @@ class CustomerController extends Controller
     public function index()
     {
         $customers = Customer::latest()->paginate(10);
-        return view('customers.index', compact('customers'));
+        return view('admin.customers.index', compact('customers'));
     }
 
     public function create()
     {
-        return view('customers.create');
+        return view('admin.customers.create');
     }
 
     public function store(Request $request)
@@ -33,7 +33,7 @@ class CustomerController extends Controller
         ]);
 
         Customer::create($validated);
-        return redirect()->route('customers.index')
+        return redirect()->route('admin.customers.index')
             ->with('success', 'Customer created successfully!');
     }
 
@@ -41,14 +41,14 @@ class CustomerController extends Controller
     {
         //
         $customer = Customer::findOrFail($id);
-        return view('customers.show', compact('customer'));
+        return view('admin.customers.show', compact('customer'));
     }
 
     public function edit(string $id)
     {
         //
         $customer = Customer::findOrFail($id);
-        return view('customers.edit', compact('customer'));
+        return view('admin.customers.edit', compact('customer'));
     }
 
     public function update(Request $request, string $id)
@@ -64,7 +64,7 @@ class CustomerController extends Controller
 
         $customer = Customer::findOrFail($id);
         $customer->update($validated);
-        return redirect()->route('customers.index')
+        return redirect()->route('admin.customers.index')
             ->with('success', 'Customer updated successfully!');
 
     }
@@ -74,7 +74,7 @@ class CustomerController extends Controller
         //
         $customer = Customer::findOrFail($id);
         $customer->delete();
-        return redirect()->route('customers.index')
+        return redirect()->route('admin.customers.index')
             ->with('success', 'Customer deleted successfully!');
     }
 }

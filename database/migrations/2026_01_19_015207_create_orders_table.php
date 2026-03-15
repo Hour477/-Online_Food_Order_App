@@ -10,8 +10,12 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
+
             $table->string('order_no')->unique();
-            $table->enum('order_type', ['dine_in', 'takeaway', 'delivery'])->default('dine_in');
+
+            $table->enum('order_type', ['dine_in', 'takeaway', 'delivery'])
+                ->default('dine_in');
+
             $table->foreignId('customer_id')
                 ->nullable()
                 ->constrained()
@@ -20,12 +24,14 @@ return new class extends Migration
             $table->foreignId('table_id')
                 ->nullable()
                 ->constrained('tables')
-                ->cascadeOnDelete();
+                ->nullOnDelete();
 
             $table->foreignId('user_id')
+                ->nullable()
                 ->constrained('users')
-                ->cascadeOnDelete();
+                ->nullOnDelete();
 
+            $table->text('notes')->nullable();
             $table->enum('status', [
                 'pending',
                 'cooking',
@@ -33,10 +39,6 @@ return new class extends Migration
                 'paid',
                 'cancelled'
             ])->default('pending');
-
-            $table->foreignId('table_id')->nullable()->change();
-
-
 
             $table->timestamps();
         });

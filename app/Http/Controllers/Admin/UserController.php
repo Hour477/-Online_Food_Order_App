@@ -13,11 +13,11 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        
         $search = request("search");
-        $status = request("status");
-        $users = User::where("name", $search)->where("status", $status)->paginate(10)->withQueryString();
-        return view("users.index", compact("users"));
+        $users = User::where("name","like","%".$search."%")->paginate(10);
+        
+        return view("admin.users.index", compact("users"));
     }
 
     /**
@@ -26,7 +26,7 @@ class UserController extends Controller
     public function create()
     {
         //
-        return view("users.create");
+        return view("admin.users.create");
 
     }
 
@@ -45,7 +45,7 @@ class UserController extends Controller
 
         ]);
         User::create($validated);
-        return redirect()->route("users.index")->with("success", "User created successfully");
+        return redirect()->route("admin.users.index")->with("success", "User created successfully");
         
     }
 
@@ -56,7 +56,7 @@ class UserController extends Controller
     {
         //
         $user = User::find($id);
-        return view("users.show", compact("user"));
+        return view("admin.users.show", compact("user"));
     }
 
     /**
@@ -66,7 +66,7 @@ class UserController extends Controller
     {
         //
         $user = User::find($id);
-        return view("users.edit", compact("user"));
+        return view("admin.users.edit", compact("user"));
     }
 
     /**
@@ -83,7 +83,7 @@ class UserController extends Controller
 
         $user = User::find($id);
         $user->update($validate);
-        return redirect()->route("users.index");
+        return redirect()->route("admin.users.index");
     }
 
     /**
@@ -94,6 +94,6 @@ class UserController extends Controller
         //
         $user = User::find($id);
         $user->delete();
-        return redirect()->route("users.index");
+        return redirect()->route("admin.users.index");
     }
 }

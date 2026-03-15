@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const indicators = sidebar.querySelectorAll('.sidebar-link span.absolute, .folder-indicator');
         indicators.forEach((indicator) => {
-            indicator.classList.remove('bg-indigo-600', 'scale-y-75', 'scale-y-100');
+            indicator.classList.remove('bg-amber-600', 'scale-y-75', 'scale-y-100');
             indicator.classList.add('scale-y-0');
         });
 
@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (targetIndicator) {
             targetIndicator.classList.remove('scale-y-0');
-            targetIndicator.classList.add('bg-indigo-600', 'scale-y-75');
+            targetIndicator.classList.add('bg-amber-600', 'scale-y-75');
         }
     };
 
@@ -184,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentRouteActive =
             getCurrentLinkByPath() ||
             sidebar.querySelector(
-                '.sidebar-submenu a.bg-indigo-500\\/10, .sidebar-link.bg-indigo-50, .sidebar-link.text-indigo-700'
+                '.sidebar-submenu a.bg-amber-600\\/10, .sidebar-link.bg-amber-600, .sidebar-link.bg-amber-700'
             );
 
         if (currentRouteActive) {

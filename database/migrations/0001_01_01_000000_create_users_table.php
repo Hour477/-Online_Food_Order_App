@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('name');
         //   foriegkey to table roles
             $table->foreignId('role_id')->nullable()->constrained('roles')->nullOnDelete();
+            $table->string('phone')->nullable();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

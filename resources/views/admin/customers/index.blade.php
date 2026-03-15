@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('admin.layouts.app')
 
 @section('content')
 
@@ -15,8 +15,9 @@
             </p>
         </div>
 
-        <a href="{{ route('customers.create') }}"
-           class="inline-flex items-center px-6 py-3 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-sm transition-all transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+        <a href="{{ route('admin.customers.create') }}"
+           class="inline-flex items-center px-6 py-3 text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 rounded-xl shadow-sm transition-all transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500
+           ">
             <i class="fas fa-user-plus mr-2"></i>
             Add New Customer
         </a>
@@ -37,8 +38,9 @@
                 <p class="text-gray-500 dark:text-gray-400 mb-6 max-w-md mx-auto">
                     Start adding your regular customers to keep track of their details and orders.
                 </p>
-                <a href="{{ route('customers.create') }}"
-                   class="inline-flex items-center px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition">
+                <a href="{{ route('admin.customers.create') }}"
+                   class="inline-flex items-center px-6 py-3 bg-amber-600 text-white rounded-xl hover:bg-amber-700 transition
+                   ">
                     <i class="fas fa-user-plus mr-2"></i>
                     Add Your First Customer
                 </a>
@@ -76,12 +78,12 @@
                                     {{ $customer->phone ?? '—' }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-3">
-                                    <a href="{{ route('customers.edit', $customer->id) }}"
+                                    <a href="{{ route('admin.customers.edit', $customer->id) }}"
                                        class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 transition">
                                         <i class="fas fa-edit"></i> Edit
                                     </a>
 
-                                    <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" class="inline">
+                                    <form action="{{ route('admin.customers.destroy', $customer->id) }}" method="POST" class="inline">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"

@@ -8,32 +8,20 @@ use Illuminate\Support\Facades\Auth;
 
 class RoleMiddleware
 {
-   public function handle(Request $request, Closure $next, ...$roles)
+    public function handle(Request $request, Closure $next, ...$roles)
     {
-        // if (!Auth::check()) {
-        //     return redirect('/login');
-        // }
-
-        // $user = Auth::user();
-        // $userRole = strtolower($user->role ?? '');
-
-        // // If user role is in allowed roles
-        // if($userRole === "admin"){
-        //     return $next($request);
-        // }else if($userRole === "waiter"){
-        //     return $next($request);
-        // }
-        // abort(403, 'You are not allowed to access this page.');
-
-        // return $next($request);
-
-        $user = Auth::user();
-
-        if (!$user || !in_array($user->role->slug, $roles)) {
-            abort(403, 'Unauthorized');
+        if (!Auth::check()) {
+        return redirect()->route('login');
         }
-
+        $user = Auth::user();
+        // Safe null check + get slug
+        $userRoleSlug = $user->role?->slug ?? null;
+        if (!$userRoleSlug || !in_array($userRoleSlug, $roles)) {
+            abort(403, 'You do not have permission to access this area.');
+        }
         return $next($request);
-    }
+        
 
+        
+    }
 }

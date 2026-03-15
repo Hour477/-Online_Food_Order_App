@@ -38,12 +38,12 @@ class CategoryController extends Controller
             ->withQueryString();
 
         
-        return view('categories.index', compact('categories'));
+        return view('admin.categories.index', compact('categories'));
     }
 
     public function create()
     {
-        return view('categories.create');
+        return view('admin.categories.create');
     }
 
     public function store(Request $request)
@@ -56,7 +56,7 @@ class CategoryController extends Controller
 
         Category::create($validated);
         ToastMagic::success('categories created successfully');
-        return redirect()->route('categories.index');
+        return redirect()->route('admin.categories.index');
     }
 
     public function show(string $id)
@@ -67,7 +67,7 @@ class CategoryController extends Controller
     public function edit(string $id)
     {
         $category = Category::findOrFail($id);
-        return view('categories.edit', compact('category'));
+        return view('admin.categories.edit', compact('category'));
     }
 
     public function update(Request $request, string $id)
@@ -81,7 +81,7 @@ class CategoryController extends Controller
         $category = Category::findOrFail($id);
         $category->update($validated);
         ToastMagic::success('categories created successfully');
-        return redirect()->route('categories.index');
+        return redirect()->route('admin.categories.index');
             
     }
 
@@ -89,7 +89,7 @@ class CategoryController extends Controller
     {
         Category::destroy($id);
         ToastMagic::success('Delete category successfully');
-        return redirect()->route('categories.index');
+        return redirect()->route('admin.categories.index');
             
     }
 }

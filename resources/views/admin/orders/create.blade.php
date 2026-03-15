@@ -1,4 +1,4 @@
-    @extends('layouts.app')
+    @extends('admin.layouts.app')
 
 @section('content')
 
@@ -25,7 +25,7 @@
             </p>
         </div>
 
-        <a href="{{ route('orders.index') }}"
+        <a href="{{ route('admin.orders.index') }}"
            class="inline-flex items-center px-6 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-xl shadow-sm hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors">
             ← Back to Orders
         </a>
@@ -116,14 +116,14 @@
         <!-- RIGHT SIDE: Cart (sticky) -->
         <div class="lg:col-span-4">
             <!-- resources/views/orders/partials/cart.blade.php -->
-            @include('orders.partials.cart')
+            @include('admin.orders.partials.cart')
         </div>
 
     </div>
 </div>
 
 <!-- Hidden form for submitting the order (items will be added via JS) -->
-<form id="order-form" action="{{ route('orders.store') }}" method="POST" class="hidden">
+<form id="order-form" action="{{ route('admin.orders.store') }}" method="POST" class="hidden">
     @csrf
     <input type="hidden" name="total_amount" id="total_amount_hidden" value="0">
 </form>

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('admin.layouts.app')
 
 @section('content')
 
@@ -12,8 +12,8 @@
 
         <!-- Optional: Add New Order button (if your system allows manual creation) -->
          
-        <a href="{{ route('orders.create') }}"
-        
+        <a href="{{ route('admin.orders.create') }}"
+
            class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm transition-colors">
             <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -23,7 +23,7 @@
         
     </div>
 
-    <form action="{{ route('orders.index') }}" method="GET" class="mb-6">
+    <form action="{{ route('admin.orders.index') }}" method="GET" class="mb-6">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
             <div>
                 <label for="order_no" class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">Order no</label>
@@ -87,7 +87,7 @@
                     Search
                 </button>
                 <a
-                    href="{{ route('orders.index') }}"
+                    href="{{ route('admin.orders.index') }}"
                     class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 dark:text-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg transition-colors"
                 >
                     Reset
@@ -134,14 +134,14 @@
                         <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150">
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                
-                                <a href="{{ route('orders.show', $order->id) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 ml-2">
+                                <a href="{{ route('admin.orders.show', $order->id) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 ml-2">
                                          #{{ $order->id }}
                                 </a>
 
                             </td>
                            
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
-                                <a href="{{ route('orders.show', $order->id) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 ml-2">
+                                <a href="{{ route('admin.orders.show', $order->id) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 ml-2">
                                     #{{ $order->order_no }}
                                 </a>
                                 
@@ -204,7 +204,7 @@
                             <!-- Optional: View / Edit / Print buttons -->
 
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <a href="{{ route('orders.show', $order->id) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-3">
+                                <a href="{{ route('admin.orders.show', $order->id) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-3">
                                     View
                                 </a>
                                 

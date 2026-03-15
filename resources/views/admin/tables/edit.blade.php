@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('admin.layouts.app')
 
 @section('content')
 
@@ -19,12 +19,12 @@
     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div class="p-8">
 
-            <form action="{{ route('tables.update', $table->id) }}" method="POST" class="space-y-8">
+            <form action="{{ route('admin.tables.update', $table->id) }}" method="POST" class="space-y-8">
                 @csrf
                 @method('PUT')
 
                 <!-- Table Number -->
-                 @if(auth()->user()->role === 'admin')
+                 
                 <div>
 
                    
@@ -46,10 +46,10 @@
                         <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                     @enderror
                 </div>
-                  @endif
+                  
 
                 <!-- Capacity -->
-                 @if(auth()->user()->role === 'admin')
+                 
                         
                 <div>
                     <label for="capacity" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -68,10 +68,10 @@
                         <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                     @enderror
                 </div>
-                @endif
+                
 
                 <!-- Status -->
-                @if(auth()->user()->role == 'waiter' || auth()->user()->role == 'admin')
+                
                        
                 <div>
                     <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -101,7 +101,7 @@
                         <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                     @enderror
                 </div>
-                @endif
+                
                 <!-- Form Actions -->
                 <div class="flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
                     <button type="submit"
@@ -110,7 +110,7 @@
                         Save Table
                     </button>
 
-                    <a href="{{ route('tables.index') }}"
+                    <a href="{{ route('admin.tables.index') }}"
                        class="flex-1 py-3.5 px-6 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-medium rounded-xl border border-gray-300 dark:border-gray-600 text-center transition">
                         Cancel
                     </a>

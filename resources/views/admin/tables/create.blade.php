@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('admin.layouts.app')
 
 @section('content')
 
@@ -18,7 +18,7 @@
     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div class="p-8">
 
-            <form action="{{ route('tables.store') }}" method="POST" class="space-y-8">
+            <form action="{{ route('admin.tables.store') }}" method="POST" class="space-y-8">
                 @csrf
 
                 <!-- Table Number -->
@@ -90,7 +90,7 @@
                         Save Table
                     </button>
 
-                    <a href="{{ route('tables.index') }}"
+                    <a href="{{ route('admin.tables.index') }}"
                        class="flex-1 py-3.5 px-6 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-medium rounded-xl border border-gray-300 dark:border-gray-600 text-center transition">
                         Cancel
                     </a>

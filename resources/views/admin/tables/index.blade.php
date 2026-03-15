@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('admin.layouts.app')
 
 @section('content')
 
@@ -10,24 +10,15 @@
             <h1 class="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
                 Tables
             </h1>
-            @if(auth()->user()->role === 'admin')
-                <p class="mt-2 text-gray-600 dark:text-gray-400">
-                    Manage all dining tables in your restaurant
-                </p>
-            @endif
-            @if(auth()->user()->role === 'waiter')
-                <p class="mt-2 text-gray-600 dark:text-gray-400">
-                        View table availability and details
-                </p>
-            @endif      
+                
         </div>
-        @if(auth()->user()->role === 'admin')
-        <a href="{{ route('tables.create') }}"
+       
+        <a href="{{ route('admin.tables.create') }}"
            class="inline-flex items-center px-6 py-3 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-sm transition-all transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
             <i class="fas fa-plus mr-2"></i>
             Add New Table
         </a>
-        @endif
+        
     </div>
 
     <!-- Table Card -->
@@ -45,7 +36,7 @@
                 <p class="text-gray-500 dark:text-gray-400 mb-6">
                     You haven't added any tables yet.
                 </p>
-                <a href="{{ route('tables.create') }}"
+                <a href="{{ route('admin.tables.create') }}"
                    class="inline-flex items-center px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition">
                     <i class="fas fa-plus mr-2"></i>
                     Add Your First Table
@@ -89,7 +80,7 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-3">
-                                    <a href="{{ route('tables.edit', $table->id) }}"
+                                    <a href="{{ route('admin.tables.edit', $table->id) }}"
                                        class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 transition">
                                         <i class="fas fa-edit"></i> Edit
                                     </a>

@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::table('orders', function (Blueprint $table) {
             //
-          
                 $table->decimal('subtotal', 10, 2)->default(0);
                 $table->decimal('tax', 10, 2)->default(0);
                 $table->decimal('total_amount', 10, 2)->default(0);

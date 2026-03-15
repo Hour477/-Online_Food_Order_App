@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\Role;
 
 class AuthController extends Controller
 {
@@ -54,12 +55,12 @@ class AuthController extends Controller
             'email'    => ['required', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
-
+        $customerRoleId = Role::where('slug', 'customer')->value('id');
         $user = User::create([
             'name'     => $data['name'],
             'email'    => $data['email'],
             'password' => Hash::make($data['password']),
-            'role'     => 'customer',
+            'role_id'  => $customerRoleId,
         ]);
 
         Auth::login($user);
@@ -73,18 +74,13 @@ class AuthController extends Controller
      */
     protected function redirectToFor(User $user): string
     {
-        // Get the actual string value safely
-        $roleName = $user->role?->name          // if column is 'name'
-            ?? $user->role?->slug      // if column is 'slug'
-            ?? $user->role?->role      // adjust to your actual column
-            ?? 'customer';             // fallback
+        // Safe access – prevents "on null" error
+        $roleSlug = $user->role?->slug ?? 'customer';
 
-        $roleName = strtolower(trim($roleName));
-
-        return match ($roleName) {
+        return match (strtolower($roleSlug)) {
             'admin'    => route('admin.dashboard'),
-            'waiter'   => route('waiter.orders.index'),     // or your real route
-            'kitchen'  => route('kitchen.orders.index'),
+            'waiter'   => route('waiter.dashboard'),       // adjust if you have different route names
+            'kitchen'  => route('kitchen.dashboard'),
             'cashier'  => route('cashier.dashboard'),
             'customer' => route('customerOrder.menu.index'),
             default    => route('customerOrder.menu.index'),

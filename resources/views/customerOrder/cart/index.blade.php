@@ -62,7 +62,7 @@
             @endforeach
 
             {{-- Clear Cart --}}
-            <form method="POST" action="{{ route('cart.clear') }}" class="mt-2">
+            <form method="POST" action="{{ route('customerOrder.cart.clear') }}" class="mt-2">
                 @csrf
                 <button type="submit" class="text-sm text-ink/40 hover:text-red-500 transition flex items-center gap-1">
                     <i class="fa-solid fa-xmark"></i> Clear entire cart

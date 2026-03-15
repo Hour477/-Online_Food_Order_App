@@ -14,8 +14,19 @@ class PaymentController extends Controller
     public function index()
     {
         //
-        $payments = Payment::all();
-        return view("admin.payment.index", compact("payments"));
+        $search = Payment::orderBy("created_at","desc")->paginate(10);
+        
+
+        $payments = Payment::with('order')
+        ->when($search, function ($query, $search) {
+            $query->whereHas('order', function ($q) use ($search) {
+                $q->where('order_no', 'like', '%' . $search . '%');
+            });
+        })
+        ->latest()
+        ->paginate(10)->withQueryString();
+
+        return view('admin.payment.index', compact('payments'));
     }
 
     /**
@@ -24,7 +35,7 @@ class PaymentController extends Controller
     public function create()
     {
         //
-        return view('admin.payments.create');
+        return view('admin.payment.create');
     }
 
     /**

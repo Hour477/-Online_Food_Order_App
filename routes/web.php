@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 
-// ── Admin controllers ────────────────────────────────────────
+// Admin controllers
 use App\Http\Controllers\Admin\{
     DashboardController,
     UserController,
@@ -13,10 +13,11 @@ use App\Http\Controllers\Admin\{
     CustomerController,
     OrderController as AdminOrderController,
     SettingController,
-    ReportController
+    ReportController,
+    RoleController
 };
 
-// ── Customer (public) controllers ────────────────────────────
+// Customer (public) controllers
 use App\Http\Controllers\CustomerOrder\{
     customerMenuController,
     customerCartController,
@@ -24,20 +25,8 @@ use App\Http\Controllers\CustomerOrder\{
     customerOrderController
 };
 
-// ── Optional: Waiter/Staff area ──────────────────────────────
-// use App\Http\Controllers\Waiter\{
-//     OrderController as WaiterOrderController,
-//     CartController as WaiterCartController,
-//     // ...
-// };
 
-/*
-|--------------------------------------------------------------------------
-| Authentication Routes
-|--------------------------------------------------------------------------
-*/
 Route::middleware('guest')->group(function () {
-
     Route::get('/login',    [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login',   [AuthController::class, 'login']);
     Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
@@ -50,12 +39,13 @@ Route::middleware('auth')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| Public Customer Routes (no auth required)
+| Public Customer Routes (no login required)
 |--------------------------------------------------------------------------
 */
 Route::redirect('/', '/menu');
+
 Route::prefix('menu')->name('customerOrder.')->group(function () {
-    Route::get('/',[customerMenuController::class, 'index'])->name('menu.index');
+    Route::get('/', [customerMenuController::class, 'index'])->name('menu.index');
 });
 
 Route::prefix('cart')->name('customerOrder.cart.')->group(function () {
@@ -74,36 +64,40 @@ Route::prefix('checkout')->name('customerOrder.checkout.')->group(function () {
 });
 
 Route::get('/orders/history', [customerOrderController::class, 'history'])
+    ->middleware('auth')                                      // ← only logged-in customers
     ->name('customerOrder.orders.history');
 
 /*
 |--------------------------------------------------------------------------
-| Admin Area (auth + role:admin)
+| Admin Area
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'role:admin'])
+
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
 
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::post('/dashboard/stats', [DashboardController::class, 'totalOrders'])->name('dashboard.stats');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::post('/dashboard/stats', [DashboardController::class, 'totalOrders'])->name('dashboard.stats');
 
-    Route::resource('users',        UserController::class);
-    Route::resource('categories',   CategoryController::class);
-    Route::resource('menu_items',   MenuItemController::class);
-    Route::resource('tables',       TableController::class);
-    Route::resource('customers',    CustomerController::class);
-    Route::resource('orders',       AdminOrderController::class);
-    Route::resource('settings',     SettingController::class);
+        Route::resource('user',        UserController::class);
+        Route::resource('categories',   CategoryController::class);
+        Route::resource('menu_items',   MenuItemController::class);     // ← hyphen, convention
+        Route::resource('tables',       TableController::class);
+        Route::resource('customers',    CustomerController::class);
+        Route::resource('orders',       AdminOrderController::class);
+        Route::resource('settings',     SettingController::class);      // ← keep only one
+        Route::resource('users', UserController::class);
+        Route::resource('roles', RoleController::class);
 
-    // Reports
-    Route::prefix('reports')->name('reports.')->group(function () {
-        Route::get('/orders', [ReportController::class, 'orders'])->name('orders');
-        Route::get('/income', [ReportController::class, 'income'])->name('income');
+        
+
+        Route::prefix('reports')->name('reports.')->group(function () {
+            Route::get('/', [ReportController::class, 'reportsIndex'])->name('index');
+            Route::get('/orders', [ReportController::class, 'orders'])->name('orders');
+            Route::get('/income', [ReportController::class, 'income'])->name('income');
+        });
+
+        Route::resource('payment', ReportController::class);
     });
-
-    // If you still use payment resource (uncommon naming)
-    Route::resource('payment', ReportController::class);
-    Route::resource('settings', ReportController::class);
-});

@@ -48,3 +48,14 @@ select{
 textarea{
     font-weight: 500;
 }
+
+.sidebar-collapsed .sidebar-link:hover::after{
+content: attr(title);
+position:absolute;
+left:70px;
+background:#111;
+color:#fff;
+padding:4px 8px;
+border-radius:6px;
+font-size:12px;
+}

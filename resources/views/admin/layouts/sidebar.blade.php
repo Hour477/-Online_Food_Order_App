@@ -4,263 +4,271 @@
         ->pluck('value', 'key');
     $sidebarLogo = $sidebarSettings['logo'] ?? null;
     $sidebarName = $sidebarSettings['resturant_name'] ?? config('app.name');
-@endphp 
-<!-- resources/views/layouts/sidebar.blade.php -->
+    use App\Helpers\HelperSidebar;
+    $menus = HelperSidebar::menus();
+@endphp
 
-<aside id="app-sidebar" class="fixed inset-y-0 left-0 z-50 w-72 h-screen overflow-hidden bg-white dark:bg-gray-950 border-r border-gray-200 dark:border-gray-800 
-             flex flex-col shadow-xl transform transition-all duration-300 ease-in-out -translate-x-full lg:translate-x-0 lg:sticky lg:top-0 lg:inset-y-auto">
+<aside id="app-sidebar"
+       class="fixed inset-y-0 left-0 z-50 w-72 h-screen overflow-hidden bg-white border-r border-gray-200 flex flex-col shadow-sm transform transition-all duration-300 ease-in-out -translate-x-full lg:translate-x-0 lg:sticky lg:top-0 lg:inset-y-auto">
 
-    <!-- Brand / Logo -->
-    <div class="brand-wrap p-4 border-b border-gray-200 dark:border-gray-800 flex items-center  ">
+    {{-- Brand --}}
+    <div class="brand-wrap p-4 border-b border-gray-100 flex items-center gap-3">
         @if(!empty($sidebarLogo))
-            <img
-                src="{{ asset('storage/settings/' . $sidebarLogo) }}"
-                alt="{{ $sidebarName }}"
-                class="h-11 w-11 rounded-xl object-contain bg-gray-100 dark:bg-gray-800 p-1"
-            >
+            <img src="{{ asset('storage/settings/' . $sidebarLogo) }}" alt="{{ $sidebarName }}"
+                 class="h-10 w-10 rounded-lg object-contain bg-gray-100 p-1 flex-shrink-0">
         @else
-            <div class="h-11 w-11 rounded-xl bg-indigo-600/10 text-indigo-600 dark:text-indigo-300 flex items-center justify-center">
-                <i class="fas fa-utensils"></i>
+            <div class="h-10 w-10 rounded-lg bg-amber-600 flex items-center justify-center flex-shrink-0">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="12" r="4.5"></circle>
+                    <path d="M5 4v7m0 0a2 2 0 002 2M5 11a2 2 0 01-2-2V4"></path>
+                    <path d="M18 4v7a2 2 0 01-2 2"></path>
+                </svg>
             </div>
         @endif
-        <div class="min-w-0">
-            <p class="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate ml-2">{{ $sidebarName }}</p>
-            
-        </div>
+        <p class="brand-text text-sm font-semibold text-gray-900 truncate">{{ $sidebarName }}</p>
+        <button type="button" id="sidebar-collapse-btn"
+                class="ml-auto hidden lg:flex items-center justify-center w-7 h-7 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors flex-shrink-0"
+                aria-label="Toggle sidebar">
+            <svg id="collapse-icon-open" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>
+            </svg>
+            <svg id="collapse-icon-closed" class="w-4 h-4 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7"/>
+            </svg>
+        </button>
     </div>
 
-    <!-- Navigation -->
-    <nav class="flex-1 min-h-0 px-4 py-8 overflow-y-auto">
-        <ul class="space-y-1.5">
-
-            <!-- Dashboard -->
-           
-            <li>
-                <a href="{{ route('admin.dashboard') }}"
-                   class="sidebar-link group relative flex items-center gap-4 px-5 py-3.5 rounded-2xl font-medium transition-all duration-200
-                          {{ request()->routeIs('dashboard') 
-                             ? 'text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/30' 
-                             : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/70' }}">
-                    
-                    <!-- Active indicator bar -->
-                    <span class="absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-indigo-600 scale-y-0 group-hover:scale-y-75 transition-transform origin-left {{ request()->routeIs('dashboard') ? 'scale-y-100' : '' }}"></span>
-
-                    <svg class="w-6 h-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                    </svg>
-                    <span class="sidebar-text">Dashboard</span>
-                </a>
-            </li>
-            
-
-            <!-- Categories -->
-            
-            <li>
-                <a href="{{ route('admin.categories.index') }}"
-                   class="sidebar-link group relative flex items-center gap-4 px-5 py-3.5 rounded-2xl font-medium transition-all duration-200
-                          {{ request()->routeIs('categories.*') 
-                             ? 'text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/30' 
-                             : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/70' }}">
-                    <span class="absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-indigo-600 scale-y-0 group-hover:scale-y-75 transition-transform origin-left {{ request()->routeIs('categories.*') ? 'scale-y-100' : '' }}"></span>
-                    <svg class="w-6 h-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                    </svg>
-                    <span class="sidebar-text">Categories</span>
-                </a>
-            </li>
-            
-
-            <!-- Menu Items -->
-            
-            <li>
-                <a href="{{ route('admin.menu_items.index') }}"
-                   class="sidebar-link group relative flex items-center gap-4 px-5 py-3.5 rounded-2xl font-medium transition-all duration-200
-                          {{ request()->routeIs('menu_items.*') || request()->routeIs('menu-items.*') 
-                             ? 'text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/30' 
-                             : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/70' }}">
-                    <span class="absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-indigo-600 scale-y-0 group-hover:scale-y-75 transition-transform origin-left {{ request()->routeIs('menu_items.*') || request()->routeIs('menu-items.*') ? 'scale-y-100' : '' }}"></span>
-                    <svg class="w-6 h-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                    </svg>
-                    <span class="sidebar-text">Menu Items</span>
-                </a>
-            </li>
-            
-
-            <!-- Orders (dropdown) -->
-            
-            <li class="sidebar-folder orders-menu {{ request()->routeIs('admin.orders.*') ? 'is-open' : '' }}">
-                <button type="button"
-                        aria-expanded="{{ request()->routeIs('admin.orders.*') ? 'true' : 'false' }}"
-                        data-folder="orders"
-                        class="sidebar-folder-toggle orders-toggle-btn orders-toggle group relative w-full flex items-center justify-between gap-4 px-5 py-3.5 rounded-2xl font-medium transition-all duration-200 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/70">
-                    
-                    <span class="folder-indicator orders-indicator absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-indigo-600 scale-y-0 group-hover:scale-y-75 transition-transform origin-left {{ request()->routeIs('admin.orders.*') ? 'scale-y-100' : '' }}"></span>
-
-                    <div class="flex items-center gap-4">
-                        <svg class="w-6 h-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                        </svg>
-                        <span class="sidebar-text">
-                            Orders
-                            {{-- @if(auth()->user()->role === 'admin') <span class="text-xs opacity-75 ml-1">(Manage)</span> @endif
-                            @if(auth()->user()->role === 'waiter') <span class="text-xs opacity-75 ml-1">(Staff)</span> @endif --}}
-                        </span>
-                    </div>
-                    <svg class="chevron w-5 h-5 transition-transform {{ request()->routeIs('admin.orders.*') ? 'rotate-180' : '' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </button>
-
-                <ul class="sidebar-submenu orders-submenu mt-1.5 space-y-1 pl-11 {{ request()->routeIs('admin.orders.*') ? '' : 'hidden' }}">
-                    <li>
-                        <a href="{{ request()->route('admin.orders') ? route('admin.orders.show', request()->route('admin.orders')) : route('admin.orders.index') }}"
-                           class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors
-                                  {{ request()->routeIs('admin.orders.index') || request()->routeIs('admin.orders.show') 
-                                     ? 'bg-indigo-500/10 text-indigo-700 dark:text-indigo-300' 
-                                     : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/50' }}">
-                            <i class="fas fa-{{ request()->route('admin.orders') ? 'eye' : 'list' }} w-5 text-center"></i>
-                            {{ request()->route('admin.orders') ? 'Current Order' : 'All Orders' }}
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.orders.create') }}"
-                           class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors
-                                  {{ request()->routeIs('admin.orders.create') 
-                                     ? 'bg-indigo-500/10 text-indigo-700 dark:text-indigo-300' 
-                                     : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/50' }}">
-                            <i class="fas fa-plus w-5 text-center"></i>
-                            New Order
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            
-            
-            <!-- Tables -->
-            
-            <li>
-                <a href="{{ route('admin.tables.index') }}"
-                   class="sidebar-link group relative flex items-center gap-4 px-5 py-3.5 rounded-2xl font-medium transition-all duration-200
-                          {{ request()->routeIs('admin.tables.*') 
-                             ? 'text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/30' 
-                             : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/70' }}">
-                    <span class="absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-indigo-600 scale-y-0 group-hover:scale-y-75 transition-transform origin-left {{ request()->routeIs('tables.*') ? 'scale-y-100' : '' }}"></span>
-                    <svg class="w-6 h-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-                    </svg>
-                    <span class="sidebar-text">Tables</span>
-                </a>
-            </li>
-            
-            
-            <!-- Reports -->
-            
-            <li>
-                <a href="{{ route('admin.reports.income') }}"
-                   class="sidebar-link group relative flex items-center gap-4 px-5 py-3.5 rounded-2xl font-medium transition-all duration-200
-                          {{ request()->routeIs('reports.*') 
-                             ? 'text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/30' 
-                             : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/70' }}">
-                    <span class="absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-indigo-600 scale-y-0 group-hover:scale-y-75 transition-transform origin-left {{ request()->routeIs('reports.*') ? 'scale-y-100' : '' }}"></span>
-                    <svg class="w-6 h-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                    </svg>
-                    <span class="sidebar-text">Reports</span>
-                </a>
-            </li>
-            
-
-             
-            
-            <li>
-                <a href="{{ route('admin.payment.index') }}"
-                   class="sidebar-link group relative flex items-center gap-4 px-5 py-3.5 rounded-2xl font-medium transition-all duration-200
-                          {{ request()->routeIs('payment.*') 
-                             ? 'text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/30' 
-                             : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/70' }}">
-                    <span class="absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-indigo-600 scale-y-0 group-hover:scale-y-75 transition-transform origin-left {{ request()->routeIs('payment.*') ? 'scale-y-100' : '' }}"></span>
-                    <svg class="w-6 h-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                     </svg>
-                    <span class="sidebar-text">Payments</span>
-                    
-                </a>
-            </li>
-            
-            
-
-
-            <!-- Customers -->
-            
-            <li>
-                <a href="{{ route('admin.customers.index') }}"
-                   class="sidebar-link group relative flex items-center gap-4 px-5 py-3.5 rounded-2xl font-medium transition-all duration-200
-                          {{ request()->routeIs('customers.*') 
-                             ? 'text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/30' 
-                             : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/70' }}">
-                    <span class="absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-indigo-600 scale-y-0 group-hover:scale-y-75 transition-transform origin-left {{ request()->routeIs('customers.*') ? 'scale-y-100' : '' }}"></span>
-                    <svg class="w-6 h-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
-                    <span class="sidebar-text">Customers</span>
-                </a>
-            </li>
-            
-
-            <!-- Business Settings -->
-            
-            <li class="sidebar-folder settings-menu {{ request()->routeIs('admin.settings.*') ? 'is-open' : '' }}">
-                <button type="button"
-                        aria-expanded="{{ request()->routeIs('admin.settings.*') ? 'true' : 'false' }}"
-                        data-folder="settings"
-                        class="sidebar-folder-toggle settings-toggle-btn group relative w-full flex items-center justify-between gap-4 px-5 py-3.5 rounded-2xl font-medium transition-all duration-200 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/70">
-                    <span class="folder-indicator settings-indicator absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-indigo-600 scale-y-0 group-hover:scale-y-75 transition-transform origin-left {{ request()->routeIs('admin.settings.*') ? 'scale-y-100' : '' }}"></span>
-
-                    <div class="flex items-center gap-4">
-                        <i class="fas fa-cogs w-6 h-6 flex-shrink-0 text-center"></i>
-                        <span class="sidebar-text">Business Settings</span>
-                    </div>
-                    <svg class="chevron w-5 h-5 transition-transform {{ request()->routeIs('admin.settings.*') ? 'rotate-180' : '' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </button>
-
-                <ul class="sidebar-submenu settings-submenu mt-1.5 space-y-1 pl-11 {{ request()->routeIs('admin.settings.*') ? '' : 'hidden' }}">
-                    <li>
-                        <a href="{{ route('admin.settings.index') }}"
-                           class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors
-                                  {{ request()->routeIs('admin.settings.*')
-                                     ? 'bg-indigo-500/10 text-indigo-700 dark:text-indigo-300'
-                                     : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/50' }}">
-                            <i class="fas fa-sliders-h w-5 text-center"></i>
-                            Settings
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            
-
+    {{-- Navigation --}}
+    <nav class="flex-1 min-h-0 px-3 py-5 overflow-y-auto">
+        <ul class="space-y-0.5">
+            @foreach($menus as $menu)
+                @php $isActive = request()->routeIs($menu['active']); @endphp
+                <li>
+                    <a href="{{ route($menu['route']) }}"
+                       class="sidebar-link group relative flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 {{ $isActive ? 'is-active' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}"
+                       title="{{ $menu['title'] }}">
+                        <span class="sidebar-link-accent absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-amber-600 transition-opacity {{ $isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-50' }}"></span>
+                        @include('admin.layouts.partials.sidebar-icon', ['icon' => $menu['icon'] ?? 'circle'])
+                        <span class="sidebar-text">{{ $menu['title'] }}</span>
+                        {{-- tile menu --}}
+                        @if(isset($menu['badge']) && $menu['badge'])
+                            <span class="ml-auto sidebar-text inline-flex items-center justify-center px-2 py-0.5 text-xs font-bold leading-none text-amber-600 bg-amber-100 rounded-full">
+                                {{ $menu['badge'] }}
+                            </span>
+                        @endif
+                    </a>
+                </li>
+            @endforeach
         </ul>
     </nav>
 
-    <!-- Logout -->
-    <div class="p-5 border-t border-gray-200 dark:border-gray-800 mt-auto">
-        <a href="{{ route('logout') }}"
-           onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-           class="logout-link group relative flex items-center gap-4 px-5 py-3.5 rounded-2xl font-medium text-gray-700 dark:text-gray-300 
-                  hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-700 dark:hover:text-red-400 transition-all duration-200">
-            <span class="absolute left-0 top-1 bottom-1 w-1.5 rounded-r-full bg-red-600 scale-y-0 group-hover:scale-y-75 transition-transform origin-left"></span>
-            <svg class="w-6 h-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-            </svg>
-            <span class="sidebar-text">Logout</span>
-        </a>
-
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
-            @csrf
-        </form>
-    </div>
+    {{-- Logout --}}
+<div class="p-3 border-t border-gray-100 mt-auto">
+    <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+        class="logout-link group relative flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium
+                  text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all duration-150" title="Logout">
+        <span
+            class="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-red-500 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+        <svg class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        </svg>
+        <span class="sidebar-text">Logout</span>
+    </a>
+    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
+        @csrf
+    </form>
+</div>
 
 </aside>
 
+<style>
+    /* Sidebar link active state — single place to change active color */
+    #app-sidebar .sidebar-link.is-active {
+        background-color: rgb(255 251 235); /* amber-50 */
+        color: rgb(180 83 9); /* amber-700 */
+    }
+    #app-sidebar .sidebar-link.is-active .sidebar-link-accent {
+        opacity: 1;
+    }
+
+    .sidebar-submenu {
+        max-height: 0;
+        opacity: 0;
+        transform: translateY(-4px);
+        overflow: hidden;
+        transition: max-height 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .sidebar-submenu.is-open {
+        max-height: 200px;
+        /* enough for a few items */
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    @media (min-width: 1024px) {
+        .sidebar-collapsed #app-sidebar {
+            width: 5rem;
+        }
+
+        .sidebar-collapsed #app-sidebar .brand-wrap {
+            justify-content: center;
+        }
+
+        .sidebar-collapsed #app-sidebar .brand-text,
+        .sidebar-collapsed #app-sidebar .sidebar-text,
+        .sidebar-collapsed #app-sidebar .chevron,
+        .sidebar-collapsed #app-sidebar .orders-submenu {
+            display: none;
+        }
+
+        .sidebar-collapsed #app-sidebar .sidebar-link,
+        .sidebar-collapsed #app-sidebar .orders-toggle,
+        .sidebar-collapsed #app-sidebar .logout-link {
+            justify-content: center;
+            gap: 0;
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+        }
+
+        /* Hide collapse toggle button text & keep icon centred */
+        .sidebar-collapsed #app-sidebar #sidebar-collapse-btn {
+            margin-left: 0;
+        }
+    }
+</style>
+
+<script>
+    (function () {
+        // Basic guards in case DOM elements are missing
+        const sidebarEl = document.getElementById('app-sidebar');
+        const collapseBtn = document.getElementById('sidebar-collapse-btn');
+        const iconOpen = document.getElementById('collapse-icon-open');
+        const iconClosed = document.getElementById('collapse-icon-closed');
+
+        if (!sidebarEl) return;
+
+        // ── Collapse toggle (state remembered) ─────────────────────────
+        const COLLAPSE_KEY = 'sidebar_collapsed';
+        const isCollapsed = localStorage.getItem(COLLAPSE_KEY) === 'true';
+
+        function applyCollapse(collapsed) {
+            const root = document.documentElement;
+            root.classList.toggle('sidebar-collapsed', collapsed);
+            if (iconOpen && iconClosed) {
+                iconOpen.classList.toggle('hidden', collapsed);
+                iconClosed.classList.toggle('hidden', !collapsed);
+            }
+            localStorage.setItem(COLLAPSE_KEY, collapsed ? 'true' : 'false');
+        }
+
+        // Restore saved collapse state on load
+        applyCollapse(isCollapsed);
+
+        if (collapseBtn) {
+            collapseBtn.addEventListener('click', () => {
+                const root = document.documentElement;
+                applyCollapse(!root.classList.contains('sidebar-collapsed'));
+            });
+        }
+
+        // ── Folder (submenu) state helpers ─────────────────────────────
+        const FOLDERS_KEY = 'sidebar_open_folders';
+
+        function getOpenFolders() {
+            try {
+                const raw = localStorage.getItem(FOLDERS_KEY);
+                return raw ? JSON.parse(raw) : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function setOpenFolders(keys) {
+            try {
+                localStorage.setItem(FOLDERS_KEY, JSON.stringify(keys));
+            } catch (e) {
+                // ignore
+            }
+        }
+
+        function syncFoldersToStorage() {
+            const openKeys = [];
+            document.querySelectorAll('.sidebar-folder').forEach(folder => {
+                const btn = folder.querySelector('.sidebar-folder-toggle');
+                const key = btn?.getAttribute('data-folder');
+                if (key && folder.classList.contains('is-open')) {
+                    openKeys.push(key);
+                }
+            });
+            setOpenFolders(openKeys);
+        }
+
+        function restoreFolderOpenState() {
+            const saved = getOpenFolders();
+            if (!Array.isArray(saved) || !saved.length) return;
+
+            document.querySelectorAll('.sidebar-folder').forEach(folder => {
+                const btn = folder.querySelector('.sidebar-folder-toggle');
+                const submenu = folder.querySelector('.orders-submenu');
+                const chevron = folder.querySelector('.chevron');
+                const key = btn?.getAttribute('data-folder');
+
+                if (!key || !submenu) return;
+
+                const shouldBeOpen = saved.includes(key);
+
+                if (shouldBeOpen) {
+                    submenu.classList.add('is-open');
+                    chevron?.classList.add('rotate-180');
+                    btn.setAttribute('aria-expanded', 'true');
+                    folder.classList.add('is-open');
+                } else {
+                    submenu.classList.remove('is-open');
+                    chevron?.classList.remove('rotate-180');
+                    btn.setAttribute('aria-expanded', 'false');
+                    folder.classList.remove('is-open');
+                }
+            });
+        }
+
+        // Apply saved open/closed state on load,
+        // overriding the Blade "request()->routeIs" defaults
+        restoreFolderOpenState();
+
+        // ── Submenu (accordion) toggle with persistence ────────────────
+        document.querySelectorAll('.sidebar-folder-toggle').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Do nothing when sidebar is collapsed on desktop
+                if (window.innerWidth >= 1024 && document.documentElement.classList.contains('sidebar-collapsed')) {
+                    return;
+                }
+
+                const folder = btn.closest('.sidebar-folder');
+                const submenu = folder.querySelector('.orders-submenu');
+                const chevron = btn.querySelector('.chevron');
+                const isOpen = submenu.classList.contains('is-open');
+
+                // Close all open submenus first (accordion behaviour)
+                document.querySelectorAll('.sidebar-folder').forEach(f => {
+                    f.querySelector('.orders-submenu')?.classList.remove('is-open');
+                    f.querySelector('.chevron')?.classList.remove('rotate-180');
+                    f.querySelector('.sidebar-folder-toggle')?.setAttribute('aria-expanded', 'false');
+                    f.classList.remove('is-open');
+                });
+
+                // Open this one if it was closed
+                if (!isOpen) {
+                    submenu.classList.add('is-open');
+                    chevron?.classList.add('rotate-180');
+                    btn.setAttribute('aria-expanded', 'true');
+                    folder.classList.add('is-open');
+                }
+
+                // Persist the new state
+                syncFoldersToStorage();
+            });
+        });
+    })();
+</script>
