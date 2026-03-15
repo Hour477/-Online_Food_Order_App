@@ -16,7 +16,7 @@
         </div>
 
         <a href="{{ route('admin.roles.create') }}"
-           class="inline-flex items-center px-6 py-3 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-sm transition-all transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+           class="inline-flex items-center px-6 py-3 text-sm font-medium text-white  bg-amber-600 hover:bg-amber-700 rounded-xl shadow-sm transition-all transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500">
             <i class="fas fa-shield-alt mr-2"></i>
             Add New Role
         </a>
@@ -58,8 +58,8 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-3">
                                 <a href="{{ route('admin.roles.edit', $role->id) }}"
-                                   class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 transition">
-                                    <i class="fas fa-edit"></i> Edit
+                                   class="text-amber-600 hover:text-amber-900 dark:text-amber-400 dark:hover:text-amber-300 transition">
+                                    <i class="fas fa-edit"></i>
                                 </a>
 
                                 @if(!in_array($role->slug, ['admin', 'staff', 'customer']))
@@ -70,7 +70,7 @@
                                     <button type="submit"
                                             onclick="return confirm('Are you sure you want to delete this role? This may affect users assigned to it.')"
                                             class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 transition">
-                                        <i class="fas fa-trash-alt"></i> Delete
+                                        <i class="fas fa-trash-alt"></i>
                                     </button>
                                     
                                 </form>

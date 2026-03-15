@@ -42,7 +42,7 @@
     {!! ToastMagic::styles() !!}
 </head>
 
-<body class="bg-gray-100 text-gray-900 min-h-screen antialiased">
+<body>
 
     <div class="flex min-h-screen">
 
@@ -58,7 +58,7 @@
         <div class="flex-1 flex flex-col min-h-screen">
 
             {{-- Header --}}
-            <header class="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-40">
+            <header class=" shadow-sm sticky top-0 z-40">
                 <div class="flex items-center justify-between px-4 py-3 lg:px-6">
 
                     
@@ -71,7 +71,7 @@
             </header>
 
             {{-- Page Content --}}
-            <main class="flex-1 overflow-y-auto p-4 lg:p-6 bg-gray-50">
+            <main class="flex-1 overflow-y-auto p-4 lg:p-6">
                 @yield('content')
             </main>
 

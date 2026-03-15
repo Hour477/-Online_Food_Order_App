@@ -86,6 +86,8 @@ Route::middleware(['auth', 'role:admin'])
         Route::resource('menu_items',   MenuItemController::class);     // ← hyphen, convention
         Route::resource('tables',       TableController::class);
         Route::resource('customers',    CustomerController::class);
+        Route::get('/customers/best',   [CustomerController::class, 'best'])->name('customers.best');
+        Route::get('/customers/recent',[ CustomerController::class, 'recent'])->name('customers.recent');
         Route::resource('orders',       AdminOrderController::class);
         Route::resource('settings',     SettingController::class);      // ← keep only one
         Route::resource('users', UserController::class);

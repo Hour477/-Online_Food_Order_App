@@ -27,8 +27,9 @@
 
                 <button type="button" aria-expanded="false"
                     class="user-menu-toggle flex items-center gap-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 rounded-full transition hover:opacity-80">
+                    @php $avatarUrl = Auth::user()->image ? asset('storage/users/' . Auth::user()->image) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name ?? 'User') . '&background=d97706&color=fff'; @endphp
                     <img class="h-9 w-9 rounded-full object-cover border-2 border-amber-200"
-                        src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name ?? 'User') }}&background=d97706&color=fff"
+                        src="{{ $avatarUrl }}"
                         alt="{{ Auth::user()?->name ?? 'User' }}">
                     <span class="hidden sm:block text-sm font-medium text-gray-900 truncate max-w-xs">
                         {{ Auth::user()?->name ?? 'User' }}

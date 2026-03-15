@@ -3,6 +3,7 @@ namespace App\Helpers;
 
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
+
 class UploadImageHelper {
     public static function upload(string $dir, string $format, $image = null)
     {

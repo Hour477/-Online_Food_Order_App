@@ -77,4 +77,16 @@ class CustomerController extends Controller
         return redirect()->route('admin.customers.index')
             ->with('success', 'Customer deleted successfully!');
     }
+
+    public function best()
+    {
+        //
+        return view('admin.customers.best');
+    }
+
+    public function recent()
+    {
+        //
+        return view('admin.customers.recent');
+    }
 }

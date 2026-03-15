@@ -5,17 +5,26 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\UserServices;
+use App\Models\Role;
+use App\Http\Requests\Admin\UsersRequest;
 
 class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    protected UserServices $userServices;
+    public function __construct(UserServices $userServices)
+    {
+        $this->userServices = $userServices;
+    }
+    
     public function index()
     {
         
         $search = request("search");
-        $users = User::where("name","like","%".$search."%")->paginate(10);
+        $users = User::where("name","like","%".$search."%")->paginate(5);
         
         return view("admin.users.index", compact("users"));
     }
@@ -26,25 +35,21 @@ class UserController extends Controller
     public function create()
     {
         //
-        return view("admin.users.create");
+        $roles = Role::select("id", "name")->get();
+        return view("admin.users.create", compact("roles"));
 
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(UsersRequest $request)
     {
         //
-        $validated = $request->validate([
-
-            'name'  => ['required', 'string', 'max:255'],   
-            'email' => 'nullable|email|max:255',
-            'phone' => 'nullable|string|max:20',
-            // 'role' => 'required|in:admin,waiter,kitchen'
-
-        ]);
-        User::create($validated);
+        $data = $request->validated();
+        $data['image'] = $request->file('image');
+        
+        $this->userServices->createUser($data);
         return redirect()->route("admin.users.index")->with("success", "User created successfully");
         
     }

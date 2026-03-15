@@ -16,19 +16,15 @@ class HelperSidebar
             ],
 
             [
-                'title' => 'Users',
-                'route' => 'admin.users.index',
-                'active' => 'admin.users.*',
-                'icon' => 'users',
+                'title'   => 'Users & Roles',
+                'icon'    => 'users',
+                'folder'  => 'users-roles',
+                'active'  => 'admin.users.*|admin.roles.*',
+                'children' => [
+                    ['title' => 'Users',  'route' => 'admin.users.index',  'active' => 'admin.users.*'],
+                    ['title' => 'Roles',  'route' => 'admin.roles.index',  'active' => 'admin.roles.*'],
+                ],
             ],
-
-            [
-                'title' => 'Roles',
-                'route' => 'admin.roles.index',
-                'active' => 'admin.roles.*',
-                'icon' => 'R',
-            ],
-
 
             [
                 'title' => 'Categories',
@@ -71,7 +67,7 @@ class HelperSidebar
                 'title' => 'Payments',
                 'route' => 'admin.payment.index',
                 'active' => 'admin.payment.*',
-                'icon' => 'card',
+                'icon' => 'payment',
             ],
 
 
@@ -83,6 +79,10 @@ class HelperSidebar
                 'route' => 'admin.customers.index',
                 'active' => 'admin.customers.*',
                 'icon' => 'customer',
+                'children' => [
+                    ['title' => 'Best Customers',  'route' => 'admin.customers.best',  'active' => 'admin.customers.best'],
+                    ['title' => 'Recent Customers',  'route' => 'admin.customers.recent',  'active' => 'admin.customers.recent'],
+                ],
             ],
 
         ];

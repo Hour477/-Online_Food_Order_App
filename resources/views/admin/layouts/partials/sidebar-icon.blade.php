@@ -17,14 +17,22 @@
         @case('menu')
             menu_book
             @break
+        @case('role')
+            shield_person
+            @break
+
+        @case('settings')
+            settings
+            @break
+
         @case('table')
-            table_chart
+            dining
             @break
         @case('chart')
             show_chart
             @break
-        @case('card')
-            credit_card
+        @case('payment')
+            attach_money
             @break
         @case('customer')
             person

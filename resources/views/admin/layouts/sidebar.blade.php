@@ -42,22 +42,63 @@
     <nav class="flex-1 min-h-0 px-3 py-5 overflow-y-auto">
         <ul class="space-y-0.5">
             @foreach($menus as $menu)
-                @php $isActive = request()->routeIs($menu['active']); @endphp
-                <li>
-                    <a href="{{ route($menu['route']) }}"
-                       class="sidebar-link group relative flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 {{ $isActive ? 'is-active' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}"
-                       title="{{ $menu['title'] }}">
-                        <span class="sidebar-link-accent absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-amber-600 transition-opacity {{ $isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-50' }}"></span>
-                        @include('admin.layouts.partials.sidebar-icon', ['icon' => $menu['icon'] ?? 'circle'])
-                        <span class="sidebar-text">{{ $menu['title'] }}</span>
-                        {{-- tile menu --}}
-                        @if(isset($menu['badge']) && $menu['badge'])
-                            <span class="ml-auto sidebar-text inline-flex items-center justify-center px-2 py-0.5 text-xs font-bold leading-none text-amber-600 bg-amber-100 rounded-full">
-                                {{ $menu['badge'] }}
-                            </span>
-                        @endif
-                    </a>
-                </li>
+                @if(isset($menu['children']) && !empty($menu['children']))
+                    {{-- Dropdown (folder) --}}
+                    @php
+                        $folderKey = $menu['folder'] ?? 'folder-' . \Illuminate\Support\Str::slug($menu['title']);
+                        $parentActive = false;
+                        foreach ($menu['children'] as $child) {
+                            if (request()->routeIs($child['active'] ?? '')) { $parentActive = true; break; }
+                        }
+                        $isOpen = $parentActive;
+                    @endphp
+                    <li class="sidebar-folder {{ $isOpen ? 'is-open' : '' }}">
+                        <button type="button"
+                                data-folder="{{ $folderKey }}"
+                                aria-expanded="{{ $isOpen ? 'true' : 'false' }}"
+                                class="sidebar-folder-toggle orders-toggle group relative w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 {{ $parentActive ? 'is-active' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                            <span class="sidebar-link-accent absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-amber-600 transition-opacity {{ $parentActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-50' }}"></span>
+                            <div class="flex items-center gap-3">
+                                @include('admin.layouts.partials.sidebar-icon', ['icon' => $menu['icon'] ?? 'circle'])
+                                <span class="sidebar-text">{{ $menu['title'] }}</span>
+                            </div>
+                            <svg class="chevron w-4 h-4 transition-transform {{ $isOpen ? 'rotate-180' : '' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <ul class="sidebar-submenu orders-submenu mt-0.5 space-y-0.5 pl-9 {{ $isOpen ? 'is-open' : '' }}">
+                            @foreach($menu['children'] as $child)
+                                @php $childActive = request()->routeIs($child['active'] ?? ''); @endphp
+                                <li>
+                                    <a href="{{ route($child['route']) }}"
+                                       class="sidebar-submenu-link relative flex items-center gap-2.5 pl-6 py-2 pr-3 rounded-lg text-sm {{ $childActive ? 'bg-amber-50 text-amber-700 font-medium' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900' }}">
+                                        @if($childActive)
+                                            <span class="absolute left-0 top-1.5 bottom-1.5 w-0.5 rounded-r-full bg-amber-600" aria-hidden="true"></span>
+                                        @endif
+                                        <span class="sidebar-text">{{ $child['title'] }}</span>
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </li>
+                @else
+                    {{-- Single link --}}
+                    @php $isActive = request()->routeIs($menu['active'] ?? ''); @endphp
+                    <li>
+                        <a href="{{ route($menu['route']) }}"
+                           class="sidebar-link group relative flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 {{ $isActive ? 'is-active' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}"
+                           title="{{ $menu['title'] }}">
+                            <span class="sidebar-link-accent absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-amber-600 transition-opacity {{ $isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-50' }}"></span>
+                            @include('admin.layouts.partials.sidebar-icon', ['icon' => $menu['icon'] ?? 'circle'])
+                            <span class="sidebar-text">{{ $menu['title'] }}</span>
+                            @if(isset($menu['badge']) && $menu['badge'])
+                                <span class="ml-auto sidebar-text inline-flex items-center justify-center px-2 py-0.5 text-xs font-bold leading-none text-amber-600 bg-amber-100 rounded-full">
+                                    {{ $menu['badge'] }}
+                                </span>
+                            @endif
+                        </a>
+                    </li>
+                @endif
             @endforeach
         </ul>
     </nav>
@@ -92,6 +133,24 @@
         opacity: 1;
     }
 
+    /* Dropdown parent button when a child is active */
+    #app-sidebar .sidebar-folder-toggle.is-active {
+        background-color: rgb(255 251 235);
+        color: rgb(180 83 9);
+    }
+    #app-sidebar .sidebar-folder-toggle.is-active .sidebar-link-accent {
+        opacity: 1;
+    }
+
+    /* Dropdown children: transition + active color */
+    #app-sidebar .sidebar-submenu .sidebar-submenu-link {
+        transition: background-color 0.15s ease, color 0.15s ease;
+    }
+    #app-sidebar .sidebar-submenu .sidebar-submenu-link.bg-amber-50 {
+        background-color: rgb(255 251 235);
+        color: rgb(180 83 9);
+    }
+
     .sidebar-submenu {
         max-height: 0;
         opacity: 0;
@@ -102,7 +161,6 @@
 
     .sidebar-submenu.is-open {
         max-height: 200px;
-        /* enough for a few items */
         opacity: 1;
         transform: translateY(0);
     }
