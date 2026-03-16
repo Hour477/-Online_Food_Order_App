@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Storage;
 class UploadImageHelper {
     public static function upload(string $dir, string $format, $image = null)
     {
+        
         if ($image != null) {
             $imageName = Carbon::now()->toDateString() . "-" . uniqid() . "." . $format;
             if (!Storage::disk('public')->exists($dir)) {
@@ -15,6 +16,7 @@ class UploadImageHelper {
             Storage::disk('public')->put($dir . $imageName, file_get_contents($image));
         } else {
             $imageName = 'def.png';
+
         }
 
         return $imageName;

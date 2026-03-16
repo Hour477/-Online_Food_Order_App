@@ -44,14 +44,23 @@
 
             {{-- Category Tabs --}}
             <div class="flex gap-2 flex-wrap">
-                @foreach(['all' => 'All', 'meals' => '🍽 Meals', 'drinks' => '🥤 Drinks', 'desserts' => '🍰 Desserts'] as $val => $label)
                 <label class="cursor-pointer">
-                    <input type="radio" name="category" value="{{ $val }}" class="hidden peer"
-                        {{ request('category', 'all') == $val ? 'checked' : '' }}
+                    <input type="radio" name="category" value="all" class="hidden peer"
+                        {{ request('category', 'all') == 'all' ? 'checked' : '' }}
                         onchange="this.form.submit()">
                     <span class="peer-checked:bg-brand-400 peer-checked:text-white peer-checked:border-brand-400
                                  inline-block px-4 py-2 rounded-full text-sm font-medium border border-brand-200 bg-white hover:border-brand-400 transition">
-                        {{ $label }}
+                        All
+                    </span>
+                </label>
+                @foreach($categories as $category)
+                <label class="cursor-pointer">
+                    <input type="radio" name="category" value="{{ $category->name }}" class="hidden peer"
+                        {{ request('category') == $category->name ? 'checked' : '' }}
+                        onchange="this.form.submit()">
+                    <span class="peer-checked:bg-brand-400 peer-checked:text-white peer-checked:border-brand-400
+                                 inline-block px-4 py-2 rounded-full text-sm font-medium border border-brand-200 bg-white hover:border-brand-400 transition">
+                        {{ $category->name }}
                     </span>
                 </label>
                 @endforeach
@@ -97,27 +106,29 @@
 
             {{-- Image --}}
             <div class="relative">
-                <img src="{{ $item['image'] }}" alt="{{ $item['name'] }}" class="w-full h-48 object-cover">
-                <span class="absolute top-3 left-3 bg-white/90 backdrop-blur text-xs font-semibold px-2 py-1 rounded-full
-                    {{ $item['category'] == 'drinks' ? 'text-blue-600' : ($item['category'] == 'desserts' ? 'text-pink-600' : 'text-emerald-600') }}">
-                    {{ $item['category'] == 'drinks' ? '🥤' : ($item['category'] == 'desserts' ? '🍰' : '🍽') }} {{ ucfirst($item['category']) }}
-                </span>
-                @if($item['popular'] ?? false)
-                <span class="absolute top-3 right-3 bg-brand-400 text-white text-xs font-bold px-2 py-1 rounded-full">🔥 Popular</span>
+                @if($item->image)
+                    <img src="{{ Storage::url($item->image) }}" alt="{{ $item->name }}" class="w-full h-48 object-cover">
+                @else
+                    <div class="w-full h-48 bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                        <i class="fas fa-utensils text-4xl text-gray-300 dark:text-gray-600"></i>
+                    </div>
                 @endif
+                <span class="absolute top-3 left-3 bg-white/90 backdrop-blur text-xs font-semibold px-2 py-1 rounded-full text-brand-600">
+                    🍽 {{ $item->category->name }}
+                </span>
             </div>
 
             {{-- Info --}}
             <div class="p-4">
-                <h3 class="font-display font-bold text-ink text-lg leading-tight mb-1">{{ $item['name'] }}</h3>
-                <p class="text-ink/50 text-sm leading-relaxed line-clamp-2 mb-3">{{ $item['description'] }}</p>
+                <h3 class="font-display font-bold text-ink text-lg leading-tight mb-1">{{ $item->name }}</h3>
+                <p class="text-ink/50 text-sm leading-relaxed line-clamp-2 mb-3">{{ $item->description }}</p>
 
                 <div class="flex items-center justify-between mt-auto">
-                    <span class="font-bold text-brand-500 text-lg">${{ number_format($item['price'], 2) }}</span>
+                    <span class="font-bold text-brand-500 text-lg">${{ number_format($item->price, 2) }}</span>
 
                     <form method="POST" action="{{ route('customerOrder.cart.add') }}" class="flex items-center gap-2">
                         @csrf
-                        <input type="hidden" name="item_id" value="{{ $item['id'] }}">
+                        <input type="hidden" name="item_id" value="{{ $item->id }}">
                         <div class="flex items-center border border-brand-200 rounded-full overflow-hidden">
                             <button type="button" onclick="decQty(this)" class="px-2 py-1 text-ink/60 hover:bg-brand-50 transition text-sm">−</button>
                             <input type="number" name="quantity" value="1" min="1" max="99"

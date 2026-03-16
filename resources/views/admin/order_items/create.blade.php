@@ -25,7 +25,7 @@
             </p>
         </div>
 
-        <a href="{{ route('orders.index') }}"
+        <a href="{{ route('admin.orders.index') }}"
            class="inline-flex items-center px-6 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-xl shadow-sm hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors">
             ← Back to Orders
         </a>

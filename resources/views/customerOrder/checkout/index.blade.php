@@ -3,6 +3,11 @@
 @section('title', 'Checkout — Saveur')
 
 @section('content')
+@php
+    $names = explode(' ', $customer->name ?? '', 2);
+    $firstName = $names[0] ?? '';
+    $lastName = $names[1] ?? '';
+@endphp
 <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
     <h1 class="font-display text-4xl font-bold text-ink mb-2">Checkout</h1>
@@ -27,32 +32,32 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div class="col-span-2 sm:col-span-1">
                             <label class="block text-xs font-semibold text-ink/60 mb-1.5 uppercase tracking-wide">First Name</label>
-                            <input type="text" name="first_name" value="{{ old('first_name') }}" required
+                            <input type="text" name="first_name" value="{{ old('first_name', $firstName) }}" required
                                 class="w-full border border-brand-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-300 bg-cream/50">
                             @error('first_name')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div class="col-span-2 sm:col-span-1">
                             <label class="block text-xs font-semibold text-ink/60 mb-1.5 uppercase tracking-wide">Last Name</label>
-                            <input type="text" name="last_name" value="{{ old('last_name') }}" required
+                            <input type="text" name="last_name" value="{{ old('last_name', $lastName) }}" required
                                 class="w-full border border-brand-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-300 bg-cream/50">
                             @error('last_name')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div class="col-span-2">
                             <label class="block text-xs font-semibold text-ink/60 mb-1.5 uppercase tracking-wide">Phone</label>
-                            <input type="tel" name="phone" value="{{ old('phone') }}" required
+                            <input type="tel" name="phone" value="{{ old('phone', $customer->phone ?? '') }}" required
                                 class="w-full border border-brand-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-300 bg-cream/50">
                             @error('phone')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div class="col-span-2">
                             <label class="block text-xs font-semibold text-ink/60 mb-1.5 uppercase tracking-wide">Street Address</label>
-                            <input type="text" name="address" value="{{ old('address') }}" required
+                            <input type="text" name="address" value="{{ old('address', $customer->address ?? '') }}" required
                                 placeholder="123 Main Street, Apt 4B"
                                 class="w-full border border-brand-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-300 bg-cream/50">
                             @error('address')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-ink/60 mb-1.5 uppercase tracking-wide">City</label>
-                            <input type="text" name="city" value="{{ old('city') }}" required
+                            <input type="text" name="city" value="{{ old('city', $customer->city ?? '') }}" required
                                 class="w-full border border-brand-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-300 bg-cream/50">
                         </div>
                         <div>
@@ -106,11 +111,15 @@
                     <h2 class="font-display text-xl font-bold text-ink mb-4">Your Order</h2>
 
                     <div class="space-y-3 mb-4 max-h-64 overflow-y-auto pr-1">
-                        @php $subtotal = 0; @endphp
                         @foreach($cart as $id => $item)
-                        @php $subtotal += $item['price'] * $item['qty']; @endphp
                         <div class="flex items-center gap-3">
-                            <img src="{{ $item['image'] }}" alt="{{ $item['name'] }}" class="w-12 h-12 object-cover rounded-lg flex-shrink-0">
+                            @if($item['image'])
+                                <img src="{{ Storage::url($item['image']) }}" alt="{{ $item['name'] }}" class="w-12 h-12 object-cover rounded-lg flex-shrink-0">
+                            @else
+                                <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-utensils text-xs text-gray-300"></i>
+                                </div>
+                            @endif
                             <div class="flex-1 min-w-0">
                                 <p class="text-sm font-semibold text-ink truncate">{{ $item['name'] }}</p>
                                 <p class="text-xs text-ink/50">x{{ $item['qty'] }}</p>
@@ -122,11 +131,9 @@
 
                     <div class="border-t border-brand-100 pt-4 space-y-2 text-sm text-ink/70">
                         <div class="flex justify-between"><span>Subtotal</span><span class="font-medium text-ink">${{ number_format($subtotal, 2) }}</span></div>
-                        <div class="flex justify-between"><span>Delivery</span><span class="font-medium text-ink">$2.99</span></div>
-                        <div class="flex justify-between"><span>Tax (8%)</span><span class="font-medium text-ink">${{ number_format($subtotal * 0.08, 2) }}</span></div>
+                        <div class="flex justify-between"><span>Tax (10%)</span><span class="font-medium text-ink">${{ number_format($tax, 2) }}</span></div>
                     </div>
 
-                    @php $total = $subtotal + 2.99 + ($subtotal * 0.08); @endphp
                     <div class="border-t border-brand-100 mt-3 pt-3 flex justify-between items-center mb-5">
                         <span class="font-bold text-ink">Total</span>
                         <span class="font-bold text-brand-500 text-2xl">${{ number_format($total, 2) }}</span>

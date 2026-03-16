@@ -31,6 +31,7 @@ class HelperSidebar
                 'route' => 'admin.categories.index',
                 'active' => 'admin.categories.*',
                 'icon' => 'tag',
+                
             ],
 
             [
@@ -79,10 +80,7 @@ class HelperSidebar
                 'route' => 'admin.customers.index',
                 'active' => 'admin.customers.*',
                 'icon' => 'customer',
-                'children' => [
-                    ['title' => 'Best Customers',  'route' => 'admin.customers.best',  'active' => 'admin.customers.best'],
-                    ['title' => 'Recent Customers',  'route' => 'admin.customers.recent',  'active' => 'admin.customers.recent'],
-                ],
+                
             ],
 
         ];

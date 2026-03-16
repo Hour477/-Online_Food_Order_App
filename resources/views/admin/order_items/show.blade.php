@@ -19,7 +19,7 @@
                 <td class="px-6 py-4">${{ number_format($item->price, 2) }}</td>
                 <td class="px-6 py-4 font-medium">${{ number_format($item->subtotal, 2) }}</td>
                 <td class="px-6 py-4 text-right">
-                    <form action="{{ route('order-items.destroy', $item->id) }}" method="POST" class="inline">
+                    <form action="{{ route('admin.order-items.destroy', $item->id) }}" method="POST" class="inline">
                         @csrf 
                         @method('DELETE')
                         <button class="text-red-600 hover:text-red-900 text-sm font-medium">Remove</button>
@@ -39,7 +39,7 @@
 </div>
 
 <div class="mt-4">
-    <a href="{{ route('order-items.create', $order->id) }}"
+    <a href="{{ route('admin.order-items.create', $order->id) }}"
        class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700">
        + Add Items
     </a>

@@ -22,7 +22,7 @@ class OrderItemsController extends Controller
         $tables = Table::where('status', 'available')->get();
          
         $menuItems = MenuItem::where('status', 'available')->get();
-        return view('order_items.create', compact('order', 'menuItems', 'categories', 'order_types', 'customers', 'tables'));
+        return view('admin.order_items.create', compact('order', 'menuItems', 'categories', 'order_types', 'customers', 'tables'));
         
     }
 
@@ -46,7 +46,7 @@ class OrderItemsController extends Controller
 
         $this->updateOrderTotal($order);
 
-        return redirect()->route('orders.show', $order->id)->with('success', 'Item added');
+        return redirect()->route('admin.orders.show', $order->id)->with('success', 'Item added');
     }
 
     public function destroy(OrderItem $orderItem)

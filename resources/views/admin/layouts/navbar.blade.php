@@ -1,14 +1,40 @@
 @use('Illuminate\Support\Facades\Auth')
 
-<nav class="flex items-center justify-between w-full">
+<nav class="flex items-center bg-white justify-between w-full">
 
     {{-- Left: Brand --}}
-    <div class="flex items-center gap-3"></div>
+    <div class="flex items-center gap-3"></div> 
 
     {{-- Right: User Area --}}
     <div class="flex items-center gap-4 sm:gap-6">
 
         @auth
+            {{-- Notifications --}}
+            <div class="relative notification-menu mr-2">
+                <button type="button" id="notification-bell"
+                    class="p-2 text-gray-400 hover:text-amber-600 transition-colors relative" title="Notifications">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                    </svg>
+                    <span id="notification-count" class="hidden absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">0</span>
+                </button>
+
+                {{-- Notification Dropdown --}}
+                <div id="notification-panel"
+                    class="hidden absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-xl shadow-lg py-1.5 z-50 overflow-hidden">
+                    <div class="px-4 py-3 border-b border-gray-100 flex justify-between items-center">
+                        <h3 class="text-sm font-semibold text-gray-900">New Orders</h3>
+                        <button id="clear-notifications" class="text-xs text-amber-600 hover:text-amber-700">Clear</button>
+                    </div>
+                    <div id="notification-list" class="max-h-96 overflow-y-auto">
+                        <div class="px-4 py-8 text-center text-gray-500 italic text-sm">No new orders</div>
+                    </div>
+                    <a href="{{ route('admin.orders.index') }}" class="block px-4 py-2 text-center text-xs font-medium text-amber-600 hover:bg-gray-50 border-t border-gray-100">
+                        View All Orders
+                    </a>
+                </div>
+            </div>
+
             {{-- Quick Actions --}}
             <div class="hidden md:flex items-center gap-2 mr-2">
                 <a href="{{ route('admin.orders.create') }}"

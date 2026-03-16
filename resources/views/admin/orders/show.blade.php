@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('admin.layouts.app')
 
 @section('content')
 
@@ -7,8 +7,13 @@
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 mb-10">
         <div>
-            <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white tracking-tight">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white tracking-tight flex items-center gap-3">
                 Order #{{ $orders->order_no }}
+                @if($orders->created_at && $orders->created_at->diffInHours(now()) < 12)
+                    <span class="inline-flex items-center px-2.5 py-1 rounded text-xs font-bold bg-red-500 text-white animate-pulse">
+                        NEW
+                    </span>
+                @endif
             </h1>
             <div class="mt-2 flex items-center gap-4 text-gray-600 dark:text-gray-400">
                 <span class="inline-flex px-3 py-1 text-sm font-medium rounded-full
@@ -24,7 +29,7 @@
         </div>
 
         <div class="flex flex-wrap gap-3">
-            <a href="{{ route('orders.index') }}"
+            <a href="{{ route('admin.orders.index') }}"
                class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-xl shadow-sm hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 transition">
                 &larr; Back to Orders
             </a>
@@ -87,7 +92,7 @@
                         Ordered Items
                     </h2>
 
-                    <form action="{{ route('orders.items.store', $orders->id) }}" method="POST" class="flex flex-wrap items-center gap-2">
+                    <form action="{{ route('admin.orders.items.store', $orders->id) }}" method="POST" class="flex flex-wrap items-center gap-2">
                         @csrf
                         <select name="menu_item_id" class="px-3 py-2 text-sm border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white" required>
                             <option value="">Select item</option>
@@ -119,20 +124,20 @@
                                         ${{ number_format($item->price, 2) }} x {{ $item->quantity }}
                                     </div>
                                     <div class="flex items-center gap-2 mt-3">
-                                        <form action="{{ route('order-items.qty', $item->id) }}" method="POST">
+                                        <form action="{{ route('admin.order-items.qty', $item->id) }}" method="POST">
                                             @csrf
                                             @method('PATCH')
                                             <input type="hidden" name="action" value="decrease">
                                             <button type="submit" class="px-2 py-1 text-xs border border-gray-300 rounded dark:border-gray-600">-</button>
                                         </form>
                                         <span class="text-sm text-gray-600 dark:text-gray-300">{{ $item->quantity }}</span>
-                                        <form action="{{ route('order-items.qty', $item->id) }}" method="POST">
+                                        <form action="{{ route('admin.order-items.qty', $item->id) }}" method="POST">
                                             @csrf
                                             @method('PATCH')
                                             <input type="hidden" name="action" value="increase">
                                             <button type="submit" class="px-2 py-1 text-xs border border-gray-300 rounded dark:border-gray-600">+</button>
                                         </form>
-                                        <form action="{{ route('order-items.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Remove this item?')">
+                                        <form action="{{ route('admin.order-items.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Remove this item?')">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="px-2 py-1 text-xs text-red-600 border border-red-300 rounded dark:border-red-700">Remove</button>
@@ -159,6 +164,15 @@
                 </h3>
 
                 <dl class="space-y-4">
+                    <div class="flex justify-between text-lg">
+                        <dt class="text-gray-600 dark:text-gray-400">Payment Method</dt>
+                        <dd class="font-medium text-gray-900 dark:text-white">
+                            <span class="px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-xs font-medium uppercase">
+                                {{ $orders->payment_method }}
+                            </span>
+                        </dd>
+                    </div>
+
                     <div class="flex justify-between text-lg">
                         <dt class="text-gray-600 dark:text-gray-400">Subtotal</dt>
                         <dd class="font-medium text-gray-900 dark:text-white">
@@ -189,7 +203,7 @@
                 </h3>
 
                 <div class="grid grid-cols-1 gap-4">
-                    <form action="{{ route('orders.updateStatus', $orders->id) }}" method="POST" class="flex items-center gap-4">
+                    <form action="{{ route('admin.orders.updateStatus', $orders->id) }}" method="POST" class="flex items-center gap-4">
                         @csrf
                         @method('PATCH')
 

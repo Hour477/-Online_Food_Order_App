@@ -12,7 +12,8 @@ class Payment extends Model
         'payment_method',
         'total_amount',
         'paid_amount',
-        'change_amount'
+        'change_amount',
+        'paid_at'
     ];
 
     public function order()

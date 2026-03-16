@@ -8,10 +8,12 @@ class Customer extends Model
 {
     //
     protected $fillable = [
+        'user_id',
         'name',
         'email',
-        'phone'
-
+        'phone',
+        'address',
+        'city'
     ];
     public function orders(){
         return $this->hasMany(Order::class);

@@ -1,5 +1,4 @@
-@import 'tailwindcss';
-
+@import "tailwindcss";
 
 @tailwind utilities;
 
@@ -9,8 +8,10 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans:
+        "Instrument Sans", ui-sans-serif, system-ui, sans-serif,
+        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+        "Noto Color Emoji";
 }
 
 /* Enable manual class-based dark mode for Tailwind v4 */
@@ -42,40 +43,104 @@
     }
 }
 
-input{
+input {
     font-weight: 500;
 }
-select{
+select {
     font-weight: 500;
 }
-textarea{
+textarea {
     font-weight: 500;
 }
 
-.sidebar-collapsed .sidebar-link:hover::after{
-content: attr(title);
-position:absolute;
-left:70px;
-background:#111;
-color:#fff;
-padding:4px 8px;
-border-radius:6px;
-font-size:12px;
+.sidebar-collapsed .sidebar-link:hover::after {
+    content: attr(title);
+    position: absolute;
+    left: 70px;
+    background: #111;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
 }
 
-body { font-family: 'DM Sans', sans-serif; background-color: #fdf6ec; color: #1a1208; }
-        .font-display { font-family: 'Playfair Display', serif; }
-        .nav-link { position: relative; }
-        .nav-link::after { content:''; position:absolute; bottom:-2px; left:0; width:0; height:2px; background:#ff8c00; transition:.3s; }
-        .nav-link:hover::after { width:100%; }
-        .card-hover { transition: transform .25s ease, box-shadow .25s ease; }
-        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(26,18,8,.12); }
-        .btn-primary { background:#ff8c00; color:#fff; transition: background .2s, transform .1s; }
-        .btn-primary:hover { background:#e07800; transform:scale(1.02); }
-        .btn-primary:active { transform:scale(.98); }
-        .badge { animation: pop .3s cubic-bezier(.36,.07,.19,.97); }
-        @keyframes pop { 0%,100%{transform:scale(1)} 50%{transform:scale(1.4)} }
-        .slide-in { animation: slideIn .4s ease forwards; }
-        @keyframes slideIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
-        ::-webkit-scrollbar { width:6px; } ::-webkit-scrollbar-thumb { background:#ffc980; border-radius:3px; 
+body {
+    font-family: "Momo Trust Sans", sans-serif;
+    background-color: #fdf6ec;
+    color: #1a1208;
+}
+
+.font-display {
+    font-family: "Playfair Display", serif;
+}
+.nav-link {
+    position: relative;
+}
+.nav-link::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #ff8c00;
+    transition: 0.3s;
+}
+.nav-link:hover::after {
+    width: 100%;
+}
+.card-hover {
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+.card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(26, 18, 8, 0.12);
+}
+.btn-primary {
+    background: #ff8c00;
+    color: #fff;
+    transition:
+        background 0.2s,
+        transform 0.1s;
+}
+.btn-primary:hover {
+    background: #e07800;
+    transform: scale(1.02);
+}
+.btn-primary:active {
+    transform: scale(0.98);
+}
+.badge {
+    animation: pop 0.3s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+@keyframes pop {
+    0%,
+    100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.4);
+    }
+}
+.slide-in {
+    animation: slideIn 0.4s ease forwards;
+}
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-thumb {
+    background: #ffc980;
+    border-radius: 3px;
 }

@@ -28,7 +28,8 @@ class OrderController extends Controller
         $startDate = $request->get('start_date');
         $endDate = $request->get('end_date');
 
-        $orders = Order::with('customer', 'table')
+        $orders = Order::with('customer', 'table', 'payments')
+            
             ->when($orderNo, function ($query, $orderNo) {
                 $query->where('order_no', 'like', '%' . $orderNo . '%');
             })
@@ -52,6 +53,39 @@ class OrderController extends Controller
             ->withQueryString();
 
         return view('admin.orders.index', compact('orders'));
+    }
+
+    /**
+     * Check for new orders since a given timestamp (for real-time notifications)
+     */
+    public function checkNewOrders(Request $request)
+    {
+        $lastId = (int) $request->get('last_id', 0);
+        $lastCheck = $request->get('last_check');
+        
+        // We only want to notify about online orders (delivery or takeaway)
+        $query = Order::with('customer')
+            ->whereIn('order_type', ['delivery', 'takeaway']);
+
+        // Use ID-based filtering for maximum reliability if lastId is provided.
+        // This ensures that an order already in the database when the page loaded is not treated as "new".
+        if ($lastId > 0) {
+            $query->where('id', '>', $lastId);
+        } elseif ($lastCheck) {
+            $query->where('created_at', '>', $lastCheck);
+        } else {
+            // No filtering parameters provided, return no results.
+            return response()->json(['count' => 0, 'orders' => [], 'timestamp' => now()->format('Y-m-d H:i:s'), 'max_id' => 0]);
+        }
+
+        $newOrders = $query->latest()->get();
+
+        return response()->json([
+            'count' => $newOrders->count(),
+            'orders' => $newOrders,
+            'timestamp' => now()->format('Y-m-d H:i:s'),
+            'max_id' => $newOrders->max('id') ?? $lastId
+        ]);
     }
 
     public function create()
@@ -219,18 +253,17 @@ class OrderController extends Controller
        
     
 
-    public function updateStatus(Order $orders, Request $request)
+    public function updateStatus(Order $order, Request $request)
     {
         $validated = $request->validate([
             'status' => 'required|in:pending,preparing,ready,completed,cancelled',
         ]);
-
-        $orders->update([
-            'status' => $validated['status'],
-        ]);
-
+        $order->status = $validated['status'];
+        $order->save();
+        
+        
         return redirect()
-            ->route('admin.orders.show', $orders->id)
+            ->route('admin.orders.show', $order->id)
             ->with('success', 'Order status updated to ' . $validated['status']);
     }
 }

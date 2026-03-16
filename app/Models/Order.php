@@ -45,7 +45,7 @@ class Order extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function payment()
+    public function payments()
     {
         return $this->hasMany(Payment::class);
     }
@@ -57,6 +57,14 @@ class Order extends Model
     public function customer()
     {
         return $this->belongsTo(Customer::class);
+    }
+
+    /**
+     * Get the payment method from the first payment
+     */
+    public function getPaymentMethodAttribute()
+    {
+        return $this->payments->first()?->payment_method ?? 'Unpaid';
     }
     
 

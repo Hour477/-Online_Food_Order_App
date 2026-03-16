@@ -85,7 +85,7 @@
                                         <i class="fas fa-edit"></i> Edit
                                     </a>
                                     @if(auth()->user()->role === 'admin')
-                                    <form action="{{ route('tables.destroy', $table->id) }}" method="POST" class="inline">
+                                    <form action="{{ route('admin.tables.destroy', $table->id) }}" method="POST" class="inline">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"

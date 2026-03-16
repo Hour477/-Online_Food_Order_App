@@ -14,7 +14,8 @@ use App\Http\Controllers\Admin\{
     OrderController as AdminOrderController,
     SettingController,
     ReportController,
-    RoleController
+    RoleController,
+    OrderItemsController
 };
 
 // Customer (public) controllers
@@ -57,7 +58,7 @@ Route::prefix('cart')->name('customerOrder.cart.')->group(function () {
     Route::post('/reorder',[customerCartController::class, 'reorder'])->name('reorder');
 });
 
-Route::prefix('checkout')->name('customerOrder.checkout.')->group(function () {
+Route::prefix('checkout')->name('customerOrder.checkout.')->middleware('auth')->group(function () {
     Route::get('/',           [customerCheckoutController::class, 'index'])->name('index');
     Route::post('/place',     [customerCheckoutController::class, 'place'])->name('place');
     Route::get('/confirmation',[customerCheckoutController::class, 'confirmation'])->name('confirmation');
@@ -88,7 +89,19 @@ Route::middleware(['auth', 'role:admin'])
         Route::resource('customers',    CustomerController::class);
         Route::get('/customers/best',   [CustomerController::class, 'best'])->name('customers.best');
         Route::get('/customers/recent',[ CustomerController::class, 'recent'])->name('customers.recent');
+
         Route::resource('orders',       AdminOrderController::class);
+        Route::get('orders-check', [AdminOrderController::class, 'checkNewOrders'])->name('orders.check');
+        Route::patch('orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.updateStatus');
+        
+        Route::post('orders/{order}/items', [OrderItemsController::class, 'store'])->name('orders.items.store');
+        Route::get('orders/{order}/items/create', [OrderItemsController::class, 'create'])->name('order-items.create');
+        Route::patch('order-items/{orderItem}/qty', [OrderItemsController::class, 'updateQty'])->name('order-items.qty');
+        Route::delete('order-items/{orderItem}', [OrderItemsController::class, 'destroy'])->name('order-items.destroy');
+        
+
+
+
         Route::resource('settings',     SettingController::class);      // ← keep only one
         Route::resource('users', UserController::class);
         Route::resource('roles', RoleController::class);

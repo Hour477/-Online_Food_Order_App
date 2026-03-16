@@ -40,7 +40,7 @@
             <div class="relative">
                 <input id="search-dishes" type="text"
                        placeholder="Search for dishes..."
-                       class="w-full pl-12 pr-5 py-4 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition shadow-sm">
+                       class="w-full pl-12 pr-5 py-4 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition shadow-sm">
                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <i class="fas fa-search text-gray-400 text-lg"></i>
                 </div>
@@ -49,7 +49,7 @@
             <!-- Categories Tabs -->
             <div class="flex flex-wrap gap-3 pb-4 border-b border-gray-200 dark:border-gray-700 overflow-x-auto">
                 <button data-category="all"
-                        class="category-tab px-5 py-2.5 rounded-full font-medium text-sm transition-all bg-indigo-600 text-white shadow-md hover:bg-indigo-700">
+                        class="category-tab px-5 py-2.5 rounded-full font-medium text-sm transition-all bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white shadow-md hover:bg-gray-300 dark:hover:bg-gray-600">
                     All Items
                 </button>
 
@@ -94,7 +94,7 @@
                                 </div>
 
                                 <button type="button"
-                                        class="add-to-cart-btn px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-xl shadow-sm transition-all transform hover:scale-105 active:scale-95"
+                                        class="add-to-cart-btn px-4 py-2.5 bg-amber-600 hover:bg-amber-700 text-white text-sm font-medium rounded-xl shadow-sm transition-all transform hover:scale-105 active:scale-95"
                                         data-id="{{ $item->id }}"
                                         data-name="{{ addslashes($item->name) }}"
                                         data-price="{{ $item->price }}">
@@ -199,9 +199,9 @@ function renderCart() {
 
             <div class="flex items-center gap-4">
                 <div class="flex items-center gap-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-1">
-                    <button type="button" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 text-lg font-bold decrease-qty" data-index="${index}">-</button>
+                    <button type="button" class="text-gray-600 dark:text-gray-300 hover:text-amber-600 text-lg font-bold decrease-qty" data-index="${index}">-</button>
                     <span class="w-8 text-center font-medium">${item.quantity}</span>
-                    <button type="button" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 text-lg font-bold increase-qty" data-index="${index}">+</button>
+                    <button type="button" class="text-gray-600 dark:text-gray-300 hover:text-amber-600 text-lg font-bold increase-qty" data-index="${index}">+</button>
                 </div>
                 <button type="button" class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 text-sm font-medium remove-item" data-index="${index}">×</button>
             </div>
@@ -223,11 +223,11 @@ if (document.querySelectorAll('.category-tab').length) {
     document.querySelectorAll('.category-tab').forEach(tab => {
         tab.addEventListener('click', function() {
             document.querySelectorAll('.category-tab').forEach(t => {
-                t.classList.remove('bg-indigo-600', 'text-white', 'shadow-md');
+                t.classList.remove('bg-amber-600', 'text-white', 'shadow-md');
                 t.classList.add('text-gray-700', 'dark:text-gray-300', 'hover:bg-gray-200', 'dark:hover:bg-gray-700');
             });
 
-            this.classList.add('bg-indigo-600', 'text-white', 'shadow-md');
+            this.classList.add('bg-amber-600', 'text-white', 'shadow-md');
             this.classList.remove('text-gray-700', 'dark:text-gray-300', 'hover:bg-gray-200', 'dark:hover:bg-gray-700');
 
             const category = this.dataset.category;

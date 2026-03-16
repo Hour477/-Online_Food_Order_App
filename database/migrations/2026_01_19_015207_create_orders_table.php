@@ -34,11 +34,12 @@ return new class extends Migration
             $table->text('notes')->nullable();
             $table->enum('status', [
                 'pending',
-                'cooking',
-                'served',
-                'paid',
+                'preparing',
+                'ready',
+                'completed',
                 'cancelled'
-            ])->default('pending');
+            ])->default('pending')->change();
+        
 
             $table->timestamps();
         });

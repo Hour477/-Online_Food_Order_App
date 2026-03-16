@@ -29,7 +29,13 @@
         <div class="lg:col-span-2 space-y-4">
             @foreach($cart as $id => $item)
             <div class="flex gap-4 bg-white rounded-2xl p-4 shadow-sm border border-brand-50 slide-in">
-                <img src="{{ $item['image'] }}" alt="{{ $item['name'] }}" class="w-24 h-24 object-cover rounded-xl flex-shrink-0">
+                @if($item['image'])
+                    <img src="{{ Storage::url($item['image']) }}" alt="{{ $item['name'] }}" class="w-24 h-24 object-cover rounded-xl flex-shrink-0">
+                @else
+                    <div class="w-24 h-24 bg-gray-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-utensils text-2xl text-gray-300"></i>
+                    </div>
+                @endif
                 <div class="flex-1 min-w-0">
                     <div class="flex items-start justify-between gap-2">
                         <div>
@@ -96,9 +102,16 @@
                     <span class="font-bold text-brand-500 text-2xl">${{ number_format($subtotal + 2.99 + $subtotal * 0.08, 2) }}</span>
                 </div>
 
-                <a href="{{ route('customerOrder.checkout.index') }}" class="btn-primary w-full flex items-center justify-center gap-2 py-3 rounded-full font-semibold text-sm shadow-md">
-                    <i class="fa-solid fa-credit-card"></i> Proceed to Checkout
-                </a>
+                @auth
+                    <a href="{{ route('customerOrder.checkout.index') }}" class="btn-primary w-full flex items-center justify-center gap-2 py-3 rounded-full font-semibold text-sm shadow-md">
+                        <i class="fa-solid fa-credit-card"></i> Proceed to Checkout
+                    </a>
+                @else
+                    <a href="{{ route('customerOrder.checkout.index') }}" class="btn-primary w-full flex items-center justify-center gap-2 py-3 rounded-full font-semibold text-sm shadow-md bg-ink hover:bg-ink/90">
+                        <i class="fa-solid fa-right-to-bracket"></i> Login to Checkout
+                    </a>
+                    <p class="text-[10px] text-center text-ink/40 mt-2">You need to be logged in to place an order</p>
+                @endauth
                 <a href="{{ route('customerOrder.menu.index') }}" class="mt-3 block text-center text-sm text-ink/50 hover:text-brand-400 transition">
                     ← Continue Shopping
                 </a>

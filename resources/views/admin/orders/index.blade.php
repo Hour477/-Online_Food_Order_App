@@ -109,11 +109,15 @@
                         </th>
                         
                         <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider dark:text-gray-300">
-                            Order No
+                            Order no & Type
+                        </th>
+                        <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider dark:text-gray-300">
+                            Payment Method
                         </th>
                         <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider dark:text-gray-300">
                             Customer
                         </th>
+
                         <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider dark:text-gray-300">
                             Total Amount
                         </th>
@@ -121,7 +125,8 @@
                             Status
                         </th>
                         <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider dark:text-gray-300">
-                          Created At</td>
+                          Created At
+                        </th>
                             <!-- Actions -->
                         <!-- Optional: Actions column -->
                          <th scope="col" class="px-6 py-4 text-right ...">Actions</th>
@@ -141,11 +146,33 @@
                             </td>
                            
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
-                                <a href="{{ route('admin.orders.show', $order->id) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 ml-2">
-                                    #{{ $order->order_no }}
+                                <a href="{{ route('admin.orders.show', $order->id) }}">
+                                    {{-- order no and type --}}
+                                    <div class="flex items-center gap-2">
+                                        <span class="block text-sm font-bold text-gray-900 dark:text-white">
+                                            #{{ $order->order_no }}
+                                        </span>
+                                        @if($order->created_at && $order->created_at->diffInHours(now()) < 12)
+                                            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-red-500 text-white animate-pulse">
+                                                NEW
+                                            </span>
+                                        @endif
+                                    </div>
+                                    <span class="block text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        {{ str_replace('_', ' ', $order->order_type ?? 'N/A') }}
+                                    </span>
                                 </a>
-                                
                             </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
+                                <span class="px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-xs font-medium">
+                                    
+                                
+                                    {{ $order->payment_method ?? 'N/A'}}
+
+
+                                </span>
+                            </td>
+                            
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
                                 {{ $order->customer?->name ?? 'Walk-in' }}
                             </td>

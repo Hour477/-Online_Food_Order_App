@@ -83,7 +83,7 @@
                         <td class="px-6 py-4 whitespace-nowrap">
                             <a href="{{ route('admin.menu_items.show', $item->id) }}">
                                 @if($item->image)
-                                    <img src="{{ asset('storage/' . $item->image) }}"
+                                    <img src="{{ Storage::url($item->image) }}"
                                          alt="{{ $item->name }}"
                                          class="w-10 h-10 rounded-lg object-cover">
                                 @else

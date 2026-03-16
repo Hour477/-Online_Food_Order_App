@@ -14,11 +14,14 @@ return new class extends Migration
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
-             $table->foreignId('user_id')
+            $table->foreignId('user_id')
                 ->nullable()
                 ->constrained('users')
                 ->nullOnDelete();
-                
+            
+            $table->string('name');
+            $table->string('email')->nullable();
+            $table->string('phone')->nullable();
             $table->text('address')->nullable();
             $table->text('city')->nullable();
             $table->timestamps();
