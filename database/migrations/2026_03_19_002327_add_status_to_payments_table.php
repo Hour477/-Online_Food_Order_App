@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
-            //
-                $table->decimal('subtotal', 10, 2)->default(0);
-                $table->decimal('tax', 10, 2)->default(0);
-                $table->decimal('total_amount', 10, 2)->default(0);
-            
+        Schema::table('payments', function (Blueprint $table) {
+            $table->enum('status', ['pending', 'paid', 'failed', 'refunded'])
+                  ->default('paid')
+                  ->after('change_amount');
         });
     }
 
@@ -25,8 +23,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
-            //
+        Schema::table('payments', function (Blueprint $table) {
+            $table->dropColumn('status');
         });
     }
 };

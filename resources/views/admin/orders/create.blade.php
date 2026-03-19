@@ -1,11 +1,52 @@
-    @extends('admin.layouts.app')
+@extends('admin.layouts.app')
+
+@push('styles')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+    .select2-container--default .select2-selection--single {
+        border: 1px solid #e5e7eb !important;
+        border-radius: 0.5rem !important;
+        background-color: #f9fafb !important;
+        height: 42px !important;
+        padding: 4px 8px !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        color: #111827 !important;
+        font-size: 0.875rem !important;
+        line-height: 1.5 !important;
+        padding-left: 8px !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__placeholder {
+        color: #9ca3af !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 40px !important;
+    }
+    .select2-container--default.select2-container--focus .select2-selection--single {
+        border-color: transparent !important;
+        box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.5) !important;
+    }
+    .select2-container--default .select2-results__option--selected {
+        background-color: #fef3c7 !important;
+        color: #92400e !important;
+    }
+    .select2-container--default .select2-results__option--highlighted[aria-selected] {
+        background-color: #f59e0b !important;
+        color: white !important;
+    }
+    .select2-dropdown {
+        border: 1px solid #e5e7eb !important;
+        border-radius: 0.5rem !important;
+    }
+</style>
+@endpush
 
 @section('content')
-
 <div class="mx-auto">
 
+    {{-- Error Messages --}}
     @if($errors->any())
-        <div class="mb-6 p-4 bg-red-100 text-red-800 rounded">
+        <div class="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-700">
             <ul class="list-disc pl-5">
                 @foreach($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -14,123 +55,128 @@
         </div>
     @endif
 
-    <!-- Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 mb-10">
+    {{-- Header --}}
+    <div class="mb-8 flex items-center justify-between">
         <div>
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
-                New Order
-            </h1>
-            <p class="mt-1 text-gray-600 dark:text-gray-400">
-                Select items, add to cart, and place the order
-            </p>
+            <h3 class="text-2xl font-bold text-gray-900">New Order</h3>
+            <p class="text-sm text-gray-500 mt-1">Select items, add to cart, and place the order</p>
         </div>
-
         <a href="{{ route('admin.orders.index') }}"
-           class="inline-flex items-center px-6 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-xl shadow-sm hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors">
-            ← Back to Orders
+           class="text-sm text-gray-500 hover:text-gray-900 flex items-center gap-1 transition-colors">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to Orders
         </a>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-        <!-- LEFT SIDE: Search + Categories + Menu -->
-        <div class="lg:col-span-8 space-y-8">
+        {{-- LEFT SIDE: Search + Categories + Menu --}}
+        <div class="lg:col-span-8 space-y-6">
 
-            <!-- Search Bar -->
+            {{-- Search Bar --}}
             <div class="relative">
                 <input id="search-dishes" type="text"
                        placeholder="Search for dishes..."
-                       class="w-full pl-12 pr-5 py-4 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition shadow-sm">
+                       class="w-full pl-12 pr-5 py-3 border border-gray-200 bg-gray-50 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition shadow-sm">
                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <i class="fas fa-search text-gray-400 text-lg"></i>
+                    <svg class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
                 </div>
             </div>
 
-            <!-- Categories Tabs -->
-            <div class="flex flex-wrap gap-3 pb-4 border-b border-gray-200 dark:border-gray-700 overflow-x-auto">
+            {{-- Categories Tabs --}}
+            <div class="flex flex-wrap gap-3 pb-4 border-b border-gray-200 overflow-x-auto">
                 <button data-category="all"
-                        class="category-tab px-5 py-2.5 rounded-full font-medium text-sm transition-all bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white shadow-md hover:bg-gray-300 dark:hover:bg-gray-600">
+                        class="category-tab px-5 py-2.5 rounded-full font-medium text-sm transition-all bg-amber-600 text-white shadow-md">
                     All Items
                 </button>
 
                 @foreach($categories as $category)
                     <button data-category="{{ $category->id }}"
-                            class="category-tab px-5 py-2.5 rounded-full font-medium text-sm transition-all text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600">
+                            class="category-tab px-5 py-2.5 rounded-full font-medium text-sm transition-all text-gray-700 hover:bg-gray-200 border border-gray-300">
                         {{ $category->name }}
                     </button>
                 @endforeach
             </div>
 
-            <!-- Menu Items Grid -->
-            <div id="menu-items" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+            {{-- Menu Items Grid --}}
+            <div id="menu-items" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                 @forelse($menuItems as $item)
-                    <div class="menu-item bg-white dark:bg-gray-800 rounded-2xl shadow border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-[1.02] group"
+                    <div class="menu-item bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-[1.02] group"
                          data-category="{{ $item->category_id }}">
 
-                        <!-- Image -->
-                        <div class="h-48 bg-gray-100 dark:bg-gray-700 relative overflow-hidden">
+                        {{-- Image --}}
+                        <div class="h-40 bg-gray-100 relative overflow-hidden">
                             @if($item->image)
                                 <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->name }}"
                                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                             @else
                                 <div class="absolute inset-0 flex items-center justify-center">
-                                    <i class="fas fa-utensils text-6xl text-gray-300 dark:text-gray-600"></i>
+                                    <svg class="w-12 h-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                    </svg>
                                 </div>
                             @endif
                         </div>
 
-                        <!-- Info -->
-                        <div class="p-5">
-                            <h3 class="font-semibold text-lg text-gray-900 dark:text-white line-clamp-1">
+                        {{-- Info --}}
+                        <div class="p-4">
+                            <h3 class="font-semibold text-sm text-gray-900 line-clamp-1">
                                 {{ $item->name }}
                             </h3>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 line-clamp-2 min-h-10">
-                                {{ Str::limit($item->description ?? 'Delicious signature dish', 70) }}
+                            <p class="text-xs text-gray-500 mt-1 line-clamp-2 min-h-8">
+                                {{ Str::limit($item->description ?? 'Delicious signature dish', 50) }}
                             </p>
 
-                            <div class="mt-4 flex items-center justify-between">
-                                <div class="text-xl font-bold text-emerald-600 dark:text-emerald-400">
+                            <div class="mt-3 flex items-center justify-between">
+                                <div class="text-lg font-bold text-amber-600">
                                     ${{ number_format($item->price, 2) }}
                                 </div>
 
                                 <button type="button"
-                                        class="add-to-cart-btn px-4 py-2.5 bg-amber-600 hover:bg-amber-700 text-white text-sm font-medium rounded-xl shadow-sm transition-all transform hover:scale-105 active:scale-95"
+                                        class="add-to-cart-btn px-3 py-2 bg-amber-600 hover:bg-amber-700 text-white text-xs font-medium rounded-lg shadow-sm transition-all transform hover:scale-105 active:scale-95"
                                         data-id="{{ $item->id }}"
                                         data-name="{{ addslashes($item->name) }}"
                                         data-price="{{ $item->price }}">
-                                    <i class="fas fa-plus"></i>
-                                    
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                    </svg>
                                 </button>
                             </div>
                         </div>
                     </div>
                 @empty
-                    <div class="col-span-full text-center py-16 text-gray-500 dark:text-gray-400">
-                        <i class="fas fa-utensils text-6xl opacity-30 mb-4"></i>
+                    <div class="col-span-full text-center py-16 text-gray-500">
+                        <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
                         <p class="text-lg">No menu items available</p>
                     </div>
                 @endforelse
             </div>
         </div>
 
-        <!-- RIGHT SIDE: Cart (sticky) -->
+        {{-- RIGHT SIDE: Cart (sticky) --}}
         <div class="lg:col-span-4">
-            <!-- resources/views/orders/partials/cart.blade.php -->
             @include('admin.orders.partials.cart')
         </div>
 
     </div>
 </div>
 
-<!-- Hidden form for submitting the order (items will be added via JS) -->
+{{-- Hidden form for submitting the order --}}
 <form id="order-form" action="{{ route('admin.orders.store') }}" method="POST" class="hidden">
     @csrf
     <input type="hidden" name="total_amount" id="total_amount_hidden" value="0">
 </form>
-
 @endsection
 
-@section('scripts')
+@push('scripts')
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
 // =============================================
 // Cart Management - Dynamic POS Cart
@@ -143,7 +189,6 @@ let cart = JSON.parse(localStorage.getItem('restaurant_pos_cart')) || [];
 const TAX_RATE = 0.10;
 
 // DOM references
-// IDs updated to match the markup in this view
 const cartContainer     = document.getElementById('cart-items-container');
 const cartCountBadge    = document.getElementById('cart-count-badge');
 const subtotalEl        = document.getElementById('cart-subtotal');
@@ -151,7 +196,9 @@ const taxEl             = document.getElementById('cart-tax');
 const totalEl           = document.getElementById('cart-grand-total');
 const placeOrderBtn     = document.getElementById('place-order-btn');
 const clearCartBtn      = document.getElementById('clear-cart-btn');
-// orderForm is looked up later when needed to avoid timing issues
+const paymentMethodEl   = document.getElementById('payment_method');
+const paidAmountEl      = document.getElementById('paid_amount');
+const changeAmountEl    = document.getElementById('change_amount');
 
 // Save cart to localStorage
 function saveCart() {
@@ -164,17 +211,20 @@ function renderCart() {
 
     if (cart.length === 0) {
         cartContainer.innerHTML = `
-            <div class="text-center py-12 text-gray-500 dark:text-gray-400">
-                <i class="fas fa-shopping-cart text-6xl opacity-30 mb-4"></i>
-                <p class="text-lg font-medium">Your cart is empty</p>
-                <p class="text-sm mt-2">Start adding items from the menu</p>
+            <div class="text-center py-8 text-gray-500">
+                <svg class="w-12 h-12 mx-auto text-gray-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                <p class="text-sm font-medium">Your cart is empty</p>
+                <p class="text-xs mt-1 text-gray-400">Start adding items from the menu</p>
             </div>
         `;
         placeOrderBtn.disabled = true;
-        cartCountBadge.textContent = '(0)';
+        cartCountBadge.textContent = '(0 items)';
         subtotalEl.textContent = '$0.00';
         taxEl.textContent = '$0.00';
         totalEl.textContent = '$0.00';
+        updateChange();
         return;
     }
 
@@ -186,24 +236,28 @@ function renderCart() {
         subtotal += itemTotal;
 
         const itemRow = document.createElement('div');
-        itemRow.className = 'flex justify-between items-center bg-gray-50 dark:bg-gray-700/40 p-4 rounded-xl border border-gray-100 dark:border-gray-700';
+        itemRow.className = 'flex justify-between items-center bg-gray-50 p-3 rounded-lg border border-gray-200';
         itemRow.innerHTML = `
             <div class="flex-1 min-w-0">
-                <div class="font-medium text-gray-900 dark:text-white truncate">
+                <div class="font-medium text-gray-900 text-sm truncate">
                     ${item.name}
                 </div>
-                <div class="text-sm text-gray-600 dark:text-gray-400 mt-0.5">
+                <div class="text-xs text-gray-500 mt-0.5">
                     $${item.price.toFixed(2)} × ${item.quantity}
                 </div>
             </div>
 
-            <div class="flex items-center gap-4">
-                <div class="flex items-center gap-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-1">
-                    <button type="button" class="text-gray-600 dark:text-gray-300 hover:text-amber-600 text-lg font-bold decrease-qty" data-index="${index}">-</button>
-                    <span class="w-8 text-center font-medium">${item.quantity}</span>
-                    <button type="button" class="text-gray-600 dark:text-gray-300 hover:text-amber-600 text-lg font-bold increase-qty" data-index="${index}">+</button>
+            <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-2 py-1">
+                    <button type="button" class="text-gray-600 hover:text-amber-600 text-sm font-bold decrease-qty" data-index="${index}">−</button>
+                    <span class="w-6 text-center font-medium text-sm">${item.quantity}</span>
+                    <button type="button" class="text-gray-600 hover:text-amber-600 text-sm font-bold increase-qty" data-index="${index}">+</button>
                 </div>
-                <button type="button" class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 text-sm font-medium remove-item" data-index="${index}">×</button>
+                <button type="button" class="text-red-500 hover:text-red-700 text-xs font-medium remove-item" data-index="${index}">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                </button>
             </div>
         `;
         cartContainer.appendChild(itemRow);
@@ -215,7 +269,29 @@ function renderCart() {
     subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
     taxEl.textContent      = `$${tax.toFixed(2)}`;
     totalEl.textContent    = `$${total.toFixed(2)}`;
-    cartCountBadge.textContent = `(${cart.length})`;
+    cartCountBadge.textContent = `(${cart.length} items)`;
+    updateChange();
+}
+
+// Calculate and update change amount
+function updateChange() {
+    const total = parseFloat(totalEl.textContent.replace('$', '')) || 0;
+    const paid = parseFloat(paidAmountEl.value) || 0;
+    const change = paid - total;
+    
+    if (changeAmountEl) {
+        changeAmountEl.textContent = `$${change > 0 ? change.toFixed(2) : '0.00'}`;
+    }
+}
+
+if (paidAmountEl) {
+    paidAmountEl.addEventListener('input', updateChange);
+}
+
+// Observe changes to the total amount and update the change
+const observer = new MutationObserver(updateChange);
+if (totalEl) {
+    observer.observe(totalEl, { childList: true, subtree: true });
 }
 
 // Category filtering tabs
@@ -224,11 +300,11 @@ if (document.querySelectorAll('.category-tab').length) {
         tab.addEventListener('click', function() {
             document.querySelectorAll('.category-tab').forEach(t => {
                 t.classList.remove('bg-amber-600', 'text-white', 'shadow-md');
-                t.classList.add('text-gray-700', 'dark:text-gray-300', 'hover:bg-gray-200', 'dark:hover:bg-gray-700');
+                t.classList.add('text-gray-700', 'hover:bg-gray-200', 'border', 'border-gray-300');
             });
 
             this.classList.add('bg-amber-600', 'text-white', 'shadow-md');
-            this.classList.remove('text-gray-700', 'dark:text-gray-300', 'hover:bg-gray-200', 'dark:hover:bg-gray-700');
+            this.classList.remove('text-gray-700', 'hover:bg-gray-200', 'border', 'border-gray-300');
 
             const category = this.dataset.category;
             document.querySelectorAll('.menu-item').forEach(item => {
@@ -376,8 +452,28 @@ const submitFormHandler = e => {
         }
         el.value = orderTypeSelect.value;
     }
+    // Add payment fields
+    if (paymentMethodEl.value) {
+        let paymentMethodHidden = document.querySelector('input[name="payment_method"]');
+        if (!paymentMethodHidden) {
+            paymentMethodHidden = document.createElement('input');
+            paymentMethodHidden.type = 'hidden';
+            paymentMethodHidden.name = 'payment_method';
+            orderFormEl.appendChild(paymentMethodHidden);
+        }
+        paymentMethodHidden.value = paymentMethodEl.value;
 
-    // set total hidden if not already set (in case user submits via form directly)
+        let paidAmountHidden = document.querySelector('input[name="paid_amount"]');
+        if (!paidAmountHidden) {
+            paidAmountHidden = document.createElement('input');
+            paidAmountHidden.type = 'hidden';
+            paidAmountHidden.name = 'paid_amount';
+            orderFormEl.appendChild(paidAmountHidden);
+        }
+        paidAmountHidden.value = paidAmountEl.value;
+    }
+
+    // set total hidden if not already set
     const totalHidden = document.getElementById('total_amount_hidden');
     const subtotal = parseFloat(subtotalEl.textContent.replace('$', '')) || 0;
     const tax = parseFloat(taxEl.textContent.replace('$', '')) || 0;
@@ -484,9 +580,29 @@ placeOrderBtn?.addEventListener('click', () => {
         }
         el.value = orderTypeSelect.value;
     }
+    
+    // Add payment fields
+    if (paymentMethodEl.value) {
+        let paymentMethodHidden = document.querySelector('input[name="payment_method"]');
+        if (!paymentMethodHidden) {
+            paymentMethodHidden = document.createElement('input');
+            paymentMethodHidden.type = 'hidden';
+            paymentMethodHidden.name = 'payment_method';
+            orderFormEl.appendChild(paymentMethodHidden);
+        }
+        paymentMethodHidden.value = paymentMethodEl.value;
+
+        let paidAmountHidden = document.querySelector('input[name="paid_amount"]');
+        if (!paidAmountHidden) {
+            paidAmountHidden = document.createElement('input');
+            paidAmountHidden.type = 'hidden';
+            paidAmountHidden.name = 'paid_amount';
+            orderFormEl.appendChild(paidAmountHidden);
+        }
+        paidAmountHidden.value = paidAmountEl.value;
+    }
 
     // Ensure hidden item inputs and other hidden fields are added BEFORE submitting.
-    // Prefer requestSubmit() which triggers form submit handlers and validation.
     if (typeof orderFormEl.requestSubmit === 'function') {
         // call the prepare handler first to guarantee inputs exist
         if (typeof submitFormHandler === 'function') submitFormHandler();
@@ -498,4 +614,4 @@ placeOrderBtn?.addEventListener('click', () => {
     }
 });
 </script>
-@endsection
+@endpush

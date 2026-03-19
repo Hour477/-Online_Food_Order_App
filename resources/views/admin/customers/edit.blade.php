@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('admin.layouts.app')
 
 @section('content')
     {{-- Manage Customer Information --}}
@@ -18,7 +18,7 @@
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
             <div class="p-8">
 
-                <form action="{{ route('customers.update', $customer->id) }}" method="POST" class="space-y-8">
+                <form action="{{ route('admin.customers.update', $customer->id) }}" method="POST" class="space-y-8">
                     @csrf
                     @method('PUT')
 
@@ -69,7 +69,7 @@
                             <i class="fas fa-save mr-2"></i>
                             Save Changes
                         </button>
-                        <a href="{{ route('customers.index') }}"
+                        <a href="{{ route('admin.customers.index') }}"
                            class="ml-4 inline-flex items-center px-6 py-3 text-sm font-medium text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-xl transition">
                             <i class="fas fa-arrow-left mr-2"></i>
                             Back to Customers

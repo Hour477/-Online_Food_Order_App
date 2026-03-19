@@ -188,23 +188,27 @@
                                         </span>
                                     @break
 
-                                    @case('processing')
-                                    @case('preparing')
+                                    @case('confirmed')
                                         <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800 dark:bg-blue-800/30 dark:text-blue-300">
-                                            Processing
+                                            Confirmed
                                         </span>
                                     @break
 
-                                    @case('ready')
-                                    @case('served')
-                                        <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800 dark:bg-green-800/30 dark:text-green-300">
-                                            Ready / Served
+                                    @case('delivered')
+                                        <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full bg-indigo-100 text-indigo-800 dark:bg-indigo-800/30 dark:text-indigo-300">
+                                            Delivered
                                         </span>
                                     @break
 
                                     @case('completed')
-                                        <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                                        <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800 dark:bg-green-800/30 dark:text-green-300">
                                             Completed
+                                        </span>
+                                    @break
+
+                                    @case('refunded')
+                                        <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-800 dark:bg-purple-800/30 dark:text-purple-300">
+                                            Refunded
                                         </span>
                                     @break
 

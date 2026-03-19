@@ -9,7 +9,7 @@
 
 @theme {
     --font-sans:
-        "Instrument Sans", ui-sans-serif, system-ui, sans-serif,
+        "Battambang", "Momo Trust Sans", ui-sans-serif, system-ui, sans-serif,
         "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
         "Noto Color Emoji";
 }
@@ -63,12 +63,12 @@ textarea {
     border-radius: 6px;
     font-size: 12px;
 }
-
+/* 
 body {
     font-family: "Momo Trust Sans", sans-serif;
     background-color: #fdf6ec;
     color: #1a1208;
-}
+} */
 
 .font-display {
     font-family: "Playfair Display", serif;
@@ -144,3 +144,116 @@ body {
     background: #ffc980;
     border-radius: 3px;
 }
+
+::-webkit-scrollbar-track {
+    background: #fff;
+}
+
+/* Khmer Font - Battambang */
+body {
+    font-family: "Battambang", "Momo Trust Sans", sans-serif;
+    background-color: #fdf6ec;
+    color: #1a1208;
+}
+
+/* Utility classes for Battambang font weights */
+.font-battambang-thin {
+    font-family: "Battambang", sans-serif;
+    font-weight: 100;
+}
+
+.font-battambang-light {
+    font-family: "Battambang", sans-serif;
+    font-weight: 300;
+}
+
+.font-battambang-regular {
+    font-family: "Battambang", sans-serif;
+    font-weight: 400;
+}
+
+.font-battambang-bold {
+    font-family: "Battambang", sans-serif;
+    font-weight: 700;
+}
+
+.font-battambang-black {
+    font-family: "Battambang", sans-serif;
+    font-weight: 900;
+}
+
+
+/*  Sidebar link active state */
+
+ /* Sidebar link active state — single place to change active color */
+    #app-sidebar .sidebar-link.is-active {
+        background-color: rgb(255 251 235); /* amber-50 */
+        color: rgb(180 83 9); /* amber-700 */
+    }
+    #app-sidebar .sidebar-link.is-active .sidebar-link-accent {
+        opacity: 1;
+    }
+
+    /* Dropdown parent button when a child is active */
+    #app-sidebar .sidebar-folder-toggle.is-active {
+        background-color: rgb(255 251 235);
+        color: rgb(180 83 9);
+    }
+    #app-sidebar .sidebar-folder-toggle.is-active .sidebar-link-accent {
+        opacity: 1;
+    }
+
+    /* Dropdown children: transition + active color */
+    #app-sidebar .sidebar-submenu .sidebar-submenu-link {
+        transition: background-color 0.15s ease, color 0.15s ease;
+    }
+    #app-sidebar .sidebar-submenu .sidebar-submenu-link.bg-amber-50 {
+        background-color: rgb(255 251 235);
+        color: rgb(180 83 9);
+    }
+
+    .sidebar-submenu {
+        max-height: 0;
+        opacity: 0;
+        transform: translateY(-4px);
+        overflow: hidden;
+        transition: max-height 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .sidebar-submenu.is-open {
+        max-height: 200px;
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    @media (min-width: 1024px) {
+        .sidebar-collapsed #app-sidebar {
+            width: 5rem;
+        }
+
+        .sidebar-collapsed #app-sidebar .brand-wrap {
+            justify-content: center;
+        }
+
+        .sidebar-collapsed #app-sidebar .brand-text,
+        .sidebar-collapsed #app-sidebar .sidebar-text,
+        .sidebar-collapsed #app-sidebar .chevron,
+        .sidebar-collapsed #app-sidebar .orders-submenu {
+            display: none;
+        }
+
+        .sidebar-collapsed #app-sidebar .sidebar-link,
+        .sidebar-collapsed #app-sidebar .orders-toggle,
+        .sidebar-collapsed #app-sidebar .logout-link {
+            justify-content: center;
+            gap: 0;
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+        }
+
+        /* Hide collapse toggle button text & keep icon centred */
+        .sidebar-collapsed #app-sidebar #sidebar-collapse-btn {
+            margin-left: 0;
+        }
+    }
+

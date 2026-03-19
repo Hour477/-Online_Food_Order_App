@@ -3,12 +3,15 @@
 
 
 namespace App\Http\Controllers\Admin;
+
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Customer;
-use App\Models\MenuItem;    
+use App\Models\MenuItem;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Payment;
+use App\Models\Setting;
 use App\Models\Table;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -17,6 +20,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class OrderController extends Controller
 {
@@ -27,9 +31,10 @@ class OrderController extends Controller
         $amount = $request->get('amount');
         $startDate = $request->get('start_date');
         $endDate = $request->get('end_date');
+        $status = $request->get('status');
 
         $orders = Order::with('customer', 'table', 'payments')
-            
+
             ->when($orderNo, function ($query, $orderNo) {
                 $query->where('order_no', 'like', '%' . $orderNo . '%');
             })
@@ -48,6 +53,9 @@ class OrderController extends Controller
             ->when($endDate, function ($query, $endDate) {
                 $query->whereDate('created_at', '<=', $endDate);
             })
+            ->when($status, function ($query, $status) {
+                $query->where('status', $status);
+            })
             ->latest()
             ->paginate(10)
             ->withQueryString();
@@ -62,7 +70,7 @@ class OrderController extends Controller
     {
         $lastId = (int) $request->get('last_id', 0);
         $lastCheck = $request->get('last_check');
-        
+
         // We only want to notify about online orders (delivery or takeaway)
         $query = Order::with('customer')
             ->whereIn('order_type', ['delivery', 'takeaway']);
@@ -94,8 +102,8 @@ class OrderController extends Controller
         // we only need categories, menu items, tables, customers and any
         // persisted cart data (if using session/localStorage for draft orders).
         $cart = session('cart', []);
-        $subtotal = collect($cart)->sum(fn($item) => $item['price'] * $item['quantity']);
-        
+        $subtotal = collect($cart)->sum(fn($item) => $item['price'] * $item['qty']);
+
         // active categories and menu items
         $categories = Category::where('status', 1)->get();
         $menuItems  = MenuItem::where('status', 'available')->with('category')->get();
@@ -103,13 +111,13 @@ class OrderController extends Controller
         $tables    = Table::where('status', 'available')->get();
         $customers = Customer::all();
         $order_types = ['dine_in', 'takeaway', 'delivery'];
-        
-       
-        
+
+
+
         return view('admin.orders.create', compact('categories', 'menuItems', 'tables', 'customers', 'cart', 'subtotal', 'order_types'));
     }
 
-    
+
 
     public function store(Request $request)
     {
@@ -122,20 +130,22 @@ class OrderController extends Controller
             'items.*.menu_item_id' => 'required|exists:menu_items,id',
             'items.*.quantity'     => 'required|integer|min:1',
             'items.*.price'        => 'required|numeric|min:0',
+            'payment_method' => 'nullable|string|max:255',
+            'paid_amount'    => 'nullable|numeric|min:0',
         ]);
         try {
-            $order = DB::transaction(function () use ($validated) {
+            $order = DB::transaction(function () use ($validated, $request) {
 
                 $orderType = $validated['order_type'];
-                    // For dine-in orders, table_id is required and must be available
+                // For dine-in orders, table_id is required and must be available
                 if ($orderType === 'dine_in') {
-                    
+
                     if (empty($validated['table_id'])) {
                         throw ValidationException::withMessages([
                             'table_id' => 'Table selection is required for dine-in orders.',
                         ]);
                     }
-                    
+
                     // Lock the table row to prevent race conditions (only for dine-in)
                     $table = Table::lockForUpdate()->findOrFail($validated['table_id']);
 
@@ -163,25 +173,25 @@ class OrderController extends Controller
 
                 // Create the order record with temporary totals (created_at/updated_at set by Eloquent)
                 $order = Order::create([
-                    'order_no'     => 'ORD-'. strtoupper(Str::random(6)),
+                    'order_no'     => 'ORD-' . strtoupper(Str::random(6)),
                     'customer_id'  => $validated['customer_id'] ?? null,
-                    'table_id'     => $validated['table_id']?? null,
-                    'order_type'   => $validated['order_type'],
+                    'table_id'     => $validated['table_id'] ?? null,
+                    'order_type'   => $validated['order_type'],  // 
                     'user_id'      => Auth::id(),
                     'status'       => 'pending', // default to pending status
                     'subtotal'     => 0.00,
                     'tax'          => 0.00,
                     'total_amount' => 0.00,
-                    'created_at'   =>now()->format('Y-m-d H:i:s'),
-                    'updated_at'   =>now()->format('Y-m-d H:i:s'),
-                    
+                    'created_at'   => now()->format('Y-m-d H:i:s'),
+
+
 
                 ]);
 
                 // Add each item from the request
 
                 // call OrderItemsController to handle item creation and subtotal calculation
-                
+
 
 
                 $subtotal = 0;
@@ -209,6 +219,25 @@ class OrderController extends Controller
                     'total_amount' => $total,
                 ]);
 
+                if ($request->filled('payment_method')) {
+                    $paidAmount = $request->input('paid_amount', $total);
+                    $changeAmount = $paidAmount - $total;
+
+                    Payment::create([
+                        'order_id'       => $order->id,
+                        'payment_method' => $request->input('payment_method'),
+                        'total_amount'   => $total,
+                        'paid_amount'    => $paidAmount,
+                        'change_amount'  => $changeAmount,
+                        'paid_at'        => now(),
+                    ]);
+
+                    // Update order status if paid in full
+                    if ($paidAmount >= $total) {
+                        $order->update(['status' => 'completed']);
+                    }
+                }
+
                 // Mark table as occupied (only for dine-in orders)
                 if ($orderType === 'dine_in' && $table) {
                     $table->update([
@@ -224,7 +253,6 @@ class OrderController extends Controller
             return redirect()
                 ->route('admin.orders.show', $order->id)
                 ->with('success', 'Order #' . $order->order_no . ' created successfully!');
-
         } catch (ValidationException $e) {
             return back()
                 ->withErrors($e->errors())
@@ -247,23 +275,88 @@ class OrderController extends Controller
         $menuItems = MenuItem::where('status', 'available')
             ->orderBy('name')
             ->get(['id', 'name', 'price']);
-
+        // payment
+        // $payment = Payment::where('order_id', $id)->first();
         return view('admin.orders.show', compact('orders', 'order_items', 'total_amount', 'menuItems'));
     }
-       
-    
+
+
 
     public function updateStatus(Order $order, Request $request)
     {
         $validated = $request->validate([
-            'status' => 'required|in:pending,preparing,ready,completed,cancelled',
+            'status' => 'required|in:pending,confirmed,delivered,completed,refunded,cancelled',
         ]);
         $order->status = $validated['status'];
         $order->save();
-        
-        
         return redirect()
             ->route('admin.orders.show', $order->id)
             ->with('success', 'Order status updated to ' . $validated['status']);
+    }
+
+
+    public function checkout(Order $order)
+    {
+        $order->load('orderItems.menuItem');
+
+        $paymentMethods = [
+            'cash',
+            'card',
+            'aba',
+            'wallet',
+            'qr'
+        ];
+
+        return view('admin.orders.checkout', compact('order', 'paymentMethods'));
+    }
+
+    public function processPayment(Order $order, Request $request)
+    {
+        $validated = $request->validate([
+            'payment_method' => 'required|string'
+        ]);
+
+        DB::transaction(function () use ($order, $validated) {
+
+            Payment::create([
+                'order_id' => $order->id,
+                'payment_method' => $validated['payment_method'],
+                'total_amount' => $order->total_amount,
+                'paid_amount' => $order->total_amount,
+                'change_amount' => 0,
+                'paid_at' => now()
+            ]);
+
+            $order->update([
+                'status' => 'completed'
+            ]);
+        });
+
+        return redirect()
+            ->route('admin.orders.show', $order->id)
+            ->with('success', 'Payment successful');
+    }
+
+    /**
+     * Generate PDF receipt for completed orders
+     */
+    public function generateReceipt(Order $order)
+    {
+        // Only allow receipt generation for completed orders
+        if ($order->status !== 'completed') {
+            return redirect()
+                ->route('admin.orders.show', $order->id)
+                ->with('error', 'Receipt can only be generated for completed orders.');
+        }
+
+        $order->load(['orderItems.menuItem', 'table', 'customer', 'user', 'payments']);
+        
+        $settings = Setting::query()
+            ->whereIn('key', ['resturant_name', 'logo', 'address', 'phone', 'email'])
+            ->pluck('value', 'key');
+
+        $pdf = Pdf::loadView('admin.orders.receipt', compact('order', 'settings'));
+        
+        return $pdf->download('receipt-' . $order->order_no . '.pdf');
     }
 }

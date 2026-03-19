@@ -34,13 +34,18 @@ return new class extends Migration
             $table->text('notes')->nullable();
             $table->enum('status', [
                 'pending',
-                'preparing',
-                'ready',
                 'completed',
-                'cancelled'
+                'delivered', // customer has received the order
+                'cancelled',
+                'refunded'
             ])->default('pending')->change();
         
+            // Add columns for order totals
 
+            $table->decimal('subtotal', 10, 2)->default(0);
+            $table->decimal('tax', 10, 2)->default(0);
+            $table->decimal('total_amount', 10, 2)->default(0);
+            $table->softDeletes()->nullable();
             $table->timestamps();
         });
     }

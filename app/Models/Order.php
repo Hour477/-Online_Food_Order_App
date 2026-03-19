@@ -15,7 +15,7 @@ class Order extends Model
         'table_id', // nullable for takeout orders
         'order_type', // dine-in, takeout, delivery
         'user_id',
-        'status', // pending, preparing, ready, completed, cancelled
+        'status', 
         // New fields for totals
         'subtotal',
         'tax',
@@ -66,6 +66,14 @@ class Order extends Model
     {
         return $this->payments->first()?->payment_method ?? 'Unpaid';
     }
+
+    /**
+     * Get the first payment record
+     */
+    public function getPaymentAttribute()
+    {
+        return $this->payments->first();
+    }
     
 
     /* =========================
@@ -89,6 +97,19 @@ class Order extends Model
         return $this->subtotal + $this->tax;
     }
 
-    
- 
+    /**
+     * Get count of orders by status
+     */
+    public static function getStatusCounts(): array
+    {
+        return [
+            'pending' => self::where('status', 'pending')->count(),
+            'confirmed' => self::where('status', 'confirmed')->count(),
+            'delivered' => self::where('status', 'delivered')->count(),
+            'completed' => self::where('status', 'completed')->count(),
+            'refunded' => self::where('status', 'refunded')->count(),
+            'cancelled' => self::where('status', 'cancelled')->count(),
+        ];
+    }
+
 }

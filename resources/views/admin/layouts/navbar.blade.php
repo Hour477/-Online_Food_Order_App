@@ -1,13 +1,23 @@
 @use('Illuminate\Support\Facades\Auth')
 
 <nav class="flex items-center bg-white justify-between w-full">
+        <!-- Right: Sidebar Collapse Button -->
+    <div class="flex items-center gap-3">
+        <button type="button" id="sidebar-collapse-btn"
+            class="ml-auto hidden lg:flex items-center justify-center w-7 h-7 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors flex-shrink-0"
+            aria-label="Toggle sidebar">
+            <svg id="collapse-icon-open" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>
+            </svg>
+            <svg id="collapse-icon-closed" class="w-4 h-4 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7"/>
+            </svg>
+        </button>
+    </div>
 
-    {{-- Left: Brand --}}
     <div class="flex items-center gap-3"></div> 
-
     {{-- Right: User Area --}}
     <div class="flex items-center gap-4 sm:gap-6">
-
         @auth
             {{-- Notifications --}}
             <div class="relative notification-menu mr-2">
@@ -31,6 +41,7 @@
                     </div>
                     <a href="{{ route('admin.orders.index') }}" class="block px-4 py-2 text-center text-xs font-medium text-amber-600 hover:bg-gray-50 border-t border-gray-100">
                         View All Orders
+                        
                     </a>
                 </div>
             </div>

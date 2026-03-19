@@ -5,7 +5,9 @@
     $sidebarLogo = $sidebarSettings['logo'] ?? null;
     $sidebarName = $sidebarSettings['resturant_name'] ?? config('app.name');
     use App\Helpers\HelperSidebar;
+    use App\Models\Order;
     $menus = HelperSidebar::menus();
+    $orderStatusCounts = Order::getStatusCounts();
 @endphp
 
 <aside id="app-sidebar"
@@ -26,16 +28,7 @@
             </div>
         @endif
         <p class="brand-text text-sm font-semibold text-gray-900 truncate">{{ $sidebarName }}</p>
-        <button type="button" id="sidebar-collapse-btn"
-                class="ml-auto hidden lg:flex items-center justify-center w-7 h-7 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors flex-shrink-0"
-                aria-label="Toggle sidebar">
-            <svg id="collapse-icon-open" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>
-            </svg>
-            <svg id="collapse-icon-closed" class="w-4 h-4 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7"/>
-            </svg>
-        </button>
+        
     </div>
 
     {{-- Navigation --}}
@@ -68,14 +61,44 @@
                         </button>
                         <ul class="sidebar-submenu orders-submenu mt-0.5 space-y-0.5 pl-9 {{ $isOpen ? 'is-open' : '' }}">
                             @foreach($menu['children'] as $child)
-                                @php $childActive = request()->routeIs($child['active'] ?? ''); @endphp
+                                @php 
+                                    $childActive = request()->routeIs($child['active'] ?? '');
+                                    // Also check if params match for status filtering
+                                    if (isset($child['params'])) {
+                                        foreach ($child['params'] as $key => $value) {
+                                            if (request()->get($key) !== $value) {
+                                                $childActive = false;
+                                            }
+                                        }
+                                        // If this child has params and current request has no params, it's not active
+                                        if (empty(request()->all()) && !empty($child['params'])) {
+                                            $childActive = false;
+                                        }
+                                    } elseif (empty($child['params']) && request()->get('status')) {
+                                        // If child has no params but request has status, not active
+                                        if ($child['title'] !== 'All Payments' && $child['title'] !== 'All Customer') {
+                                            $childActive = false;
+                                        }
+                                    }
+                                @endphp
                                 <li>
-                                    <a href="{{ route($child['route']) }}"
+                                    <a href="{{ route($child['route'], $child['params'] ?? []) }}"
                                        class="sidebar-submenu-link relative flex items-center gap-2.5 pl-6 py-2 pr-3 rounded-lg text-sm {{ $childActive ? 'bg-amber-50 text-amber-700 font-medium' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900' }}">
                                         @if($childActive)
                                             <span class="absolute left-0 top-1.5 bottom-1.5 w-0.5 rounded-r-full bg-amber-600" aria-hidden="true"></span>
                                         @endif
                                         <span class="sidebar-text">{{ $child['title'] }}</span>
+                                        @if(isset($child['badge']) && isset($orderStatusCounts[$child['badge']]) && $orderStatusCounts[$child['badge']] > 0)
+                                            <span class="ml-auto inline-flex items-center justify-center px-2 py-0.5 text-xs font-bold leading-none rounded-full
+                                                {{ $child['badge'] === 'pending' ? 'bg-yellow-100 text-yellow-800' : '' }}
+                                                {{ $child['badge'] === 'confirmed' ? 'bg-blue-100 text-blue-800' : '' }}
+                                                {{ $child['badge'] === 'delivered' ? 'bg-indigo-100 text-indigo-800' : '' }}
+                                                {{ $child['badge'] === 'completed' ? 'bg-green-100 text-green-800' : '' }}
+                                                {{ $child['badge'] === 'refunded' ? 'bg-purple-100 text-purple-800' : '' }}
+                                                {{ $child['badge'] === 'cancelled' ? 'bg-red-100 text-red-800' : '' }}">
+                                                {{ $orderStatusCounts[$child['badge']] }}
+                                            </span>
+                                        @endif
                                     </a>
                                 </li>
                             @endforeach
@@ -124,209 +147,6 @@
 </aside>
 
 <style>
-    /* Sidebar link active state — single place to change active color */
-    #app-sidebar .sidebar-link.is-active {
-        background-color: rgb(255 251 235); /* amber-50 */
-        color: rgb(180 83 9); /* amber-700 */
-    }
-    #app-sidebar .sidebar-link.is-active .sidebar-link-accent {
-        opacity: 1;
-    }
-
-    /* Dropdown parent button when a child is active */
-    #app-sidebar .sidebar-folder-toggle.is-active {
-        background-color: rgb(255 251 235);
-        color: rgb(180 83 9);
-    }
-    #app-sidebar .sidebar-folder-toggle.is-active .sidebar-link-accent {
-        opacity: 1;
-    }
-
-    /* Dropdown children: transition + active color */
-    #app-sidebar .sidebar-submenu .sidebar-submenu-link {
-        transition: background-color 0.15s ease, color 0.15s ease;
-    }
-    #app-sidebar .sidebar-submenu .sidebar-submenu-link.bg-amber-50 {
-        background-color: rgb(255 251 235);
-        color: rgb(180 83 9);
-    }
-
-    .sidebar-submenu {
-        max-height: 0;
-        opacity: 0;
-        transform: translateY(-4px);
-        overflow: hidden;
-        transition: max-height 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
-    }
-
-    .sidebar-submenu.is-open {
-        max-height: 200px;
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-    @media (min-width: 1024px) {
-        .sidebar-collapsed #app-sidebar {
-            width: 5rem;
-        }
-
-        .sidebar-collapsed #app-sidebar .brand-wrap {
-            justify-content: center;
-        }
-
-        .sidebar-collapsed #app-sidebar .brand-text,
-        .sidebar-collapsed #app-sidebar .sidebar-text,
-        .sidebar-collapsed #app-sidebar .chevron,
-        .sidebar-collapsed #app-sidebar .orders-submenu {
-            display: none;
-        }
-
-        .sidebar-collapsed #app-sidebar .sidebar-link,
-        .sidebar-collapsed #app-sidebar .orders-toggle,
-        .sidebar-collapsed #app-sidebar .logout-link {
-            justify-content: center;
-            gap: 0;
-            padding-left: 0.75rem;
-            padding-right: 0.75rem;
-        }
-
-        /* Hide collapse toggle button text & keep icon centred */
-        .sidebar-collapsed #app-sidebar #sidebar-collapse-btn {
-            margin-left: 0;
-        }
-    }
+   
 </style>
 
-<script>
-    (function () {
-        // Basic guards in case DOM elements are missing
-        const sidebarEl = document.getElementById('app-sidebar');
-        const collapseBtn = document.getElementById('sidebar-collapse-btn');
-        const iconOpen = document.getElementById('collapse-icon-open');
-        const iconClosed = document.getElementById('collapse-icon-closed');
-
-        if (!sidebarEl) return;
-
-        // ── Collapse toggle (state remembered) ─────────────────────────
-        const COLLAPSE_KEY = 'sidebar_collapsed';
-        const isCollapsed = localStorage.getItem(COLLAPSE_KEY) === 'true';
-
-        function applyCollapse(collapsed) {
-            const root = document.documentElement;
-            root.classList.toggle('sidebar-collapsed', collapsed);
-            if (iconOpen && iconClosed) {
-                iconOpen.classList.toggle('hidden', collapsed);
-                iconClosed.classList.toggle('hidden', !collapsed);
-            }
-            localStorage.setItem(COLLAPSE_KEY, collapsed ? 'true' : 'false');
-        }
-
-        // Restore saved collapse state on load
-        applyCollapse(isCollapsed);
-
-        if (collapseBtn) {
-            collapseBtn.addEventListener('click', () => {
-                const root = document.documentElement;
-                applyCollapse(!root.classList.contains('sidebar-collapsed'));
-            });
-        }
-
-        // ── Folder (submenu) state helpers ─────────────────────────────
-        const FOLDERS_KEY = 'sidebar_open_folders';
-
-        function getOpenFolders() {
-            try {
-                const raw = localStorage.getItem(FOLDERS_KEY);
-                return raw ? JSON.parse(raw) : [];
-            } catch (e) {
-                return [];
-            }
-        }
-
-        function setOpenFolders(keys) {
-            try {
-                localStorage.setItem(FOLDERS_KEY, JSON.stringify(keys));
-            } catch (e) {
-                // ignore
-            }
-        }
-
-        function syncFoldersToStorage() {
-            const openKeys = [];
-            document.querySelectorAll('.sidebar-folder').forEach(folder => {
-                const btn = folder.querySelector('.sidebar-folder-toggle');
-                const key = btn?.getAttribute('data-folder');
-                if (key && folder.classList.contains('is-open')) {
-                    openKeys.push(key);
-                }
-            });
-            setOpenFolders(openKeys);
-        }
-
-        function restoreFolderOpenState() {
-            const saved = getOpenFolders();
-            if (!Array.isArray(saved) || !saved.length) return;
-
-            document.querySelectorAll('.sidebar-folder').forEach(folder => {
-                const btn = folder.querySelector('.sidebar-folder-toggle');
-                const submenu = folder.querySelector('.orders-submenu');
-                const chevron = folder.querySelector('.chevron');
-                const key = btn?.getAttribute('data-folder');
-
-                if (!key || !submenu) return;
-
-                const shouldBeOpen = saved.includes(key);
-
-                if (shouldBeOpen) {
-                    submenu.classList.add('is-open');
-                    chevron?.classList.add('rotate-180');
-                    btn.setAttribute('aria-expanded', 'true');
-                    folder.classList.add('is-open');
-                } else {
-                    submenu.classList.remove('is-open');
-                    chevron?.classList.remove('rotate-180');
-                    btn.setAttribute('aria-expanded', 'false');
-                    folder.classList.remove('is-open');
-                }
-            });
-        }
-
-        // Apply saved open/closed state on load,
-        // overriding the Blade "request()->routeIs" defaults
-        restoreFolderOpenState();
-
-        // ── Submenu (accordion) toggle with persistence ────────────────
-        document.querySelectorAll('.sidebar-folder-toggle').forEach(btn => {
-            btn.addEventListener('click', () => {
-                // Do nothing when sidebar is collapsed on desktop
-                if (window.innerWidth >= 1024 && document.documentElement.classList.contains('sidebar-collapsed')) {
-                    return;
-                }
-
-                const folder = btn.closest('.sidebar-folder');
-                const submenu = folder.querySelector('.orders-submenu');
-                const chevron = btn.querySelector('.chevron');
-                const isOpen = submenu.classList.contains('is-open');
-
-                // Close all open submenus first (accordion behaviour)
-                document.querySelectorAll('.sidebar-folder').forEach(f => {
-                    f.querySelector('.orders-submenu')?.classList.remove('is-open');
-                    f.querySelector('.chevron')?.classList.remove('rotate-180');
-                    f.querySelector('.sidebar-folder-toggle')?.setAttribute('aria-expanded', 'false');
-                    f.classList.remove('is-open');
-                });
-
-                // Open this one if it was closed
-                if (!isOpen) {
-                    submenu.classList.add('is-open');
-                    chevron?.classList.add('rotate-180');
-                    btn.setAttribute('aria-expanded', 'true');
-                    folder.classList.add('is-open');
-                }
-
-                // Persist the new state
-                syncFoldersToStorage();
-            });
-        });
-    })();
-</script>

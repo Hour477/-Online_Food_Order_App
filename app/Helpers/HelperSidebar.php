@@ -42,10 +42,19 @@ class HelperSidebar
             ],
 
             [
-                'title' => 'Orders',
-                'route' => 'admin.orders.index',
-                'active' => 'admin.orders.*',
-                'icon' => 'orders',
+                'title'   => 'Orders',
+                'icon'    => 'orders',
+                'folder'  => 'orders',
+                'active'  => 'admin.orders.*',
+                'children' => [
+                    ['title' => 'All Orders', 'route' => 'admin.orders.index', 'active' => 'admin.orders.index', 'params' => []],
+                    ['title' => 'Pending', 'route' => 'admin.orders.index', 'active' => 'admin.orders.index', 'params' => ['status' => 'pending'], 'badge' => 'pending'],
+                    ['title' => 'Confirmed', 'route' => 'admin.orders.index', 'active' => 'admin.orders.index', 'params' => ['status' => 'confirmed'], 'badge' => 'confirmed'],
+                    ['title' => 'Delivered', 'route' => 'admin.orders.index', 'active' => 'admin.orders.index', 'params' => ['status' => 'delivered'], 'badge' => 'delivered'],
+                    ['title' => 'Completed', 'route' => 'admin.orders.index', 'active' => 'admin.orders.index', 'params' => ['status' => 'completed'], 'badge' => 'completed'],
+                    ['title' => 'Refunded', 'route' => 'admin.orders.index', 'active' => 'admin.orders.index', 'params' => ['status' => 'refunded'], 'badge' => 'refunded'],
+                    ['title' => 'Cancelled', 'route' => 'admin.orders.index', 'active' => 'admin.orders.index', 'params' => ['status' => 'cancelled'], 'badge' => 'cancelled'],
+                ],
             ],
             
 
@@ -65,22 +74,38 @@ class HelperSidebar
             ],
 
             [
-                'title' => 'Payments',
-                'route' => 'admin.payment.index',
-                'active' => 'admin.payment.*',
-                'icon' => 'payment',
+                'title'   => 'Payments',
+                'icon'    => 'payment',
+                'folder'  => 'payments',
+                'active'  => 'admin.payment.*',
+                'children' => [
+                    ['title' => 'All Payments', 'route' => 'admin.payment.index', 'active' => 'admin.payment.index'],
+                    ['title' => 'Waiting Payment', 'route' => 'admin.payment.index', 'active' => 'admin.payment.index', 'params' => ['status' => 'pending']],
+                    ['title' => 'Success', 'route' => 'admin.payment.index', 'active' => 'admin.payment.index', 'params' => ['status' => 'paid']],
+                    ['title' => 'Error', 'route' => 'admin.payment.index', 'active' => 'admin.payment.index', 'params' => ['status' => 'failed']],
+                    ['title' => 'Refunded', 'route' => 'admin.payment.index', 'active' => 'admin.payment.index', 'params' => ['status' => 'refunded']],
+                ],
             ],
 
 
 
             [
-                
-                
-                'title' => 'Customers',
-                'route' => 'admin.customers.index',
-                'active' => 'admin.customers.*',
-                'icon' => 'customer',
-                
+                'title'   => 'Customers',
+                'icon'    => 'customer',
+                'folder'  => 'customers',
+                'active'  => 'admin.customers.*',
+                'children' => [
+                    ['title' => 'Top Customer', 'route' => 'admin.customers.best', 'active' => 'admin.customers.best'],
+                    ['title' => 'All Customer', 'route' => 'admin.customers.index', 'active' => 'admin.customers.index'],
+                ],
+            ],
+
+            [
+                'title' => 'Settings',
+                'route' => 'admin.settings.index',
+                'folder' => 'settings',
+                'active' => 'admin.settings.*',
+                'icon' => 'settings',
             ],
 
         ];

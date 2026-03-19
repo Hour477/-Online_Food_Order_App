@@ -23,7 +23,7 @@ class SettingController extends Controller
 
         $settings = Setting::query()->pluck('value', 'key')->toArray();
 
-        return view('setttings.index', compact('settings', 'setting'));
+        return view('admin.settings.index', compact('setting', 'settings'));
     }
 
     /**
@@ -93,7 +93,7 @@ class SettingController extends Controller
             Setting::updateOrCreate(['key' => 'favicon'], ['value' => $fileName]);
         }
         ToastMagic::success('Settings updated successfully');
-        return redirect()->route('settings.index')->with('success', 'Settings updated successfully.');
+        return redirect()->route('admin.settings.index')->with('success', 'Settings updated successfully.');
     }
 
     /**

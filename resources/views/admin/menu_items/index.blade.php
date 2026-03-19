@@ -124,14 +124,14 @@
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
                             {{-- View --}}
                             <a href="{{ route('admin.menu_items.show', $item->id) }}"
-                               class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
+                               class=" inline-flex items-center justify-center w-8 h-8 rounded-lg text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
                                title="View">
                                 <i class="fa-regular fa-eye text-sm"></i>
                             </a>
 
                             {{-- Edit --}}
                             <a href="{{ route('admin.menu_items.edit', $item->id) }}"
-                               class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-amber-600 hover:bg-amber-50 hover:text-amber-700 transition-colors"
+                               class=" inline-flex items-center justify-center w-8 h-8 rounded-lg text-amber-600 hover:bg-amber-50 hover:text-amber-700 transition-colors"
                                title="Edit">
                                 <i class="fa-regular fa-pen-to-square text-sm"></i>
                             </a>

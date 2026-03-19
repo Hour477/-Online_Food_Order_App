@@ -212,3 +212,140 @@ document.addEventListener('DOMContentLoaded', () => {
         syncByViewport();
     }
 });
+
+
+
+// Toggle sidebar for mobile
+
+    (function () {
+        // Basic guards in case DOM elements are missing
+        const sidebarEl = document.getElementById('app-sidebar');
+        const collapseBtn = document.getElementById('sidebar-collapse-btn');
+        const iconOpen = document.getElementById('collapse-icon-open');
+        const iconClosed = document.getElementById('collapse-icon-closed');
+
+        if (!sidebarEl) return;
+
+        // ── Collapse toggle (state remembered) ─────────────────────────
+        const COLLAPSE_KEY = 'sidebar_collapsed';
+        const isCollapsed = localStorage.getItem(COLLAPSE_KEY) === 'true';
+
+        function applyCollapse(collapsed) {
+            const root = document.documentElement;
+            root.classList.toggle('sidebar-collapsed', collapsed);
+            if (iconOpen && iconClosed) {
+                iconOpen.classList.toggle('hidden', collapsed);
+                iconClosed.classList.toggle('hidden', !collapsed);
+            }
+            localStorage.setItem(COLLAPSE_KEY, collapsed ? 'true' : 'false');
+        }
+
+        // Restore saved collapse state on load
+        applyCollapse(isCollapsed);
+
+        if (collapseBtn) {
+            collapseBtn.addEventListener('click', () => {
+                const root = document.documentElement;
+                applyCollapse(!root.classList.contains('sidebar-collapsed'));
+            });
+        }
+
+        // ── Folder (submenu) state helpers ─────────────────────────────
+        const FOLDERS_KEY = 'sidebar_open_folders';
+
+        function getOpenFolders() {
+            try {
+                const raw = localStorage.getItem(FOLDERS_KEY);
+                return raw ? JSON.parse(raw) : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function setOpenFolders(keys) {
+            try {
+                localStorage.setItem(FOLDERS_KEY, JSON.stringify(keys));
+            } catch (e) {
+                // ignore
+            }
+        }
+
+        function syncFoldersToStorage() {
+            const openKeys = [];
+            document.querySelectorAll('.sidebar-folder').forEach(folder => {
+                const btn = folder.querySelector('.sidebar-folder-toggle');
+                const key = btn?.getAttribute('data-folder');
+                if (key && folder.classList.contains('is-open')) {
+                    openKeys.push(key);
+                }
+            });
+            setOpenFolders(openKeys);
+        }
+
+        function restoreFolderOpenState() {
+            const saved = getOpenFolders();
+            if (!Array.isArray(saved) || !saved.length) return;
+
+            document.querySelectorAll('.sidebar-folder').forEach(folder => {
+                const btn = folder.querySelector('.sidebar-folder-toggle');
+                const submenu = folder.querySelector('.orders-submenu');
+                const chevron = folder.querySelector('.chevron');
+                const key = btn?.getAttribute('data-folder');
+
+                if (!key || !submenu) return;
+
+                const shouldBeOpen = saved.includes(key);
+
+                if (shouldBeOpen) {
+                    submenu.classList.add('is-open');
+                    chevron?.classList.add('rotate-180');
+                    btn.setAttribute('aria-expanded', 'true');
+                    folder.classList.add('is-open');
+                } else {
+                    submenu.classList.remove('is-open');
+                    chevron?.classList.remove('rotate-180');
+                    btn.setAttribute('aria-expanded', 'false');
+                    folder.classList.remove('is-open');
+                }
+            });
+        }
+
+        // Apply saved open/closed state on load,
+        // overriding the Blade "request()->routeIs" defaults
+        restoreFolderOpenState();
+
+        // ── Submenu (accordion) toggle with persistence ────────────────
+        document.querySelectorAll('.sidebar-folder-toggle').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Do nothing when sidebar is collapsed on desktop
+                if (window.innerWidth >= 1024 && document.documentElement.classList.contains('sidebar-collapsed')) {
+                    return;
+                }
+
+                const folder = btn.closest('.sidebar-folder');
+                const submenu = folder.querySelector('.orders-submenu');
+                const chevron = btn.querySelector('.chevron');
+                const isOpen = submenu.classList.contains('is-open');
+
+                // Close all open submenus first (accordion behaviour)
+                document.querySelectorAll('.sidebar-folder').forEach(f => {
+                    f.querySelector('.orders-submenu')?.classList.remove('is-open');
+                    f.querySelector('.chevron')?.classList.remove('rotate-180');
+                    f.querySelector('.sidebar-folder-toggle')?.setAttribute('aria-expanded', 'false');
+                    f.classList.remove('is-open');
+                });
+
+                // Open this one if it was closed
+                if (!isOpen) {
+                    submenu.classList.add('is-open');
+                    chevron?.classList.add('rotate-180');
+                    btn.setAttribute('aria-expanded', 'true');
+                    folder.classList.add('is-open');
+                }
+
+                // Persist the new state
+                syncFoldersToStorage();
+            });
+        });
+    })();
+

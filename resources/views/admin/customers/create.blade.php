@@ -20,7 +20,7 @@
                 border-gray-200 dark:border-gray-700 overflow-hidden">
                 <div class="p-8">
     
-                    <form action="{{ route('admin.customers.store') }}" method="POST" class="space-y-8">
+                    <form action="{{ route('admin.customers.store') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
                         @csrf
     
                         <!-- Name -->
@@ -59,9 +59,45 @@
                             <input type="text" name="phone" id="phone"
                                 value="{{ old('phone') }}"
                                 class="block w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-500 transition"
-                                "
                                 placeholder="e.g. 123-456-789">
                             @error('phone')
+                                <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Password -->
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Password
+                            </label>
+                            <input type="password" name="password" id="password"
+                                class="block w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-500 transition"
+                                placeholder="Minimum 6 characters">
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Default: password123</p>
+                            @error('password')
+                                <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div>
+                            <label for="password_confirmation" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Confirm Password
+                            </label>
+                            <input type="password" name="password_confirmation" id="password_confirmation"
+                                class="block w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-500 transition"
+                                placeholder="Confirm password">
+                        </div>
+
+                        <!-- Image -->
+                        <div>
+                            <label for="image" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Profile Image
+                            </label>
+                            <input type="file" name="image" id="image" accept="image/*"
+                                class="block w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-500 transition">
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Max size: 2MB. Formats: jpeg, png, jpg, gif</p>
+                            @error('image')
                                 <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                             @enderror
                         </div>

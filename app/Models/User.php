@@ -21,7 +21,7 @@ class User extends Authenticatable
         'password',
         'role_id',
         'image',
-        
+        'phone',
     ];
     // relationship to user to role
     public function role()

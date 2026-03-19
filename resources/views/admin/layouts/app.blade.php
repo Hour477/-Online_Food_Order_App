@@ -17,7 +17,13 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet">
 
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@100;300;400;700;900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
 
     <script>
         // Apply saved sidebar collapsed state before first paint to avoid flash
@@ -40,9 +46,11 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
     {!! ToastMagic::styles() !!}
+    @stack('styles')
 </head>
 
-<body>
+<body class="font-battambang-regular">
+    
 
     <div class="flex min-h-screen">
 
@@ -81,6 +89,7 @@
     </div>
 
     {!! ToastMagic::scripts() !!}
+    @stack('scripts')
     @yield('scripts')
 
     {{-- Notification Script --}}

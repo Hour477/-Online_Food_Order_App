@@ -9,6 +9,7 @@ use App\Models\OrderItem;
 use App\Models\Customer;
 use App\Models\Payment;
 use App\Events\OrderPlaced;
+use App\Services\BakongService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -16,6 +17,13 @@ use Illuminate\Support\Facades\Log;
 
 class customerCheckoutController extends Controller
 {
+    protected BakongService $bakongService;
+
+    public function __construct(BakongService $bakongService)
+    {
+        $this->bakongService = $bakongService;
+    }
+
     public function index()
     {
         $cart = session('cart', []);
@@ -42,7 +50,7 @@ class customerCheckoutController extends Controller
             'address'    => 'required|string|max:200',
             'city'       => 'required|string|max:60',
             'zip'        => 'required|string|max:20',
-            'payment'    => 'required|in:cod,card,wallet',
+            'payment'    => 'required|in:cash,khqr',
         ]);
 
         $cart = session('cart', []);
@@ -94,21 +102,37 @@ class customerCheckoutController extends Controller
                 }
 
                 // 4. Create Payment record
-                // Map frontend payment method to backend enum: cod -> cash, card -> card, wallet -> qr
-                $methodMap = [
-                    'cod'    => 'cash',
-                    'card'   => 'card',
-                    'wallet' => 'qr'
-                ];
-                
-                Payment::create([
+                $paymentData = [
                     'order_id'       => $order->id,
-                    'payment_method' => $methodMap[$request->payment],
+                    'payment_method' => $request->payment,
                     'total_amount'   => $total,
-                    'paid_amount'    => $total, // For guest checkout we assume full payment if not COD
-                    'change_amount'  => 0,
-                    'paid_at'        => now()
-                ]);
+                    'status'         => $request->payment === 'khqr' ? 'pending' : 'paid',
+                ];
+
+                // For cash payment, mark as paid
+                if ($request->payment === 'cash') {
+                    $paymentData['paid_amount'] = $total;
+                    $paymentData['change_amount'] = 0;
+                    $paymentData['paid_at'] = now();
+                }
+
+                // For KHQR, generate QR code
+                if ($request->payment === 'khqr') {
+                    $khqrResult = $this->bakongService->generateKHQR($order->order_no, $total);
+                    
+                    if ($khqrResult['success']) {
+                        $paymentData['khqr_md5'] = $khqrResult['md5'];
+                        $paymentData['khqr_string'] = $khqrResult['qr_string'];
+                        $paymentData['khqr_expires_at'] = now()->addMinutes(15); // QR expires in 15 minutes
+                    } else {
+                        // Fallback: generate local KHQR
+                        $qrString = $this->bakongService->generateLocalKHQR($order->order_no, $total);
+                        $paymentData['khqr_string'] = $qrString;
+                        $paymentData['khqr_expires_at'] = now()->addMinutes(15);
+                    }
+                }
+
+                Payment::create($paymentData);
 
                 return $order;
             });
@@ -117,10 +141,31 @@ class customerCheckoutController extends Controller
             event(new OrderPlaced($order));
 
             // Store current order for confirmation page
-            session(['last_order' => $order->load('orderItems.menuItem')]);
+            $order->load(['orderItems.menuItem', 'payments']);
+            session(['last_order' => $order]);
 
             // Clear cart
             session()->forget('cart');
+
+            // If KHQR payment, return JSON for modal or redirect
+            if ($request->payment === 'khqr') {
+                $qrImageUrl = $this->bakongService->getQRImageURL($order->payment->khqr_string);
+                
+                // If AJAX request, return JSON
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json([
+                        'success' => true,
+                        'order_id' => $order->id,
+                        'order_no' => $order->order_no,
+                        'amount' => $order->total_amount,
+                        'qr_image' => $qrImageUrl,
+                        'expires_at' => $order->payment->khqr_expires_at,
+                    ]);
+                }
+                
+                // Otherwise redirect to KHQR payment page
+                return redirect()->route('customerOrder.checkout.khqr-payment', $order->id);
+            }
 
             return redirect()->route('customerOrder.checkout.confirmation');
 
@@ -130,11 +175,98 @@ class customerCheckoutController extends Controller
         }
     }
 
+    /**
+     * Show KHQR payment page with QR code
+     */
+    public function khqrPayment(Order $order)
+    {
+        $order->load(['payments', 'orderItems.menuItem']);
+        
+        if (!$order->payment || $order->payment->payment_method !== 'khqr') {
+            return redirect()->route('customerOrder.checkout.confirmation');
+        }
+
+        // Check if QR has expired
+        if ($order->payment->isKHQRExpired()) {
+            return redirect()->route('customerOrder.checkout.index')
+                ->with('error', 'QR code has expired. Please try again.');
+        }
+
+        // Generate QR image URL
+        $qrImageUrl = $this->bakongService->getQRImageURL($order->payment->khqr_string);
+
+        return view('customerOrder.checkout.khqr-payment', compact('order', 'qrImageUrl'));
+    }
+
+    /**
+     * Check KHQR payment status (AJAX)
+     */
+    public function checkKHQRStatus(Order $order)
+    {
+        $order->load('payments');
+        
+        if (!$order->payment || !$order->payment->khqr_md5) {
+            return response()->json([
+                'success' => false,
+                'status' => 'error',
+                'message' => 'Invalid payment',
+            ]);
+        }
+
+        // Check if expired
+        if ($order->payment->isKHQRExpired()) {
+            return response()->json([
+                'success' => true,
+                'status' => 'expired',
+                'message' => 'QR code has expired',
+            ]);
+        }
+
+        // Check with Bakong API
+        $result = $this->bakongService->checkPaymentStatus($order->payment->khqr_md5);
+
+        if ($result['success'] && $result['status'] === 'success') {
+            // Update payment status
+            $order->payment->update([
+                'status' => 'paid',
+                'paid_amount' => $order->total_amount,
+                'paid_at' => now(),
+                'khqr_transaction_id' => $result['transaction_id'] ?? null,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'status' => 'paid',
+                'redirect' => route('customerOrder.checkout.confirmation'),
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'status' => 'pending',
+        ]);
+    }
+
+    /**
+     * Cancel KHQR payment and return to checkout
+     */
+    public function cancelKHQRPayment(Order $order)
+    {
+        $order->load('payments');
+        
+        if ($order->payment && $order->payment->payment_method === 'khqr') {
+            $order->payment->update(['status' => 'cancelled']);
+        }
+
+        return redirect()->route('customerOrder.menu.index')
+            ->with('info', 'Payment cancelled. Your order has been saved.');
+    }
+
     public function confirmation()
     {
         $order = session('last_order');
         if (!$order) {
-            return redirect()->route('menu.index');
+            return redirect()->route('customerOrder.menu.index');
         }
         return view('customerOrder.checkout.confirmation', compact('order'));
     }
