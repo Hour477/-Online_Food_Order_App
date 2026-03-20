@@ -10,30 +10,42 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
+
             $table->string('order_no')->unique();
-            $table->enum('order_type', ['dine_in', 'takeaway', 'delivery'])->default('dine_in');
+
+            $table->enum('order_type', ['dine_in', 'takeaway', 'delivery'])
+                ->default('dine_in');
+
             $table->foreignId('customer_id')
-                  ->nullable()
-                  ->constrained()
-                  ->nullOnDelete();
+                ->nullable()
+                ->constrained()
+                ->nullOnDelete();
 
             $table->foreignId('table_id')
-                  ->nullable()
-                  ->constrained('tables')
-                  ->cascadeOnDelete();
+                ->nullable()
+                ->constrained('tables')
+                ->nullOnDelete();
 
             $table->foreignId('user_id')
-                  ->constrained('users')
-                  ->cascadeOnDelete();
+                ->nullable()
+                ->constrained('users')
+                ->nullOnDelete();
 
+            $table->text('notes')->nullable();
             $table->enum('status', [
                 'pending',
-                'cooking',
-                'served',
-                'paid',
-                'cancelled'
-            ])->default('pending');
+                'completed',
+                'delivered', // customer has received the order
+                'cancelled',
+                'refunded'
+            ])->default('pending')->change();
+        
+            // Add columns for order totals
 
+            $table->decimal('subtotal', 10, 2)->default(0);
+            $table->decimal('tax', 10, 2)->default(0);
+            $table->decimal('total_amount', 10, 2)->default(0);
+            $table->softDeletes()->nullable();
             $table->timestamps();
         });
     }

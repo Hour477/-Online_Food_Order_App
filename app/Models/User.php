@@ -7,22 +7,29 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+use App\Models\Role;
+
+
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'name',
         'email',
         'password',
-        'role', // admin, waiter, kitchen, cashier
+        'role_id',
+        'image',
+        'phone',
     ];
+    // relationship to user to role
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id');  // ← explicit foreign key
+        
+        
+    }
 
     /**
      * The attributes that should be hidden for serialization.

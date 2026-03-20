@@ -5,25 +5,67 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\MenuItem;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
+use Devrabiul\ToastMagic\Facades\ToastMagic;
+
 class MenuItemController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::all();
-        $menu_items = MenuItem::with('category')
-            ->latest()
-            ->paginate(4); 
+        $search = $request->get('search');
+        $status = $request->get('status');
+        $price = $request->get('price');
 
-        return view('menu_items.index', compact('menu_items', 'categories'));
-    }
+        $categories = Category::all();
+
+
+        $query = MenuItem::with('category')
+
+            ->when($search, function ($query, $search) {
+                // using keyword $search for call in .blade.php
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', '%' . $search . '%')
+                        ->orWhere('description', 'like', '%' . $search . '%')
+                        ->orwhere('price', 'LIKE', '%'. $search .'%');
+                });
+            })
+            // using keywork $status
+            
+            ->when($status !== null && $status !== '', function ($query) use ($status) {
+                if ($status === 'available') {
+                    $query->where('status', 1);
+                }
+
+                if ($status === 'unavailable') {
+                    $query->where('status', 0);
+                }
+            });
+            // price 
+         
+            
+            
+
+            
     
+        $menu_items = $query
+            ->with('category')
+            ->latest()->paginate($request->get('per_page',5))
+            ->withQueryString();
+            
+            
+
+        return view('admin.menu_items.index', compact('menu_items', 'categories'));
+
+    }
+
+
     public function create()
     {
         $categories = Category::all();
-        return view('menu_items.create' , compact('categories'));
+        return view('admin.menu_items.create', compact('categories'));
     }
 
     public function store(Request $request)
@@ -42,36 +84,41 @@ class MenuItemController extends Controller
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             // preserve original name with a timestamp prefix to avoid collisions
-            $filename = time().'_'.preg_replace('/[^A-Za-z0-9\.\-_]/', '_', $file->getClientOriginalName());
+            $filename = time() . '_' . preg_replace('/[^A-Za-z0-9\.\-_]/', '_', $file->getClientOriginalName());
             $path = $file->storeAs('menu-items', $filename, 'public');
             $data['image'] = $path;
         }
 
         MenuItem::create($data);
 
-        return redirect()->route('menu_items.index')
+        return redirect()->route('admin.menu_items.index')
             ->with('success', 'Menu item created successfully!');
-    }   
+    }
 
     public function show(string $id)
     {
         //
-        $menu_items = MenuItem::findOrFail($id);
-        return view('menu_items.show', compact('menu_items'));
+        $menu_item = MenuItem::findOrFail($id);
+        return view('admin.menu_items.show', compact('menu_item'));
     }
 
     public function edit($id)
     {
-        $menu_items = MenuItem::with('categories')
-        ->where('category_id','status') 
-        ->select('id','');
-        return view('menu_items.edit', compact('menu_items', 'categories'));
+        
+        $categories = Category::all();
+        $menu_item = MenuItem::with('category')
+        
+            ->select('id', 'name', 'description', 'price', 'status', 'image', 'category_id')
+            ->findOrFail($id);
+        
+            
+        return view('admin.menu_items.edit', compact('menu_item', 'categories'));
     }
 
     public function update(Request $request, string $id)
     {
         $menuItem = MenuItem::findOrFail($id);
-        
+
         $validated = $request->validate([
             'name'          => 'required|string|max:120',
             'category_id'   => 'required|exists:categories,id',
@@ -82,30 +129,33 @@ class MenuItemController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            
-            if($menuItem->image) {
+
+            if ($menuItem->image) {
                 Storage::disk('public')->delete($menuItem->image);
             }
             $file = $request->file('image');
-            $filename = time().'_'.preg_replace('/[^A-Za-z0-9\.\-_]/', '_', $file->getClientOriginalName());
+            $filename = time() . '_' . preg_replace('/[^A-Za-z0-9\.\-_]/', '_', $file->getClientOriginalName());
             $path = $file->storeAs('menu-items', $filename, 'public');
             $validated['image'] = $path;
         }
 
         $menuItem->update($validated);
+        ToastMagic::success('Menu item updated successfully');
 
-        return redirect()->route('menu_items.index')
+
+        return redirect()->route('admin.menu_items.index')
             ->with('success', 'Menu item updated successfully!');
     }
 
     public function destroy(string $id)
     {
         $item = MenuItem::findOrFail($id);
-        if($item->image) {
+        if ($item->image) {
             Storage::disk('public')->delete($item->image);
         }
         $item->delete();
-        return redirect()->route('menu_items.index')
+        ToastMagic::success('Menu item deleted successfully');
+        return redirect()->route('admin.menu_items.index')
             ->with('success', 'Menu item deleted successfully!');
     }
 }

@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Category;
+use Devrabiul\ToastMagic\Facades\ToastMagic;
+use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
@@ -13,16 +14,17 @@ class CategoryController extends Controller
         $search = $request->get('search');
         $status = $request->get('status');
 
+
         $query = Category::select("id", "name", "description", "status")
             ->when($search, function ($query, $search) {
                 // using keyword $search for call in .blade.php
                 $query->where(function ($q) use ($search) {
-                    $q->where('name', 'like', '%' . $search . '%')
-                        ->orWhere('description', 'like', '%' . $search . '%');
+                    $q->where('name', 'like', '%' . $search . '%');
+
                 });
             })
             // using keywork $status
-            
+
             ->when($status !== null && $status !== '', function ($query) use ($status) {
                 if ($status === 'active') {
                     $query->where('status', 1);
@@ -33,15 +35,16 @@ class CategoryController extends Controller
                 }
             });
 
-        $categories = $query->latest()->paginate($request->get('per_page', 5))
+        $categories = $query->latest()->paginate($request->get('per_page', 10))
             ->withQueryString();
 
-        return view('categories.index', compact('categories'));
+
+        return view('admin.categories.index', compact('categories'));
     }
 
     public function create()
     {
-        return view('categories.create');
+        return view('admin.categories.create');
     }
 
     public function store(Request $request)
@@ -53,8 +56,8 @@ class CategoryController extends Controller
         ]);
 
         Category::create($validated);
-        return redirect()->route('categories.index')
-            ->with('success', 'Category created successfully!');
+        ToastMagic::success('categories created successfully');
+        return redirect()->route('admin.categories.index');
     }
 
     public function show(string $id)
@@ -65,7 +68,7 @@ class CategoryController extends Controller
     public function edit(string $id)
     {
         $category = Category::findOrFail($id);
-        return view('categories.edit', compact('category'));
+        return view('admin.categories.edit', compact('category'));
     }
 
     public function update(Request $request, string $id)
@@ -78,15 +81,16 @@ class CategoryController extends Controller
 
         $category = Category::findOrFail($id);
         $category->update($validated);
-        
-        return redirect()->route('categories.index')
-            ->with('success', 'Category updated successfully!');
+        ToastMagic::success('categories created successfully');
+        return redirect()->route('admin.categories.index');
+
     }
 
     public function destroy(string $id)
     {
         Category::destroy($id);
-        return redirect()->route('categories.index')
-            ->with('success', 'Category deleted successfully!');
+        ToastMagic::success('Delete category successfully');
+        return redirect()->route('admin.categories.index');
+
     }
 }

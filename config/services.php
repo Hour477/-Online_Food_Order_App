@@ -35,4 +35,13 @@ return [
         ],
     ],
 
+    'bakong' => [
+        'api_key' => env('BAKONG_API_KEY'),
+        'merchant_id' => env('BAKONG_MERCHANT_ID'),
+        'account_id' => env('BAKONG_ACCOUNT_ID'),
+        'merchant_name' => env('BAKONG_MERCHANT_NAME', 'Restaurant'),
+        'currency' => env('BAKONG_CURRENCY', 'USD'),
+        'sandbox' => env('BAKONG_SANDBOX', true),
+    ],
+
 ];

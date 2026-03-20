@@ -11,12 +11,12 @@ class TableController extends Controller
     public function index()
     {
         $tables = Table::all();
-        return view('tables.index', compact('tables'));
+        return view('admin.tables.index', compact('tables'));
     }
 
     public function create()
     {
-        return view('tables.create');
+        return view('admin.tables.create');
     }
 
     public function store(Request $request)
@@ -27,20 +27,20 @@ class TableController extends Controller
             'status' => 'required|in:available,occupied,reserved',
         ]);
         Table::create($validated);
-        return redirect()->route('tables.index')
+        return redirect()->route('admin.tables.index')
             ->with('success', 'Table created successfully!');
     }
 
     public function show(string $id)
     {
         $table = Table::findOrFail($id);
-        return view('tables.show', compact('table'));
+        return view('admin.tables.show', compact('table'));
     }
 
     public function edit(string $id)
     {
        $table = Table::findOrFail($id);
-       return view('tables.edit', compact('table'));
+       return view('admin.tables.edit', compact('table'));
     }
 
     public function update(Request $request, string $id)
@@ -54,13 +54,13 @@ class TableController extends Controller
         ]);
 
         $table->update($validated);
-        return redirect()->route('tables.index')
+        return redirect()->route('admin.tables.index')
             ->with('success', 'Table updated successfully!');
     }
 
     public function destroy(string $id)
     {
         Table::destroy($id);
-        return redirect()->route('tables.index')->with('success', 'Table deleted successfully!');
+        return redirect()->route('admin.tables.index')->with('success', 'Table deleted successfully!');
     }
 }
