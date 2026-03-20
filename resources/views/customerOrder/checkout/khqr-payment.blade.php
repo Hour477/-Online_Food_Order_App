@@ -5,10 +5,8 @@
 @section('content')
 <div class="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full">
-        
         {{-- QR Card --}}
         <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-            
             {{-- Header --}}
             <div class="bg-amber-600 px-6 py-4 text-center">
                 <h1 class="text-xl font-bold text-white">Scan to Pay</h1>
@@ -130,7 +128,7 @@
 
     // Check payment status
     function checkStatus() {
-        fetch('{{ route('customerOrder.checkout.khqr-status', $order->id) }}')
+        fetch('{{ route('customerOrder.checkout.khqr-status', $order->id)}}')
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'paid') {
@@ -144,7 +142,6 @@
                             <span>Payment successful!</span>
                         </div>
                     `;
-                    
                     // Redirect to confirmation
                     setTimeout(() => {
                         window.location.href = data.redirect || '{{ route('customerOrder.checkout.confirmation') }}';

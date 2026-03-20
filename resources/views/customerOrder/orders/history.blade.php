@@ -82,7 +82,7 @@
                     {{ $order['address'] }}
                 </div>
                 <div class="flex gap-2">
-                    <button onclick="toggleDetails('order-{{ $order['id'] }}')"
+                    <button onclick="toggleDetails('order-{{ $order['id']}}')"
                         class="text-xs text-amber-600 hover:text-amber-700 font-medium transition flex items-center gap-1">
                         Details <i class="fa-solid fa-chevron-down text-[10px]" id="chevron-{{ $order['id'] }}"></i>
                     </button>

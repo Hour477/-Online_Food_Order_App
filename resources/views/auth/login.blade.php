@@ -1,21 +1,38 @@
+
+@php
+    $sidebarSettings = \App\Models\Setting::query()
+        ->whereIn('key', ['logo', 'resturant_name'])
+        ->pluck('value', 'key');
+    $sidebarLogo = $sidebarSettings['logo'] ?? null;
+    $sidebarName = $sidebarSettings['resturant_name'] ?? config('app.name');
+  
+@endphp
+
+
 @extends('customerOrder.layouts.app')
 
 @section('content')
 
-<div class="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12">
+<div class="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12 shadow-lg sm:px-6 lg:px-8">
 
     <div class="w-full max-w-md bg-white border border-gray-200 rounded-2xl overflow-hidden">
 
         {{-- Header --}}
         <div class="px-8 py-8 border-b border-gray-100">
             <div class="flex items-center gap-3 mb-6">
-                <div class="w-9 h-9 rounded-lg bg-amber-600 flex items-center justify-center flex-shrink-0">
-                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2.2"
-                         stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                        <path d="M3 11l19-9-9 19-2-8-8-2z"/>
-                    </svg>
-                </div>
-                <span class="text-base font-semibold text-gray-900 tracking-tight">Saveur POS</span>
+                @if (!empty($sidebarLogo))
+                    <img src="{{ asset('storage/settings/' . $sidebarLogo) }}" alt="{{ $sidebarName }}"
+                        class="h-10 w-10 rounded-lg object-contain bg-gray-100 p-1 flex-shrink-0">
+                @else
+                    <div class="h-10 w-10 rounded-lg bg-amber-600 flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                            <circle cx="12" cy="12" r="4.5"></circle>
+                            <path d="M5 4v7m0 0a2 2 0 002 2M5 11a2 2 0 01-2-2V4"></path>
+                            <path d="M18 4v7a2 2 0 01-2 2"></path>
+                        </svg>
+                    </div>
+                @endif
+                <span class="text-base font-semibold text-gray-900 tracking-tight">{{ $sidebarName }}</span>
             </div>
 
             <h1 class="text-2xl font-semibold text-gray-900 tracking-tight">Welcome back</h1>

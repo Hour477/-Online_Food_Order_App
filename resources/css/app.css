@@ -151,36 +151,40 @@ body {
 
 /* Khmer Font - Battambang */
 body {
-    font-family: "Battambang", "Momo Trust Sans", sans-serif;
+    font-family: "Battambang", "Momo Trust Sans", system-ui;
     background-color: #fdf6ec;
     color: #1a1208;
 }
-
-/* Utility classes for Battambang font weights */
-.font-battambang-thin {
-    font-family: "Battambang", sans-serif;
-    font-weight: 100;
+.battambang-thin {
+  font-family: "Battambang", system-ui;
+  font-weight: 100;
+  font-style: normal;
 }
 
-.font-battambang-light {
-    font-family: "Battambang", sans-serif;
-    font-weight: 300;
+.battambang-light {
+  font-family: "Battambang", system-ui;
+  font-weight: 300;
+  font-style: normal;
 }
 
-.font-battambang-regular {
-    font-family: "Battambang", sans-serif;
-    font-weight: 400;
+.battambang-regular {
+  font-family: "Battambang", system-ui;
+  font-weight: 400;
+  font-style: normal;
 }
 
-.font-battambang-bold {
-    font-family: "Battambang", sans-serif;
-    font-weight: 700;
+.battambang-bold {
+  font-family: "Battambang", system-ui;
+  font-weight: 700;
+  font-style: normal;
 }
 
-.font-battambang-black {
-    font-family: "Battambang", sans-serif;
-    font-weight: 900;
+.battambang-black {
+  font-family: "Battambang", system-ui;
+  font-weight: 900;
+  font-style: normal;
 }
+
 
 
 /*  Sidebar link active state */

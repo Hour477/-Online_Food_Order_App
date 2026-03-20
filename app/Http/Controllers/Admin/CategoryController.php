@@ -14,16 +14,17 @@ class CategoryController extends Controller
         $search = $request->get('search');
         $status = $request->get('status');
 
+
         $query = Category::select("id", "name", "description", "status")
             ->when($search, function ($query, $search) {
                 // using keyword $search for call in .blade.php
                 $query->where(function ($q) use ($search) {
                     $q->where('name', 'like', '%' . $search . '%');
-                      
+
                 });
             })
             // using keywork $status
-            
+
             ->when($status !== null && $status !== '', function ($query) use ($status) {
                 if ($status === 'active') {
                     $query->where('status', 1);
@@ -37,7 +38,7 @@ class CategoryController extends Controller
         $categories = $query->latest()->paginate($request->get('per_page', 10))
             ->withQueryString();
 
-        
+
         return view('admin.categories.index', compact('categories'));
     }
 
@@ -82,7 +83,7 @@ class CategoryController extends Controller
         $category->update($validated);
         ToastMagic::success('categories created successfully');
         return redirect()->route('admin.categories.index');
-            
+
     }
 
     public function destroy(string $id)
@@ -90,6 +91,6 @@ class CategoryController extends Controller
         Category::destroy($id);
         ToastMagic::success('Delete category successfully');
         return redirect()->route('admin.categories.index');
-            
+
     }
 }
