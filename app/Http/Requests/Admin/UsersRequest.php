@@ -16,16 +16,31 @@ class UsersRequest extends FormRequest
 
     public function rules(): array
     {
-        // $users = $this->route('users');
-
-        return [
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6',
-            'role_id' => 'nullable|exists:roles,id',
-            'image' => 'nullable|image|max:2048'
-
-
-        ];
+        // Get user ID from route parameter (could be string or model)
+        $user = $this->route('user');
+        $userId = is_object($user) ? $user->id : $user;
+        
+        // Check if this is an update request (user ID exists)
+        $isUpdate = !empty($userId) && $userId !== '0';
+        
+        if ($isUpdate) {
+            // Update: Password is optional
+            return [
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email,' . $userId,
+                'password' => 'nullable|min:6|confirmed',
+                'role_id' => 'required|exists:roles,id',
+                'image' => 'nullable|image|max:2048'
+            ];
+        } else {
+            // Create: Password is required
+            return [
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|min:6|confirmed',
+                'role_id' => 'required|exists:roles,id',
+                'image' => 'nullable|image|max:2048'
+            ];
+        }
     }
 }

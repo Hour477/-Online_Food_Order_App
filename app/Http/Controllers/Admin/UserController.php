@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
+use App\Helpers\UploadImageHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\UsersRequest;
+use App\Models\Role;
 use App\Models\User;
 use App\Services\UserServices;
-use App\Models\Role;
-use App\Http\Requests\Admin\UsersRequest;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -19,13 +21,13 @@ class UserController extends Controller
     {
         $this->userServices = $userServices;
     }
-    
+
     public function index()
     {
-        
+
         $search = request("search");
-        $users = User::where("name","like","%".$search."%")->paginate(5);
-        
+        $users = User::where("name", "like", "%" . $search . "%")->paginate(5);
+
         return view("admin.users.index", compact("users"));
     }
 
@@ -37,7 +39,6 @@ class UserController extends Controller
         //
         $roles = Role::select("id", "name")->get();
         return view("admin.users.create", compact("roles"));
-
     }
 
     /**
@@ -47,11 +48,9 @@ class UserController extends Controller
     {
         //
         $data = $request->validated();
-        $data['image'] = $request->file('image');
-        
-        $this->userServices->createUser($data);
+        $this->userServices->createUser($data, $request);
+
         return redirect()->route("admin.users.index")->with("success", "User created successfully");
-        
     }
 
     /**
@@ -67,28 +66,30 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(User $user)
     {
-        //
-        $user = User::find($id);
-        return view("admin.users.edit", compact("user"));
+        if (!$user) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'User not found or has been deleted.');
+        }
+
+        $roles = Role::all();
+
+        return view("admin.users.edit", compact("user", "roles"));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UsersRequest $request, string $id)
     {
-        //
-        $validate = $request->validate([
-            "name"=> "required",
-            "email" => "required|email",
-            "role" => "required|in:admin,waiter,kitchen",
-        ]);
+        $data = $request->validated();
 
-        $user = User::find($id);
-        $user->update($validate);
-        return redirect()->route("admin.users.index");
+        // Let service handle image upload
+        $this->userServices->updateUser($data, $id);
+        
+        return redirect()->route("admin.users.index")
+            ->with("success", "User updated successfully");
     }
 
     /**
@@ -96,9 +97,28 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
         $user = User::find($id);
+
+        if (!$user) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'User not found.');
+        }
+
+        // Delete user image if exists
+        if ($user->image) {
+            try {
+                $imagePath = storage_path('app/' . $user->image);
+                if (file_exists($imagePath)) {
+                    unlink($imagePath);
+                }
+            } catch (\Exception $e) {
+                // Log error but don't prevent user deletion
+                Log::error('Failed to delete user image: ' . $e->getMessage());
+            }
+        }
+
         $user->delete();
-        return redirect()->route("admin.users.index");
+        return redirect()->route("admin.users.index")
+            ->with('success', 'User deleted successfully.');
     }
 }

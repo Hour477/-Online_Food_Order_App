@@ -17,7 +17,7 @@ return new class extends Migration
         
         // Then add the new enum with khqr included
         DB::statement("ALTER TABLE payments MODIFY COLUMN payment_method ENUM('cash', 'card', 'qr', 'khqr')");
-    }
+         }
 
     /**
      * Reverse the migrations.

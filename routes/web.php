@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\LanguageController;
 
 // Admin controllers
 use App\Http\Controllers\Admin\{
@@ -18,6 +19,7 @@ use App\Http\Controllers\Admin\{
     OrderItemsController,
     CheckoutController,
     PaymentController,
+    BannerController,
 };
 
 // Customer (public) controllers
@@ -47,6 +49,18 @@ Route::middleware('auth')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::redirect('/', '/menu');
+
+/*
+|--------------------------------------------------------------------------
+| Language Switcher Route
+|--------------------------------------------------------------------------
+*/
+Route::get('/language/{locale}', [LanguageController::class, 'switch'])->name('language.switch');
+
+// Handle incorrect URL pattern (for compatibility)
+Route::get('/{locale}/language', function($locale) {
+    return redirect()->route('language.switch', $locale);
+})->where('locale', 'en|km');
 
 Route::prefix('menu')->name('customerOrder.')->group(function () {
     Route::get('/', [customerMenuController::class, 'index'])->name('menu.index');
@@ -132,4 +146,6 @@ Route::middleware(['auth', 'role:admin'])
 
         Route::resource('payment', PaymentController::class);
         Route::resource('settings', SettingController::class);
+        Route::resource('banners', BannerController::class);
+        Route::get('banners/{id}/toggle-status', [BannerController::class, 'toggleStatus'])->name('banners.toggle-status');
     });

@@ -14,11 +14,16 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('order_id')->constrained()->cascadeOnDelete();
-            $table->enum('payment_method', ['cash', 'card', 'qr']);
+            $table->string('payment_method')->default('cash');
+
+
+
+
             $table->decimal('total_amount', 10,2);
             $table->decimal('paid_amount', 10,2);
             $table->decimal('change_amount', 10, 2);
             $table->timestamp('paid_at');
+            //
             $table->timestamps();
         });
     }

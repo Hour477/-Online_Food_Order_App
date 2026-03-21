@@ -8,12 +8,16 @@ use App\Http\Controllers\Controller;
 
 use App\Models\MenuItem;
 use App\Models\Category;
+use App\Models\Banner;
 
 class customerMenuController extends Controller
 {
     public function index(Request $request)
     {
         $categories = Category::where('status', 1)->get();
+        
+        // Get active banners for the customer-facing menu
+        $banners = Banner::active()->latest()->get();
         
         $query = MenuItem::query()->where('status', 'available');
 
@@ -41,8 +45,13 @@ class customerMenuController extends Controller
             default      => $query->latest(),
         };
 
-        $items = $query->get();
+        $items = $query->paginate(20)->withQueryString();
 
-        return view('customerOrder.menu.index', compact('items', 'categories'));
+        // For AJAX requests, return only the menu items HTML
+        if ($request->ajax()) {
+            return view('customerOrder.menu.partials.items-grid', compact('items'))->render();
+        }
+
+        return view('customerOrder.menu.index', compact('items', 'categories', 'banners'));
     }
 }

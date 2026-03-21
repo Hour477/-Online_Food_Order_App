@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+// use App\Traits\HasDisplayImage;
+use App\Helpers\DisplayImageHelper;
+
+
 use App\Models\Role;
 
 
@@ -14,6 +18,7 @@ class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
+    protected  $appends = ['display_image'];
 
     protected $fillable = [
         'name',
@@ -23,6 +28,11 @@ class User extends Authenticatable
         'image',
         'phone',
     ];
+
+     public function getDisplayImageAttribute()
+    {
+        return DisplayImageHelper::get($this->image);
+    }
     // relationship to user to role
     public function role()
     {
@@ -53,4 +63,6 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    
 }
