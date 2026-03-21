@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Restaurant Ordering System '),
+    'name' => env('APP_NAME', 'Online Ordering System'),
 
     /*
     |--------------------------------------------------------------------------
@@ -78,11 +78,34 @@ return [
     |
     */
 
-    'locale' => env('APP_LOCALE', 'en'),
+    'locale' => env('APP_LOCALE', 'km'),
 
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
 
     'faker_locale' => env('APP_FAKER_LOCALE', 'en_US'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Available Locales
+    |--------------------------------------------------------------------------
+    |
+    | List all available locales for the application. These are the languages
+    | that users can switch between.
+    |
+    */
+
+    'available_locales' => [
+        'en' => 'English',
+        'km' => 'ខ្មែរ',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Supported Locales (for route prefixing)
+    |--------------------------------------------------------------------------
+    */
+
+    'supported_locales' => ['en', 'km'],
 
     /*
     |--------------------------------------------------------------------------
@@ -124,4 +147,3 @@ return [
     ],
 
 ];
-

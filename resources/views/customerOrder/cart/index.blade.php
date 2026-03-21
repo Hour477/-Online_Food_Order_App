@@ -1,12 +1,12 @@
 @extends('customerOrder.layouts.app')
 
-@section('title', 'Your Cart — Saveur')
+@section('title', __('app.your_cart') . ' — Saveur')
 
 @section('content')
 <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
-    <h1 class="text-4xl font-bold text-gray-900 mb-8">
-        Your <em class="text-amber-500 not-italic">Basket</em>
+    <h1 class="text-4xl font-bold text-gray-900 mb-8 battambang-bold">
+        {{ __('app.your_cart') }}
     </h1>
 
     @if(empty($cart))
@@ -15,10 +15,10 @@
         <div class="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-5">
             <i class="fa-solid fa-basket-shopping text-4xl text-gray-300"></i>
         </div>
-        <h2 class="text-2xl text-gray-500 mb-2">Your basket is empty</h2>
-        <p class="text-gray-400 text-sm mb-6">Add some delicious items from the menu!</p>
-        <a href="{{ route('customerOrder.menu.index') }}" class="inline-flex items-center gap-2 px-6 py-3 rounded-lg font-medium text-sm bg-amber-600 text-white hover:bg-amber-700 transition">
-            <i class="fa-solid fa-utensils"></i> Browse Menu
+        <h2 class="text-2xl text-gray-500 mb-2 battambang-regular">{{ __('app.cart_empty') }}</h2>
+        <p class="text-gray-400 text-sm mb-6 battambang-regular">{{ __('app.cart_empty_description') }}</p>
+        <a href="{{ route('customerOrder.menu.index') }}" class="inline-flex items-center gap-2 px-6 py-3 rounded-lg font-medium text-sm bg-amber-600 text-white hover:bg-amber-700 transition battambang-regular">
+            <i class="fa-solid fa-utensils"></i> {{ __('app.browse_menu') }}
         </a>
     </div>
 
@@ -45,7 +45,7 @@
                         <form method="POST" action="{{ route('customerOrder.cart.remove') }}">
                             @csrf
                             <input type="hidden" name="item_id" value="{{ $id }}">
-                            <button type="submit" class="text-red-400 hover:text-red-600 transition p-1" title="Remove">
+                            <button type="submit" class="text-red-400 hover:text-red-600 transition p-1" title="{{ __('app.remove_item') }}">
                                 <i class="fa-solid fa-trash-can text-sm"></i>
                             </button>
                         </form>
@@ -70,8 +70,8 @@
             {{-- Clear Cart --}}
             <form method="POST" action="{{ route('customerOrder.cart.clear') }}" class="mt-2">
                 @csrf
-                <button type="submit" class="text-sm text-gray-400 hover:text-red-500 transition flex items-center gap-1">
-                    <i class="fa-solid fa-xmark"></i> Clear entire cart
+                <button type="submit" class="text-sm text-gray-400 hover:text-red-500 transition flex items-center gap-1 battambang-regular">
+                    <i class="fa-solid fa-xmark"></i> {{ __('app.clear_cart') }}
                 </button>
             </form>
         </div>
@@ -79,41 +79,41 @@
         {{-- ===== ORDER SUMMARY ===== --}}
         <div class="lg:col-span-1">
             <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 sticky top-28">
-                <h2 class="text-xl font-bold text-gray-900 mb-5">Order Summary</h2>
+                <h2 class="text-xl font-bold text-gray-900 mb-5 battambang-bold">{{ __('app.order_summary') }}</h2>
 
-                <div class="space-y-3 text-sm text-gray-600 mb-4">
+                <div class="space-y-3 text-sm text-gray-600 mb-4 battambang-regular">
                     @php $subtotal = array_sum(array_map(fn($i) => $i['price'] * $i['qty'], $cart)); @endphp
                     <div class="flex justify-between">
-                        <span>Subtotal</span>
+                        <span>{{ __('app.subtotal') }}</span>
                         <span class="font-medium text-gray-900">${{ number_format($subtotal, 2) }}</span>
                     </div>
                     <div class="flex justify-between">
-                        <span>Delivery fee</span>
+                        <span>{{ __('app.delivery_fee') }}</span>
                         <span class="font-medium text-gray-900">$2.99</span>
                     </div>
                     <div class="flex justify-between">
-                        <span>Tax (8%)</span>
+                        <span>{{ __('app.tax') }} (8%)</span>
                         <span class="font-medium text-gray-900">${{ number_format($subtotal * 0.08, 2) }}</span>
                     </div>
                 </div>
 
                 <div class="border-t border-gray-200 pt-4 mb-5 flex justify-between items-center">
-                    <span class="font-bold text-gray-900 text-base">Total</span>
+                    <span class="font-bold text-gray-900 text-base battambang-bold">{{ __('app.total') }}</span>
                     <span class="font-bold text-amber-600 text-2xl">${{ number_format($subtotal + 2.99 + $subtotal * 0.08, 2) }}</span>
                 </div>
 
                 @auth
-                    <a href="{{ route('customerOrder.checkout.index') }}" class="w-full flex items-center justify-center gap-2 py-3 rounded-lg font-semibold text-sm bg-amber-600 text-white hover:bg-amber-700 transition">
-                        <i class="fa-solid fa-credit-card"></i> Proceed to Checkout
+                    <a href="{{ route('customerOrder.checkout.index') }}" class="w-full flex items-center justify-center gap-2 py-3 rounded-lg font-semibold text-sm bg-amber-600 text-white hover:bg-amber-700 transition battambang-regular">
+                        <i class="fa-solid fa-credit-card"></i> {{ __('app.proceed_checkout') }}
                     </a>
                 @else
-                    <a href="{{ route('customerOrder.checkout.index') }}" class="w-full flex items-center justify-center gap-2 py-3 rounded-lg font-semibold text-sm bg-gray-900 text-white hover:bg-gray-800 transition">
-                        <i class="fa-solid fa-right-to-bracket"></i> Login to Checkout
+                    <a href="{{ route('customerOrder.checkout.index') }}" class="w-full flex items-center justify-center gap-2 py-3 rounded-lg font-semibold text-sm bg-gray-900 text-white hover:bg-gray-800 transition battambang-regular">
+                        <i class="fa-solid fa-right-to-bracket"></i> {{ __('app.login_to_checkout') }}
                     </a>
-                    <p class="text-[10px] text-center text-gray-400 mt-2">You need to be logged in to place an order</p>
+                    <p class="text-[10px] text-center text-gray-400 mt-2 battambang-regular">{{ __('app.login_required') }}</p>
                 @endauth
-                <a href="{{ route('customerOrder.menu.index') }}" class="mt-3 block text-center text-sm text-gray-500 hover:text-amber-600 transition">
-                    ← Continue Shopping
+                <a href="{{ route('customerOrder.menu.index') }}" class="mt-3 block text-center text-sm text-gray-500 hover:text-amber-600 transition battambang-regular">
+                    ← {{ __('app.continue_shopping') }}
                 </a>
             </div>
         </div>

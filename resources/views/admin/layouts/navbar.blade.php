@@ -19,10 +19,27 @@
     {{-- Right: User Area --}}
     <div class="flex items-center gap-4 sm:gap-6">
         @auth
+            {{-- Language Switcher --}}
+            <div class="relative language-menu" id="admin-language-menu">
+                <button type="button" class="language-menu-toggle flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 transition text-sm font-medium text-gray-700">
+                    <i class="fa-solid fa-globe text-amber-600"></i>
+                    <span>{{ config('app.available_locales')[app()->getLocale()] ?? 'English' }}</span>
+                    <i class="fa-solid fa-chevron-down text-xs"></i>
+                </button>
+                <div class="language-menu-panel hidden absolute right-0 mt-2 w-36 bg-white rounded-lg shadow-lg border border-gray-200 z-[100] py-1">
+                    @foreach(config('app.available_locales', ['en' => 'English', 'km' => 'Khmer']) as $locale => $label)
+                    <a href="{{ route('language.switch', $locale) }}" 
+                       class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-700 {{ app()->getLocale() === $locale ? 'bg-amber-50 text-amber-700 font-medium' : '' }}">
+                        {{ $label }}
+                    </a>
+                    @endforeach
+                </div>
+            </div>
+
             {{-- Notifications --}}
             <div class="relative notification-menu mr-2">
                 <button type="button" id="notification-bell"
-                    class="p-2 text-gray-400 hover:text-amber-600 transition-colors relative" title="Notifications">
+                    class="p-2 text-gray-400 hover:text-amber-600 transition-colors relative" title="{{ __('app.notifications') }}">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
                     </svg>
@@ -33,14 +50,14 @@
                 <div id="notification-panel"
                     class="hidden absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-xl shadow-lg py-1.5 z-50 overflow-hidden">
                     <div class="px-4 py-3 border-b border-gray-100 flex justify-between items-center">
-                        <h3 class="text-sm font-semibold text-gray-900">New Orders</h3>
-                        <button id="clear-notifications" class="text-xs text-amber-600 hover:text-amber-700">Clear</button>
+                        <h3 class="text-sm font-semibold text-gray-900">{{ __('app.new_orders') }}</h3>
+                        <button id="clear-notifications" class="text-xs text-amber-600 hover:text-amber-700">{{ __('app.clear') }}</button>
                     </div>
                     <div id="notification-list" class="max-h-96 overflow-y-auto">
-                        <div class="px-4 py-8 text-center text-gray-500 italic text-sm">No new orders</div>
+                        <div class="px-4 py-8 text-center text-gray-500 italic text-sm">{{ __('app.no_new_orders') }}</div>
                     </div>
                     <a href="{{ route('admin.orders.index') }}" class="block px-4 py-2 text-center text-xs font-medium text-amber-600 hover:bg-gray-50 border-t border-gray-100">
-                        View All Orders
+                        {{ __('app.view_all_orders') }}
                         
                     </a>
                 </div>
@@ -49,7 +66,7 @@
             {{-- Quick Actions --}}
             <div class="hidden md:flex items-center gap-2 mr-2">
                 <a href="{{ route('admin.orders.create') }}"
-                    class="p-2 text-gray-400 hover:text-amber-600 transition-colors" title="New Order">
+                    class="p-2 text-gray-400 hover:text-amber-600 transition-colors" title="{{ __('app.new_order') }}">
                     {{-- POS --}}
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path>
@@ -90,7 +107,7 @@
                             {{ Auth::user()?->email ?? 'user@example.com' }}
                         </p>
                         <p class="text-xs text-amber-600 mt-1">
-                            Role:
+                            {{ __('app.role') }}:
                             <span class="capitalize font-medium">
                                 {{ Auth::user()?->role?->name }}
                             </span>
@@ -101,12 +118,12 @@
                     <a href="#"
                         class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors">
                         <i class="fas fa-user-circle w-4 text-center text-gray-400"></i>
-                        Profile
+                        {{ __('app.profile') }}
                     </a>
                     <a href="#"
                         class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors">
                         <i class="fas fa-cog w-4 text-center text-gray-400"></i>
-                        Settings
+                        {{ __('app.settings') }}
                     </a>
 
                     <div class="border-t border-gray-100 my-1"></div>
@@ -116,7 +133,7 @@
                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                         class="flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 hover:text-red-600 transition-colors">
                         <i class="fas fa-sign-out-alt w-4 text-center"></i>
-                        Logout
+                        {{ __('app.logout') }}
                     </a>
 
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
@@ -130,11 +147,11 @@
             <div class="flex items-center gap-3">
                 <a href="{{ route('login') }}"
                     class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
-                    Login
+                    {{ __('app.login') }}
                 </a>
                 <a href="{{ route('register') }}"
                     class="px-4 py-2 text-sm font-medium bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors">
-                    Register
+                    {{ __('app.register') }}
                 </a>
             </div>
         @endauth
@@ -144,12 +161,13 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        // User menu dropdown
         const userMenu = document.querySelector('.user-menu');
         const toggle = userMenu?.querySelector('.user-menu-toggle');
         const panel = userMenu?.querySelector('.user-menu-panel');
         const chevron = userMenu?.querySelector('.user-menu-chevron');
 
-        const setState = (open) => {
+        const setUserMenuState = (open) => {
             if (!toggle || !panel || !chevron) return;
             toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
             panel.classList.toggle('hidden', !open);
@@ -158,11 +176,39 @@
 
         toggle?.addEventListener('click', (e) => {
             e.stopPropagation();
-            setState(panel.classList.contains('hidden'));
+            setUserMenuState(panel.classList.contains('hidden'));
         });
 
+        // Close user menu when clicking outside
         document.addEventListener('click', (e) => {
-            if (userMenu && !userMenu.contains(e.target)) setState(false);
+            if (userMenu && !userMenu.contains(e.target)) setUserMenuState(false);
+        });
+    });
+
+    // Language menu dropdown - using event delegation for reliability
+    document.addEventListener('click', function(e) {
+        // Handle toggle click (button only)
+        if (e.target.closest('.language-menu-toggle')) {
+            e.preventDefault();
+            e.stopPropagation();
+            const menu = e.target.closest('.language-menu');
+            const panel = menu?.querySelector('.language-menu-panel');
+            if (panel) {
+                panel.classList.toggle('hidden');
+            }
+            return;
+        }
+        
+        // Allow language switch links to work normally
+        if (e.target.closest('.language-menu-panel a')) {
+            return; // Let the link navigate normally
+        }
+        
+        // Close all language menus when clicking outside
+        document.querySelectorAll('.language-menu-panel').forEach(panel => {
+            if (!e.target.closest('.language-menu')) {
+                panel.classList.add('hidden');
+            }
         });
     });
 </script>

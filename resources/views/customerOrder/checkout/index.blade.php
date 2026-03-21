@@ -1,6 +1,6 @@
 @extends('customerOrder.layouts.app')
 
-@section('title', 'Checkout — Saveur')
+@section('title', __('app.checkout_title') . ' — Saveur')
 
 @section('content')
 @php
@@ -10,8 +10,8 @@
 @endphp
 <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
-    <h1 class="text-4xl font-bold text-gray-900 mb-2">Checkout</h1>
-    <p class="text-gray-500 text-sm mb-8">Almost there — just confirm your delivery details.</p>
+    <h1 class="text-4xl font-bold text-gray-900 mb-2 battambang-bold">{{ __('app.checkout_title') }}</h1>
+    <p class="text-gray-500 text-sm mb-8 battambang-regular">{{ __('app.checkout_subtitle') }}</p>
 
     <form method="POST" action="{{ route('customerOrder.checkout.place') }}" id="checkout-form">
         @csrf
@@ -26,48 +26,48 @@
                         <span class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center">
                             <i class="fa-solid fa-location-dot text-amber-600 text-sm"></i>
                         </span>
-                        <h2 class="text-xl font-bold text-gray-900">Delivery Address</h2>
+                        <h2 class="text-xl font-bold text-gray-900 battambang-bold">{{ __('app.delivery_address') }}</h2>
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
                         <div class="col-span-2 sm:col-span-1">
-                            <label class="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">First Name</label>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide battambang-regular">{{ __('app.first_name') }}</label>
                             <input type="text" name="first_name" value="{{ old('first_name', $firstName) }}" required
                                 class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 bg-gray-50">
                             @error('first_name')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div class="col-span-2 sm:col-span-1">
-                            <label class="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">Last Name</label>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide battambang-regular">{{ __('app.last_name') }}</label>
                             <input type="text" name="last_name" value="{{ old('last_name', $lastName) }}" required
                                 class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 bg-gray-50">
                             @error('last_name')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div class="col-span-2">
-                            <label class="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">Phone</label>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide battambang-regular">{{ __('app.phone') }}</label>
                             <input type="tel" name="phone" value="{{ old('phone', $customer->phone ?? '') }}" required
                                 class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 bg-gray-50">
                             @error('phone')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div class="col-span-2">
-                            <label class="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">Street Address</label>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide battambang-regular">{{ __('app.street_address') }}</label>
                             <input type="text" name="address" value="{{ old('address', $customer->address ?? '') }}" required
-                                placeholder="123 Main Street, Apt 4B"
+                                placeholder="{{ __('app.address_placeholder') }}"
                                 class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 bg-gray-50">
                             @error('address')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">City</label>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide battambang-regular">{{ __('app.city') }}</label>
                             <input type="text" name="city" value="{{ old('city', $customer->city ?? '') }}" required
                                 class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 bg-gray-50">
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">ZIP Code</label>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide battambang-regular">{{ __('app.zip_code') }}</label>
                             <input type="text" name="zip" value="{{ old('zip') }}" required
                                 class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 bg-gray-50">
                         </div>
                         <div class="col-span-2">
-                            <label class="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">Delivery Notes (optional)</label>
-                            <textarea name="notes" rows="2" placeholder="Ring doorbell, leave at door…"
+                            <label class="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide battambang-regular">{{ __('app.delivery_notes') }}</label>
+                            <textarea name="notes" rows="2" placeholder="{{ __('app.notes_placeholder') }}"
                                 class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 bg-gray-50 resize-none">{{ old('notes') }}</textarea>
                         </div>
                     </div>
@@ -79,18 +79,18 @@
                         <span class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center">
                             <i class="fa-solid fa-credit-card text-amber-600 text-sm"></i>
                         </span>
-                        <h2 class="text-xl font-bold text-gray-900">Payment</h2>
+                        <h2 class="text-xl font-bold text-gray-900 battambang-bold">{{ __('app.payment') }}</h2>
                     </div>
 
                     <div class="space-y-3" id="payment-options">
                         @foreach([
-                            ['cash', 'fa-money-bills', 'Cash', 'Pay in cash when your order arrives'],
-                            ['khqr', 'fa-qrcode', 'KHQR', 'Scan QR code with banking app'],
+                            ['cash', 'fa-money-bills', __('app.cash'), __('app.cash_description')],
+                            ['khqr', 'fa-qrcode', 'KHQR', __('app.khqr_description')],
                         ] as [$val, $icon, $label, $desc])
                         <label class="payment-option flex items-center gap-4 p-4 border-2 rounded-lg cursor-pointer transition
                             {{ old('payment', 'cash') == $val ? 'border-amber-500 bg-amber-50' : 'border-gray-200 hover:border-gray-300' }}"
                             data-value="{{ $val }}">
-                            <input type="radio" name="payment" value="{{ $val }}" 
+                            <input type="radio" name="payment" value="{{ $val }}"
                                 class="sr-only"
                                 {{ old('payment', 'cash') == $val ? 'checked' : '' }}>
                             <span class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
@@ -109,7 +109,7 @@
             {{-- ===== RIGHT: Order Summary ===== --}}
             <div class="lg:col-span-2">
                 <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 sticky top-28">
-                    <h2 class="text-xl font-bold text-gray-900 mb-4">Your Order</h2>
+                    <h2 class="text-xl font-bold text-gray-900 mb-4 battambang-bold">{{ __('app.your_order') }}</h2>
 
                     <div class="space-y-3 mb-4 max-h-64 overflow-y-auto pr-1">
                         @foreach($cart as $id => $item)
@@ -130,23 +130,23 @@
                         @endforeach
                     </div>
 
-                    <div class="border-t border-gray-200 pt-4 space-y-2 text-sm text-gray-600">
-                        <div class="flex justify-between"><span>Subtotal</span><span class="font-medium text-gray-900">${{ number_format($subtotal, 2) }}</span></div>
-                        <div class="flex justify-between"><span>Tax (10%)</span><span class="font-medium text-gray-900">${{ number_format($tax, 2) }}</span></div>
+                    <div class="border-t border-gray-200 pt-4 space-y-2 text-sm text-gray-600 battambang-regular">
+                        <div class="flex justify-between"><span>{{ __('app.subtotal') }}</span><span class="font-medium text-gray-900">${{ number_format($subtotal, 2) }}</span></div>
+                        <div class="flex justify-between"><span>{{ __('app.tax') }} (10%)</span><span class="font-medium text-gray-900">${{ number_format($tax, 2) }}</span></div>
                     </div>
 
                     <div class="border-t border-gray-200 mt-3 pt-3 flex justify-between items-center mb-5">
-                        <span class="font-bold text-gray-900">Total</span>
+                        <span class="font-bold text-gray-900 battambang-bold">{{ __('app.total') }}</span>
                         <span class="font-bold text-amber-600 text-2xl">${{ number_format($total, 2) }}</span>
                     </div>
 
-                    <button type="submit" id="place-order-btn" class="w-full flex items-center justify-center gap-2 py-3.5 rounded-lg font-semibold bg-amber-600 text-white hover:bg-amber-700 transition">
-                        <i class="fa-solid fa-check-circle"></i> Place Order
+                    <button type="submit" id="place-order-btn" class="w-full flex items-center justify-center gap-2 py-3.5 rounded-lg font-semibold bg-amber-600 text-white hover:bg-amber-700 transition battambang-regular">
+                        <i class="fa-solid fa-check-circle"></i> {{ __('app.place_order') }}
                     </button>
 
-                    <div class="flex items-center justify-center gap-2 mt-4 text-xs text-gray-400">
+                    <div class="flex items-center justify-center gap-2 mt-4 text-xs text-gray-400 battambang-regular">
                         <i class="fa-solid fa-lock"></i>
-                        <span>Secure checkout — your data is protected</span>
+                        <span>{{ __('app.secure_checkout') }}</span>
                     </div>
                 </div>
             </div>

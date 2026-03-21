@@ -16,13 +16,110 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="description" content="{{ $sidebarSettings['description'] ?? 'Order System' }}">
     <title>{{ $sidebarName ?? 'Order System' }}</title>
+    
+    {{-- Google Fonts - Battambang for Khmer text --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@100;300;400;700;900&display=swap" rel="stylesheet">
+    
+    {{-- Tailwind CSS CDN with Battambang font configuration --}}
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Battambang', 'Momo Trust Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        amber: {
+                            50: '#fffbeb',
+                            100: '#fef3c7',
+                            200: '#fde68a',
+                            300: '#fcd34d',
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309',
+                            800: '#92400e',
+                            900: '#78350f',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     @stack('styles')
     <link rel="icon" href="{{ asset('storage/settings/' . $sidebarLogo) }}" alt="{{ $sidebarName }}" loading="lazy">
     
+    {{-- Custom Styles matching system default --}}
+    <style>
+        /* Khmer Font - Battambang */
+        body {
+            font-family: "Battambang", "Momo Trust Sans", system-ui;
+            background-color: #fdf6ec;
+            color: #1a1208;
+        }
+        
+        .battambang-thin {
+            font-family: "Battambang", system-ui;
+            font-weight: 100;
+        }
+        
+        .battambang-light {
+            font-family: "Battambang", system-ui;
+            font-weight: 300;
+        }
+        
+        .battambang-regular {
+            font-family: "Battambang", system-ui;
+            font-weight: 400;
+        }
+        
+        .battambang-bold {
+            font-family: "Battambang", system-ui;
+            font-weight: 700;
+        }
+        
+        .battambang-black {
+            font-family: "Battambang", system-ui;
+            font-weight: 900;
+        }
+        
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ffc980;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #fff;
+        }
+        
+        /* Animation utilities */
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Card hover effect */
+        .card-hover {
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(26, 18, 8, 0.12);
+        }
+    </style>
 </head>
-<body class="min-h-screen flex flex-col bg-gray-50">
+<body class="min-h-screen flex flex-col bg-[#fdf6ec] font-sans">
 
 {{-- ===== NAVBAR ===== --}}
 <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200 shadow-sm">
@@ -50,13 +147,31 @@
 
             {{-- Nav Links --}}
             <div class="hidden md:flex items-center gap-8">
-                <a href="{{ route('customerOrder.menu.index') }}" class="text-sm font-medium {{ request()->routeIs('menu.*') ? 'text-amber-600' : 'text-gray-600 hover:text-gray-900' }}">Menu</a>
-                <a href="{{ route('customerOrder.orders.history') }}" class="text-sm font-medium {{ request()->routeIs('orders.*') ? 'text-amber-600' : 'text-gray-600 hover:text-gray-900' }}">My Orders</a>
+                <a href="{{ route('customerOrder.menu.index') }}" class="text-sm font-medium {{ request()->routeIs('menu.*') ? 'text-amber-600' : 'text-gray-600 hover:text-gray-900' }}">{{ __('app.menu') }}</a>
+                <a href="{{ route('customerOrder.orders.history') }}" class="text-sm font-medium {{ request()->routeIs('orders.*') ? 'text-amber-600' : 'text-gray-600 hover:text-gray-900' }}">{{ __('app.my_orders') }}</a>
             </div>
 
-            {{-- Cart + Mobile --}}
+            {{-- Cart + Language + Mobile --}}
             <div class="flex items-center gap-3">
-                <a href="{{ route('customerOrder.cart.index') }}" class="relative p-2 rounded-full hover:bg-gray-100 transition">
+                {{-- Language Switcher --}}
+                <div class="relative language-menu" id="customer-language-menu">
+                    <button type="button" class="language-menu-toggle flex items-center gap-1 px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 transition text-sm font-medium text-gray-700">
+                        <i class="fa-solid fa-globe text-amber-600"></i>
+                        <span>{{ config('app.available_locales')[app()->getLocale()] ?? 'English' }}</span>
+                        <i class="fa-solid fa-chevron-down text-xs"></i>
+                    </button>
+                    
+                    <div class="language-menu-panel hidden absolute right-0 mt-2 w-36 bg-white rounded-lg shadow-lg border border-gray-200 z-[100] py-1">
+                        @foreach(config('app.available_locales', ['en' => 'English', 'km' => 'Khmer']) as $locale => $label)
+                        <a href="{{ route('language.switch', $locale) }}" 
+                           class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-700 {{ app()->getLocale() === $locale ? 'bg-amber-50 text-amber-700 font-medium' : '' }}">
+                            {{ $label }}
+                        </a>
+                        @endforeach
+                    </div>
+                </div>
+
+                <a href="{{ route('customerOrder.cart.index') }}" class="relative p-2 rounded-full hover:bg-gray-100 transition" title="{{ __('app.cart') }}">
                     <i class="fa-solid fa-basket-shopping text-xl text-gray-700"></i>
                     @php $cartCount = session('cart') ? array_sum(array_column(session('cart'), 'qty')) : 0; @endphp
                     @if($cartCount > 0)
@@ -71,20 +186,20 @@
                 @auth
                 <div class="flex items-center gap-4 ml-2 border-l border-gray-200 pl-4">
                     <div class="hidden lg:block text-right">
-                        <p class="text-[10px] uppercase tracking-wider text-gray-400 font-bold leading-none">Welcome</p>
+                        <p class="text-[10px] uppercase tracking-wider text-gray-400 font-bold leading-none">{{ __('app.welcome') }}</p>
                         <p class="text-sm font-semibold text-gray-900 leading-tight">{{ Auth::user()->name }}</p>
                     </div>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="p-2 rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50 transition" title="Logout">
+                        <button type="submit" class="p-2 rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50 transition" title="{{ __('app.logout') }}">
                             <i class="fa-solid fa-right-from-bracket"></i>
                         </button>
                     </form>
                 </div>
                 @else
                 <div class="flex items-center gap-2 ml-2">
-                    <a href="{{ route('login') }}" class="text-sm font-medium text-gray-600 hover:text-amber-600 px-3 py-2 transition">Login</a>
-                    <a href="{{ route('register') }}" class="text-xs font-bold px-4 py-2 rounded-lg shadow-sm bg-amber-600 text-white hover:bg-amber-700 transition">Sign Up</a>
+                    <a href="{{ route('login') }}" class="text-sm font-medium text-gray-600 hover:text-amber-600 px-3 py-2 transition">{{ __('app.login') }}</a>
+                    <a href="{{ route('register') }}" class="text-xs font-bold px-4 py-2 rounded-lg shadow-sm bg-amber-600 text-white hover:bg-amber-700 transition">{{ __('app.register') }}</a>
                 </div>
                 @endauth
                 
@@ -94,8 +209,20 @@
 
     {{-- Mobile Menu --}}
     <div id="mobile-menu" class="hidden md:hidden border-t border-gray-200 bg-white px-4 py-3 space-y-2">
-        <a href="{{ route('customerOrder.menu.index') }}" class="block py-2 text-sm font-medium text-gray-700 hover:text-amber-600">Menu</a>
-        <a href="{{ route('customerOrder.orders.history') }}" class="block py-2 text-sm font-medium text-gray-700 hover:text-amber-600">My Orders</a>
+        <a href="{{ route('customerOrder.menu.index') }}" class="block py-2 text-sm font-medium text-gray-700 hover:text-amber-600">{{ __('app.menu') }}</a>
+        <a href="{{ route('customerOrder.orders.history') }}" class="block py-2 text-sm font-medium text-gray-700 hover:text-amber-600">{{ __('app.my_orders') }}</a>
+        {{-- Mobile Language Switcher --}}
+        <div class="border-t border-gray-100 pt-2 mt-2">
+            <p class="text-xs text-gray-400 uppercase tracking-wider mb-2">{{ __('app.language') }}</p>
+            <div class="flex gap-2">
+                @foreach(config('app.available_locales', ['en' => 'English', 'km' => 'Khmer']) as $locale => $label)
+                <a href="{{ route('language.switch', $locale) }}" 
+                   class="px-3 py-1.5 rounded-lg text-sm {{ app()->getLocale() === $locale ? 'bg-amber-100 text-amber-700 font-medium' : 'bg-gray-100 text-gray-600' }}">
+                    {{ $label }}
+                </a>
+                @endforeach
+            </div>
+        </div>
     </div>
 </nav>
 
@@ -122,29 +249,36 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
                 <div class="flex items-center gap-2 mb-3">
-                    <span class="w-7 h-7 rounded-full bg-amber-500 flex items-center justify-center">
-                        <i class="fa-solid fa-bowl-food text-white text-xs"></i>
+                    @if(!empty($sidebarLogo))
+                    <img src="{{ asset('storage/settings/' . $sidebarLogo) }}" alt="{{ $sidebarName }}"
+                         class="h-8 w-8 rounded-lg object-contain bg-gray-800 p-1">
+                    @else
+                    <span class="w-8 h-8 rounded-lg bg-amber-600 flex items-center justify-center">
+                        <i class="fa-solid fa-bowl-food text-white text-sm"></i>
                     </span>
-                    <span class="text-xl font-bold text-white">Restaurant</span>
+                    @endif
+                    <span class="text-xl font-bold text-white">{{ $sidebarName ?? __('app.site_name') }}</span>
                 </div>
-                <p class="text-sm leading-relaxed">Fine food, delivered with care. From our kitchen to your door.</p>
+                <p class="text-sm leading-relaxed text-gray-400">{{ __('app.footer_description') }}</p>
             </div>
             <div>
-                <h4 class="text-white font-semibold mb-3">Quick Links</h4>
+                <h4 class="text-white font-semibold mb-3 battambang-bold">{{ __('app.quick_links') }}</h4>
                 <ul class="space-y-2 text-sm">
-                    <li><a href="{{ route('customerOrder.menu.index') }}" class="hover:text-amber-400 transition">Browse Menu</a></li>
-                    <li><a href="{{ route('customerOrder.cart.index') }}" class="hover:text-amber-400 transition">Your Cart</a></li>
-                    <li><a href="{{ route('customerOrder.orders.history') }}" class="hover:text-amber-400 transition">Order History</a></li>
+                    <li><a href="{{ route('customerOrder.menu.index') }}" class="hover:text-amber-400 transition flex items-center gap-2"><i class="fa-solid fa-utensils text-xs"></i> {{ __('app.menu') }}</a></li>
+                    <li><a href="{{ route('customerOrder.cart.index') }}" class="hover:text-amber-400 transition flex items-center gap-2"><i class="fa-solid fa-cart-shopping text-xs"></i> {{ __('app.cart') }}</a></li>
+                    <li><a href="{{ route('customerOrder.orders.history') }}" class="hover:text-amber-400 transition flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-xs"></i> {{ __('app.order_history') }}</a></li>
                 </ul>
             </div>
             <div>
-                <h4 class="text-white font-semibold mb-3">Hours</h4>
-                <p class="text-sm">Mon-Fri: 10am - 10pm</p>
-                <p class="text-sm">Sat-Sun: 11am - 11pm</p>
+                <h4 class="text-white font-semibold mb-3 battambang-bold">{{ __('app.hours') }}</h4>
+                <div class="space-y-2 text-sm text-gray-400">
+                    <p class="flex items-center gap-2"><i class="fa-regular fa-clock text-amber-500"></i> {{ __('app.weekdays') }}</p>
+                    <p class="flex items-center gap-2"><i class="fa-regular fa-clock text-amber-500"></i> {{ __('app.weekends') }}</p>
+                </div>
             </div>
         </div>
         <div class="border-t border-gray-700 mt-8 pt-6 text-center text-xs text-gray-500">
-            © {{ date('Y') }} Restaurant. All rights reserved.
+            © {{ date('Y') }} {{ $sidebarName ?? __('app.site_name') }}. {{ __('app.all_rights_reserved') }}
         </div>
     </div>
 </footer>
@@ -154,6 +288,34 @@
     document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
         document.getElementById('mobile-menu').classList.toggle('hidden');
     });
+    
+    // Language menu dropdown - using event delegation for reliability
+    document.addEventListener('click', function(e) {
+        // Handle toggle click (button only)
+        if (e.target.closest('.language-menu-toggle')) {
+            e.preventDefault();
+            e.stopPropagation();
+            const menu = e.target.closest('.language-menu');
+            const panel = menu?.querySelector('.language-menu-panel');
+            if (panel) {
+                panel.classList.toggle('hidden');
+            }
+            return;
+        }
+        
+        // Allow language switch links to work normally
+        if (e.target.closest('.language-menu-panel a')) {
+            return; // Let the link navigate normally
+        }
+        
+        // Close all language menus when clicking outside
+        document.querySelectorAll('.language-menu-panel').forEach(panel => {
+            if (!e.target.closest('.language-menu')) {
+                panel.classList.add('hidden');
+            }
+        });
+    });
+    
     // Auto-hide flash messages
     setTimeout(() => { document.getElementById('flash-msg')?.remove(); }, 3500);
 </script>

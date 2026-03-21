@@ -14,10 +14,15 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         
-        // Register the alias here:
+        // Register middleware aliases
         $middleware->alias([
             'role' => RoleMiddleware::class,
             'frontend.customer.auth' => EnsureFrontendCustomerAuthenticated::class,
+        ]);
+
+        // Register SetLocale middleware in the web group
+        $middleware->web(append: [
+            \App\Http\Middleware\SetLocale::class,
         ]);
 
     })

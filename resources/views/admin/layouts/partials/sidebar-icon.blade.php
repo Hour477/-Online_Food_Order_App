@@ -24,7 +24,9 @@
         @case('settings')
             settings
             @break
-
+        @case('image')
+            image
+            @break
         @case('table')
             dining
             @break
@@ -36,6 +38,9 @@
             @break
         @case('customer')
             person
+            @break
+        @case('banner')
+            images
             @break
         @default
             article

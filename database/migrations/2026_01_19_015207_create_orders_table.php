@@ -32,16 +32,15 @@ return new class extends Migration
                 ->nullOnDelete();
 
             $table->text('notes')->nullable();
-            $table->enum('status', [
-                'pending',
-                'completed',
-                'delivered', // customer has received the order
-                'cancelled',
-                'refunded'
-            ])->default('pending')->change();
-        
+            // $table->enum('status', [
+            //     'pending',
+            //     'completed',
+            //     'delivered', // customer has received the order
+            //     'cancelled',
+            //     'refunded'
+            // ])->default('pending')->change();
+            $table->string('status')->default('pending');
             // Add columns for order totals
-
             $table->decimal('subtotal', 10, 2)->default(0);
             $table->decimal('tax', 10, 2)->default(0);
             $table->decimal('total_amount', 10, 2)->default(0);

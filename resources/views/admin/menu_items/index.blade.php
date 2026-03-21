@@ -82,8 +82,17 @@
 
                         <td class="px-6 py-4 whitespace-nowrap">
                             <a href="{{ route('admin.menu_items.show', $item->id) }}">
-                                @if($item->image)
+                                {{-- @if($item->image)
                                     <img src="{{ Storage::url($item->image) }}"
+                                         alt="{{ $item->name }}"
+                                         class="w-10 h-10 rounded-lg object-cover">
+                                @else
+                                    <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
+                                        <i class="fas fa-image text-gray-400 text-sm"></i>
+                                    </div>
+                                @endif --}}
+                                @if ($item->image)
+                                    <img src="{{ $item->display_image }}"
                                          alt="{{ $item->name }}"
                                          class="w-10 h-10 rounded-lg object-cover">
                                 @else

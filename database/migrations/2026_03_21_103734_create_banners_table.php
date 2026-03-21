@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('payments', function (Blueprint $table) {
-            $table->enum('status', ['pending', 'paid', 'failed', 'refunded'])
-                  ->default('paid')
-                  ->after('change_amount');
+        Schema::create('banners', function (Blueprint $table) {
+            $table->id();
+            $table->string('image');
+            $table->string('title')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->timestamps();
         });
     }
 
@@ -23,10 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('payments', function (Blueprint $table) {
-            $table->dropColumn('status');
-        });
+        Schema::dropIfExists('banners');
     }
-
-    
 };
