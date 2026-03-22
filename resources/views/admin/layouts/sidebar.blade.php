@@ -1,13 +1,16 @@
+@use('App\Helpers\HelperSidebar')
+@use('App\Models\Order')
 @php
     $sidebarSettings = \App\Models\Setting::query()
         ->whereIn('key', ['logo', 'resturant_name'])
         ->pluck('value', 'key');
     $sidebarLogo = $sidebarSettings['logo'] ?? null;
     $sidebarName = $sidebarSettings['resturant_name'] ?? config('app.name');
-    use App\Helpers\HelperSidebar;
-    use App\Models\Order;
     $menus = HelperSidebar::menus();
-    $orderStatusCounts = Order::getStatusCounts();
+    
+
+    // use App\Helpers\DisplayImageHelper;
+
 @endphp
 
 <aside id="app-sidebar"
@@ -34,6 +37,9 @@
     {{-- Navigation --}}
     <nav class="flex-1 min-h-0 px-3 py-5 overflow-y-auto">
         <ul class="space-y-0.5">
+            
+            
+
             @foreach($menus as $menu)
                 @if(isset($menu['children']) && !empty($menu['children']))
                     {{-- Dropdown (folder) --}}

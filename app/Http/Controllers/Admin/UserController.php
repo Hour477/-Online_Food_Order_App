@@ -86,7 +86,7 @@ class UserController extends Controller
         $data = $request->validated();
 
         // Let service handle image upload
-        $this->userServices->updateUser($data, $id);
+        $this->userServices->updateUser($data, $id, $request);
         
         return redirect()->route("admin.users.index")
             ->with("success", "User updated successfully");

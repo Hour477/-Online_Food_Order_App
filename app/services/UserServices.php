@@ -46,37 +46,29 @@ class UserServices
     /**
      * Handle user update logic.
      */
-    public function updateUser(array $data, string $id)
+    public function updateUser(array $data, string $id, $request)
     {
-        $user = User::find($id);
+        $user = User::findOrFail($id); // safer
 
-        // Handle image upload - delete old image if uploading new one
-        if (!empty($data['image'])) {
-            // Delete old image if exists
-            if ($user->image) {
-                try {
-                    $oldImagePath = 'users/' . $user->image;
-                    if (Storage::disk('public')->exists($oldImagePath)) {
-                        Storage::disk('public')->delete($oldImagePath);
-                    }
-                } catch (\Exception $e) {
-                    Log::error('Failed to delete old user image: ' . $e->getMessage());
-                }
-            }
-
-            // Upload new image
-            $data['image'] = UploadImageHelper::upload('users/', 'png', $data['image']);
-        } else {
-            unset($data['image']);
+        // Handle image update
+        if ($request->hasFile('image')) {
+            $data['image'] = ImageHelper::update(
+                $request->file('image'),
+                $user->image,
+                'users'
+            );
         }
 
+        // Handle password
         if (!empty($data['password'])) {
             $data['password'] = Hash::make($data['password']);
         } else {
             unset($data['password']);
         }
 
-        return $user->update($data);
+        $user->update($data);
+
+        return $user; // better return updated model
     }
 
     /**
