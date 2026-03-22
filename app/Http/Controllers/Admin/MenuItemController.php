@@ -52,12 +52,6 @@ class MenuItemController extends Controller
                 }
             });
         // price 
-
-
-
-
-
-
         $menu_items = $query
             ->with('category')
             ->latest()->paginate($request->get('per_page', 8))
@@ -77,27 +71,11 @@ class MenuItemController extends Controller
 
     public function store(MenuItemRequest $request)
     {
-        // $validated = $request->validate([
-        //     'name'          => 'required|string|max:120',
-        //     'category_id'   => 'required|exists:categories,id',
-        //     'description'   => 'nullable|string|max:1000',
-        //     'price'         => 'required|numeric|min:0',
-        //     'status'        => 'required|in:available,unavailable',
-        //     'image'         => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-        // ]);
-
-        // $data = $validated;
-
-        // if ($request->hasFile('image')) {
-        //     $data['image'] = ImageHelper::upload($request->file('image'), 'menu-items');
-        // }
-
-        // MenuItem::create($data);
-
-        $this->menuItemService->store($request);
-
-        return redirect()->route('admin.menu_items.index')
-            ->with('success', 'Menu item created successfully!');
+       
+        $data = $request->validated();
+        $this->menuItemService->store($data);
+        ToastMagic::success('Menu item created successfully');
+        return redirect()->route('admin.menu_items.index');
     }
 
     public function show(string $id)
@@ -112,11 +90,8 @@ class MenuItemController extends Controller
 
         $categories = Category::all();
         $menu_item = MenuItem::with('category')
-
             ->select('id', 'name', 'description', 'price', 'status', 'image', 'category_id')
             ->findOrFail($id);
-
-
         return view('admin.menu_items.edit', compact('menu_item', 'categories'));
     }
 
@@ -125,23 +100,14 @@ class MenuItemController extends Controller
        
         $data = $request->validated();
         $this->menuItemService->update($id, $data);
-        
         ToastMagic::success('Menu item updated successfully');
-
-
-        return redirect()->route('admin.menu_items.index')
-            ->with('success', 'Menu item updated successfully!');
+        return redirect()->route('admin.menu_items.index');
     }
 
     public function destroy(string $id)
     {
-        $item = MenuItem::findOrFail($id);
-        if ($item->image) {
-            Storage::disk('public')->delete($item->image);
-        }
-        $item->delete();
+        $this->menuItemService->destroy($id);
         ToastMagic::success('Menu item deleted successfully');
-        return redirect()->route('admin.menu_items.index')
-            ->with('success', 'Menu item deleted successfully!');
+        return redirect()->route('admin.menu_items.index');
     }
 }
