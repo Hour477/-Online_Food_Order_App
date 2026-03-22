@@ -47,7 +47,7 @@ class RoleSeeder extends Seeder
             ],
             [
                 'name' => 'Jane Smith',
-                'email' => 'janesmith@example.com',
+                'email' => 'customer@example.com',
                 'role_id' => 5, // Customer
                 'password' => Hash::make('password123'),
                 'created_at' => now(),

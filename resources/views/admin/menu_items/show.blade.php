@@ -32,9 +32,9 @@
                 @if($menu_item->image)
                     <img src="{{ asset('storage/' . $menu_item->image) }}"
                          alt="{{ $menu_item->name }}"
-                         class="w-full h-56 object-cover">
+                         class="w-full min-h-90 object-cover">
                 @else
-                    <div class="w-full h-56 bg-gray-100 flex flex-col items-center justify-center text-gray-300">
+                    <div class="w-full min-h-90 bg-gray-100 flex flex-col items-center justify-center text-gray-300">
                         <i class="fas fa-image text-4xl mb-2"></i>
                         <span class="text-sm">No image available</span>
                     </div>
