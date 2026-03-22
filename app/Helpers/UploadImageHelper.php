@@ -35,12 +35,19 @@ class UploadImageHelper
         return $imageName;
     }
 
-    public static function update(string $dir, $old_image, string $format, $image = null)
+    public static function update($file, $oldImage = null, $folder = 'uploads')
     {
-        if (Storage::disk('public')->exists($dir . $old_image)) {
-            Storage::disk('public')->delete($dir . $old_image);
+        if (!$file) return $oldImage;
+
+        // Upload new image first
+        $filename = time() . '_' . preg_replace('/[^A-Za-z0-9\.\-_]/', '_', $file->getClientOriginalName());
+        $newPath = $file->storeAs($folder, $filename, 'public');
+
+        // Delete old image AFTER upload success
+        if ($oldImage && Storage::disk('public')->exists($oldImage)) {
+            Storage::disk('public')->delete($oldImage);
         }
-        $imageName = UploadImageHelper::upload($dir, $format, $image);
+        $imageName = UploadImageHelper::upload($folder, $filename, $file);
         return $imageName;
     }
 

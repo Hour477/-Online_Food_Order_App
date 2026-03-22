@@ -1,37 +1,41 @@
 @use('Illuminate\Support\Facades\Auth')
 
 <nav class="flex items-center bg-white justify-between w-full">
-        <!-- Right: Sidebar Collapse Button -->
+    <!-- Right: Sidebar Collapse Button -->
     <div class="flex items-center gap-3">
         <button type="button" id="sidebar-collapse-btn"
-            class="ml-auto hidden lg:flex items-center justify-center w-7 h-7 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors flex-shrink-0"
+            class="ml-auto hidden lg:flex items-center justify-center w-10 h-10 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors flex-shrink-0 touch-target"
             aria-label="Toggle sidebar">
-            <svg id="collapse-icon-open" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>
+            <svg id="collapse-icon-open" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
             </svg>
-            <svg id="collapse-icon-closed" class="w-4 h-4 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7"/>
+            <svg id="collapse-icon-closed" class="w-5 h-5 hidden" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
             </svg>
         </button>
     </div>
 
-    <div class="flex items-center gap-3"></div> 
+    <div class="flex items-center gap-3"></div>
     {{-- Right: User Area --}}
     <div class="flex items-center gap-4 sm:gap-6">
         @auth
             {{-- Language Switcher --}}
             <div class="relative language-menu" id="admin-language-menu">
-                <button type="button" class="language-menu-toggle flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 transition text-sm font-medium text-gray-700">
+                <button type="button"
+                    class="language-menu-toggle flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 transition text-sm font-medium text-gray-700 touch-target" aria-expanded="false" aria-haspopup="true">
                     <i class="fa-solid fa-globe text-amber-600"></i>
-                    <span>{{ config('app.available_locales')[app()->getLocale()] ?? 'English' }}</span>
+                    <span class="hidden sm:inline">{{ config('app.available_locales')[app()->getLocale()] ?? 'English' }}</span>
                     <i class="fa-solid fa-chevron-down text-xs"></i>
                 </button>
-                <div class="language-menu-panel hidden absolute right-0 mt-2 w-36 bg-white rounded-lg shadow-lg border border-gray-200 z-[100] py-1">
-                    @foreach(config('app.available_locales', ['en' => 'English', 'km' => 'Khmer']) as $locale => $label)
-                    <a href="{{ route('language.switch', $locale) }}" 
-                       class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-700 {{ app()->getLocale() === $locale ? 'bg-amber-50 text-amber-700 font-medium' : '' }}">
-                        {{ $label }}
-                    </a>
+                <div
+                    class="language-menu-panel hidden absolute right-0 mt-2 w-36 bg-white rounded-lg shadow-lg border border-gray-200 z-[100] py-1">
+                    @foreach (config('app.available_locales', ['en' => 'English', 'km' => 'Khmer']) as $locale => $label)
+                        <a href="{{ route('language.switch', $locale) }}"
+                            class="block px-4 py-3 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-700 {{ app()->getLocale() === $locale ? 'bg-amber-50 text-amber-700 font-medium' : '' }}">
+                            {{ $label }}
+                        </a>
                     @endforeach
                 </div>
             </div>
@@ -39,11 +43,15 @@
             {{-- Notifications --}}
             <div class="relative notification-menu mr-2">
                 <button type="button" id="notification-bell"
-                    class="p-2 text-gray-400 hover:text-amber-600 transition-colors relative" title="{{ __('app.notifications') }}">
+                    class="p-2 text-gray-400 hover:text-amber-600 transition-colors relative touch-target"
+                    title="{{ __('app.notifications') }}" aria-label="{{ __('app.notifications') }}">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
+                        </path>
                     </svg>
-                    <span id="notification-count" class="hidden absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">0</span>
+                    <span id="notification-count"
+                        class="hidden absolute top-1 right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">0</span>
                 </button>
 
                 {{-- Notification Dropdown --}}
@@ -51,14 +59,16 @@
                     class="hidden absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-xl shadow-lg py-1.5 z-50 overflow-hidden">
                     <div class="px-4 py-3 border-b border-gray-100 flex justify-between items-center">
                         <h3 class="text-sm font-semibold text-gray-900">{{ __('app.new_orders') }}</h3>
-                        <button id="clear-notifications" class="text-xs text-amber-600 hover:text-amber-700">{{ __('app.clear') }}</button>
+                        <button id="clear-notifications"
+                            class="text-xs text-amber-600 hover:text-amber-700 touch-target px-2">{{ __('app.clear') }}</button>
                     </div>
                     <div id="notification-list" class="max-h-96 overflow-y-auto">
                         <div class="px-4 py-8 text-center text-gray-500 italic text-sm">{{ __('app.no_new_orders') }}</div>
                     </div>
-                    <a href="{{ route('admin.orders.index') }}" class="block px-4 py-2 text-center text-xs font-medium text-amber-600 hover:bg-gray-50 border-t border-gray-100">
+                    <a href="{{ route('admin.orders.index') }}"
+                        class="block px-4 py-3 text-center text-xs font-medium text-amber-600 hover:bg-gray-50 border-t border-gray-100">
                         {{ __('app.view_all_orders') }}
-                        
+
                     </a>
                 </div>
             </div>
@@ -66,12 +76,12 @@
             {{-- Quick Actions --}}
             <div class="hidden md:flex items-center gap-2 mr-2">
                 <a href="{{ route('admin.orders.create') }}"
-                    class="p-2 text-gray-400 hover:text-amber-600 transition-colors" title="{{ __('app.new_order') }}">
+                    class="p-2 text-gray-400 hover:text-amber-600 transition-colors touch-target" title="{{ __('app.new_order') }}" aria-label="{{ __('app.new_order') }}">
                     {{-- POS --}}
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path>
                     </svg>
-                    
+
                 </a>
                 <div class="h-5 w-px bg-gray-200 mx-1"></div>
             </div>
@@ -79,15 +89,24 @@
             {{-- User Dropdown --}}
             <div class="relative user-menu">
 
-                <button type="button" aria-expanded="false"
-                    class="user-menu-toggle flex items-center gap-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 rounded-full transition hover:opacity-80">
-                    @php $avatarUrl = Auth::user()->image ? asset('storage/users/' . Auth::user()->image) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name ?? 'User') . '&background=d97706&color=fff'; @endphp
-                    <img class="h-9 w-9 rounded-full object-cover border-2 border-amber-200"
-                        src="{{ $avatarUrl }}"
+                <button type="button" aria-expanded="false" aria-haspopup="true"
+                    class="user-menu-toggle flex items-center gap-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 rounded-full transition hover:opacity-80 touch-target">
+
+                    @php
+                        $avatarUrl =
+                            Auth::user()->display_image ??
+                            'https://ui-avatars.com/api/?name=' .
+                                urlencode(Auth::user()->name ?? 'User') .
+                                '&background=d97706&color=fff';
+                    @endphp
+
+                    <img class="h-9 w-9 rounded-full object-cover border-2 border-amber-200" src="{{ $avatarUrl }}"
                         alt="{{ Auth::user()?->name ?? 'User' }}">
+
                     <span class="hidden sm:block text-sm font-medium text-gray-900 truncate max-w-xs">
                         {{ Auth::user()?->name ?? 'User' }}
                     </span>
+
                     <svg class="user-menu-chevron h-4 w-4 text-gray-400 transition-transform" fill="none"
                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
@@ -141,7 +160,6 @@
                     </form>
                 </div>
             </div>
-
         @else
             {{-- Guest Links --}}
             <div class="flex items-center gap-3">
@@ -198,12 +216,12 @@
             }
             return;
         }
-        
+
         // Allow language switch links to work normally
         if (e.target.closest('.language-menu-panel a')) {
             return; // Let the link navigate normally
         }
-        
+
         // Close all language menus when clicking outside
         document.querySelectorAll('.language-menu-panel').forEach(panel => {
             if (!e.target.closest('.language-menu')) {

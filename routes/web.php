@@ -100,6 +100,9 @@ Route::middleware(['auth', 'role:admin'])
     ->group(function () {
 
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+        // Style Guide
+        
         Route::post('/dashboard/stats', [DashboardController::class, 'totalOrders'])->name('dashboard.stats');
 
         Route::resource('user',        UserController::class);

@@ -58,21 +58,29 @@ document.addEventListener('DOMContentLoaded', () => {
         desktopQuery.addEventListener('change', syncByViewport);
     }
 
+    // Handle folder toggle clicks (accordion behavior)
     document.querySelectorAll('.sidebar-folder-toggle').forEach((button) => {
-        button.addEventListener('click', () => {
+        button.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent event from bubbling up
+
             const menu = button.closest('.sidebar-folder');
             if (!menu) return;
 
-            // Keep only one folder open at a time.
+            const submenu = menu.querySelector('.orders-submenu');
+            const chevron = menu.querySelector('.chevron');
+            const isOpen = submenu && !submenu.classList.contains('hidden') && submenu.classList.contains('is-open');
+
+            // Close all OTHER folders first (accordion behavior)
             sidebar?.querySelectorAll('.sidebar-folder').forEach((otherMenu) => {
                 if (otherMenu === menu) return;
 
-                const otherSubmenu = otherMenu.querySelector('.sidebar-submenu');
+                const otherSubmenu = otherMenu.querySelector('.orders-submenu');
                 const otherChevron = otherMenu.querySelector('.chevron');
                 const otherToggle = otherMenu.querySelector('.sidebar-folder-toggle');
 
                 if (otherSubmenu) {
                     otherSubmenu.classList.add('hidden');
+                    otherSubmenu.classList.remove('is-open');
                 }
                 if (otherChevron) {
                     otherChevron.classList.remove('rotate-180');
@@ -83,24 +91,33 @@ document.addEventListener('DOMContentLoaded', () => {
                 otherMenu.classList.remove('is-open');
             });
 
-            const submenu = menu.querySelector('.sidebar-submenu');
-            const chevron = menu.querySelector('.chevron');
-            const indicator = menu.querySelector('.folder-indicator');
-
+            // Toggle current folder
             if (submenu) {
-                submenu.classList.remove('hidden');
+                if (isOpen) {
+                    // Close
+                    submenu.classList.add('hidden');
+                    submenu.classList.remove('is-open');
+                } else {
+                    // Open
+                    submenu.classList.remove('hidden');
+                    submenu.classList.add('is-open');
+                }
             }
 
             if (chevron) {
-                chevron.classList.add('rotate-180');
+                chevron.classList.toggle('rotate-180', !isOpen);
             }
 
+            const indicator = menu.querySelector('.folder-indicator');
             if (indicator) {
-                indicator.classList.add('scale-y-100');
+                indicator.classList.toggle('scale-y-100', !isOpen);
             }
 
-            menu.classList.add('is-open');
-            button.setAttribute('aria-expanded', 'true');
+            menu.classList.toggle('is-open', !isOpen);
+            button.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+
+            // Save state to localStorage
+            syncFoldersToStorage();
         });
     });
 
@@ -172,12 +189,17 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         sidebar.querySelectorAll('.sidebar-link, .sidebar-folder-toggle, .sidebar-submenu a').forEach((item) => {
-            item.addEventListener('click', () => {
+            item.addEventListener('click', (e) => {
                 const key = getSidebarKey(item);
                 if (key) {
                     localStorage.setItem('activeSidebarKey', key);
                 }
                 setSingleSidebarIndicator(item);
+
+                // Don't bubble up the event for submenu links
+                if (item.classList.contains('sidebar-submenu-link') || item.closest('.orders-submenu')) {
+                    e.stopPropagation();
+                }
             });
         });
 
@@ -197,7 +219,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const parentFolder = currentRouteActive.closest('.sidebar-folder');
             if (parentFolder) {
                 const parentToggle = parentFolder.querySelector('.sidebar-folder-toggle');
-                if (parentToggle) {
+                if (parentToggle && !parentFolder.classList.contains('is-open')) {
+                    // Trigger click to open parent folder
                     parentToggle.click();
                 }
             }
@@ -217,135 +240,101 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Toggle sidebar for mobile
 
-    (function () {
-        // Basic guards in case DOM elements are missing
-        const sidebarEl = document.getElementById('app-sidebar');
-        const collapseBtn = document.getElementById('sidebar-collapse-btn');
-        const iconOpen = document.getElementById('collapse-icon-open');
-        const iconClosed = document.getElementById('collapse-icon-closed');
+(function () {
+    // Basic guards in case DOM elements are missing
+    const sidebarEl = document.getElementById('app-sidebar');
+    const collapseBtn = document.getElementById('sidebar-collapse-btn');
+    const iconOpen = document.getElementById('collapse-icon-open');
+    const iconClosed = document.getElementById('collapse-icon-closed');
 
-        if (!sidebarEl) return;
+    if (!sidebarEl) return;
 
-        // ── Collapse toggle (state remembered) ─────────────────────────
-        const COLLAPSE_KEY = 'sidebar_collapsed';
-        const isCollapsed = localStorage.getItem(COLLAPSE_KEY) === 'true';
+    // ── Collapse toggle (state remembered) ─────────────────────────
+    const COLLAPSE_KEY = 'sidebar_collapsed';
+    const isCollapsed = localStorage.getItem(COLLAPSE_KEY) === 'true';
 
-        function applyCollapse(collapsed) {
+    function applyCollapse(collapsed) {
+        const root = document.documentElement;
+        root.classList.toggle('sidebar-collapsed', collapsed);
+        if (iconOpen && iconClosed) {
+            iconOpen.classList.toggle('hidden', collapsed);
+            iconClosed.classList.toggle('hidden', !collapsed);
+        }
+        localStorage.setItem(COLLAPSE_KEY, collapsed ? 'true' : 'false');
+    }
+
+    // Restore saved collapse state on load
+    applyCollapse(isCollapsed);
+
+    if (collapseBtn) {
+        collapseBtn.addEventListener('click', () => {
             const root = document.documentElement;
-            root.classList.toggle('sidebar-collapsed', collapsed);
-            if (iconOpen && iconClosed) {
-                iconOpen.classList.toggle('hidden', collapsed);
-                iconClosed.classList.toggle('hidden', !collapsed);
-            }
-            localStorage.setItem(COLLAPSE_KEY, collapsed ? 'true' : 'false');
-        }
-
-        // Restore saved collapse state on load
-        applyCollapse(isCollapsed);
-
-        if (collapseBtn) {
-            collapseBtn.addEventListener('click', () => {
-                const root = document.documentElement;
-                applyCollapse(!root.classList.contains('sidebar-collapsed'));
-            });
-        }
-
-        // ── Folder (submenu) state helpers ─────────────────────────────
-        const FOLDERS_KEY = 'sidebar_open_folders';
-
-        function getOpenFolders() {
-            try {
-                const raw = localStorage.getItem(FOLDERS_KEY);
-                return raw ? JSON.parse(raw) : [];
-            } catch (e) {
-                return [];
-            }
-        }
-
-        function setOpenFolders(keys) {
-            try {
-                localStorage.setItem(FOLDERS_KEY, JSON.stringify(keys));
-            } catch (e) {
-                // ignore
-            }
-        }
-
-        function syncFoldersToStorage() {
-            const openKeys = [];
-            document.querySelectorAll('.sidebar-folder').forEach(folder => {
-                const btn = folder.querySelector('.sidebar-folder-toggle');
-                const key = btn?.getAttribute('data-folder');
-                if (key && folder.classList.contains('is-open')) {
-                    openKeys.push(key);
-                }
-            });
-            setOpenFolders(openKeys);
-        }
-
-        function restoreFolderOpenState() {
-            const saved = getOpenFolders();
-            if (!Array.isArray(saved) || !saved.length) return;
-
-            document.querySelectorAll('.sidebar-folder').forEach(folder => {
-                const btn = folder.querySelector('.sidebar-folder-toggle');
-                const submenu = folder.querySelector('.orders-submenu');
-                const chevron = folder.querySelector('.chevron');
-                const key = btn?.getAttribute('data-folder');
-
-                if (!key || !submenu) return;
-
-                const shouldBeOpen = saved.includes(key);
-
-                if (shouldBeOpen) {
-                    submenu.classList.add('is-open');
-                    chevron?.classList.add('rotate-180');
-                    btn.setAttribute('aria-expanded', 'true');
-                    folder.classList.add('is-open');
-                } else {
-                    submenu.classList.remove('is-open');
-                    chevron?.classList.remove('rotate-180');
-                    btn.setAttribute('aria-expanded', 'false');
-                    folder.classList.remove('is-open');
-                }
-            });
-        }
-
-        // Apply saved open/closed state on load,
-        // overriding the Blade "request()->routeIs" defaults
-        restoreFolderOpenState();
-
-        // ── Submenu (accordion) toggle with persistence ────────────────
-        document.querySelectorAll('.sidebar-folder-toggle').forEach(btn => {
-            btn.addEventListener('click', () => {
-                // Do nothing when sidebar is collapsed on desktop
-                if (window.innerWidth >= 1024 && document.documentElement.classList.contains('sidebar-collapsed')) {
-                    return;
-                }
-
-                const folder = btn.closest('.sidebar-folder');
-                const submenu = folder.querySelector('.orders-submenu');
-                const chevron = btn.querySelector('.chevron');
-                const isOpen = submenu.classList.contains('is-open');
-
-                // Close all open submenus first (accordion behaviour)
-                document.querySelectorAll('.sidebar-folder').forEach(f => {
-                    f.querySelector('.orders-submenu')?.classList.remove('is-open');
-                    f.querySelector('.chevron')?.classList.remove('rotate-180');
-                    f.querySelector('.sidebar-folder-toggle')?.setAttribute('aria-expanded', 'false');
-                    f.classList.remove('is-open');
-                });
-
-                // Open this one if it was closed
-                if (!isOpen) {
-                    submenu.classList.add('is-open');
-                    chevron?.classList.add('rotate-180');
-                    btn.setAttribute('aria-expanded', 'true');
-                    folder.classList.add('is-open');
-                }
-
-                // Persist the new state
-                syncFoldersToStorage();
-            });
+            applyCollapse(!root.classList.contains('sidebar-collapsed'));
         });
-    })();
+    }
+
+    // ── Folder (submenu) state helpers ─────────────────────────────
+    const FOLDERS_KEY = 'sidebar_open_folders';
+
+    function getOpenFolders() {
+        try {
+            const raw = localStorage.getItem(FOLDERS_KEY);
+            return raw ? JSON.parse(raw) : [];
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function setOpenFolders(keys) {
+        try {
+            localStorage.setItem(FOLDERS_KEY, JSON.stringify(keys));
+        } catch (e) {
+            // ignore
+        }
+    }
+
+    function syncFoldersToStorage() {
+        const openKeys = [];
+        document.querySelectorAll('.sidebar-folder').forEach(folder => {
+            const btn = folder.querySelector('.sidebar-folder-toggle');
+            const key = btn?.getAttribute('data-folder');
+            if (key && folder.classList.contains('is-open')) {
+                openKeys.push(key);
+            }
+        });
+        setOpenFolders(openKeys);
+    }
+
+    function restoreFolderOpenState() {
+        const saved = getOpenFolders();
+        if (!Array.isArray(saved) || !saved.length) return;
+
+        document.querySelectorAll('.sidebar-folder').forEach(folder => {
+            const btn = folder.querySelector('.sidebar-folder-toggle');
+            const submenu = folder.querySelector('.orders-submenu');
+            const chevron = folder.querySelector('.chevron');
+            const key = btn?.getAttribute('data-folder');
+
+            if (!key || !submenu) return;
+
+            const shouldBeOpen = saved.includes(key);
+
+            if (shouldBeOpen) {
+                submenu.classList.add('is-open');
+                chevron?.classList.add('rotate-180');
+                btn.setAttribute('aria-expanded', 'true');
+                folder.classList.add('is-open');
+            } else {
+                submenu.classList.remove('is-open');
+                chevron?.classList.remove('rotate-180');
+                btn.setAttribute('aria-expanded', 'false');
+                folder.classList.remove('is-open');
+            }
+        });
+    }
+
+    // Apply saved open/closed state on load,
+    // overriding the Blade "request()->routeIs" defaults
+    restoreFolderOpenState();
+})();
 

@@ -40,3 +40,8 @@
     </div>
 </div>
 @endforeach
+
+{{-- Pagination Links for AJAX/Infinite Scroll --}}
+@if($items->hasMorePages())
+    <div id="pagination-next-url" class="hidden">{{ $items->nextPageUrl() }}</div>
+@endif

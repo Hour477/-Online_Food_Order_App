@@ -8,10 +8,83 @@
 @source '../**/*.js';
 
 @theme {
+    /* Custom Breakpoints */
+    --breakpoint-xs: 320px;
+    --breakpoint-sm: 640px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 1024px;
+    --breakpoint-xl: 1440px;
+    --breakpoint-2xl: 1920px;
+
+    /* Relative Units & Fluid Typography Scale */
+    --font-size-xs: 0.75rem; /* 12px */
+    --font-size-sm: 0.875rem; /* 14px */
+    --font-size-base: 1rem; /* 16px */
+    --font-size-lg: 1.125rem; /* 18px */
+    --font-size-xl: 1.25rem; /* 20px */
+    --font-size-2xl: 1.5rem; /* 24px */
+    --font-size-3xl: 1.875rem; /* 30px */
+    --font-size-4xl: 2.25rem; /* 36px */
+
+    /* Touch Target Minimums */
+    --spacing-touch: 3rem; /* 48px */
+
     --font-sans:
         "Battambang", "Momo Trust Sans", ui-sans-serif, system-ui, sans-serif,
         "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
         "Noto Color Emoji";
+
+    --color-amber-50: #fffbeb;
+    --color-amber-100: #fef3c7;
+    --color-amber-200: #fde68a;
+    --color-amber-300: #fcd34d;
+    --color-amber-400: #fbbf24;
+    --color-amber-500: #f59e0b;
+    --color-amber-600: #d97706;
+    --color-amber-700: #b45309;
+    --color-amber-800: #92400e;
+    --color-amber-900: #78350f;
+}
+
+/* Accessibility: Focus Ring Styling */
+*:focus-visible {
+    outline: 2px solid var(--color-amber-600);
+    outline-offset: 2px;
+}
+
+/* Fluid Grids and Container */
+.container-fluid {
+    width: 100%;
+    margin-right: auto;
+    margin-left: auto;
+    padding-right: 1.25rem;
+    padding-left: 1.25rem;
+}
+
+@media (min-width: 768px) {
+    .container-fluid {
+        padding-right: 2rem;
+        padding-left: 2rem;
+    }
+}
+
+/* Mobile-first Touch Targets */
+.touch-target {
+    min-width: var(--spacing-touch);
+    min-height: var(--spacing-touch);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Base Styles */
+body {
+    font-family: var(--font-sans);
+    background-color: #fdf6ec;
+    color: #1a1208;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 /* Enable manual class-based dark mode for Tailwind v4 */

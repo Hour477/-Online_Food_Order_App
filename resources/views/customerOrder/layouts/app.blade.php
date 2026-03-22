@@ -21,34 +21,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@100;300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     
-    {{-- Tailwind CSS CDN with Battambang font configuration --}}
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Battambang', 'Momo Trust Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-                    },
-                    colors: {
-                        amber: {
-                            50: '#fffbeb',
-                            100: '#fef3c7',
-                            200: '#fde68a',
-                            300: '#fcd34d',
-                            400: '#fbbf24',
-                            500: '#f59e0b',
-                            600: '#d97706',
-                            700: '#b45309',
-                            800: '#92400e',
-                            900: '#78350f',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     @stack('styles')
@@ -122,12 +97,12 @@
 <body class="min-h-screen flex flex-col bg-[#fdf6ec] font-sans">
 
 {{-- ===== NAVBAR ===== --}}
-<nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200 shadow-sm">
+<nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200 shadow-sm" aria-label="Main Navigation">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
 
             {{-- Logo --}}
-            <a href="{{ route('customerOrder.menu.index') }}" class="flex       items-center gap-2">
+            <a href="{{ route('customerOrder.menu.index') }}" class="flex items-center gap-2 touch-target" aria-label="{{ $sidebarName }} Home">
                 @if(!empty($sidebarLogo))
                 <img src="{{ asset('storage/settings/' . $sidebarLogo) }}" alt="{{ $sidebarName }}"
                     class="h-10 w-10 rounded-lg object-contain bg-gray-100 p-1 flex-shrink-0">
@@ -140,47 +115,49 @@
                     </svg>
                 </div>
             @endif
-            <p class="text-2xl font-bold text-gray-900">{{ $sidebarName }}</p>
+            <p class="text-2xl font-bold text-gray-900 hidden sm:block">{{ $sidebarName }}</p>
 
                 
             </a>
 
             {{-- Nav Links --}}
             <div class="hidden md:flex items-center gap-8">
-                <a href="{{ route('customerOrder.menu.index') }}" class="text-sm font-medium {{ request()->routeIs('menu.*') ? 'text-amber-600' : 'text-gray-600 hover:text-gray-900' }}">{{ __('app.menu') }}</a>
-                <a href="{{ route('customerOrder.orders.history') }}" class="text-sm font-medium {{ request()->routeIs('orders.*') ? 'text-amber-600' : 'text-gray-600 hover:text-gray-900' }}">{{ __('app.my_orders') }}</a>
+                <a href="{{ route('customerOrder.menu.index') }}" class="text-sm font-medium touch-target px-2 {{ request()->routeIs('menu.*') ? 'text-amber-600' : 'text-gray-600 hover:text-gray-900' }}">{{ __('app.menu') }}</a>
+                <a href="{{ route('customerOrder.orders.history') }}" class="text-sm font-medium touch-target px-2 {{ request()->routeIs('orders.*') ? 'text-amber-600' : 'text-gray-600 hover:text-gray-900' }}">{{ __('app.my_orders') }}</a>
             </div>
 
             {{-- Cart + Language + Mobile --}}
             <div class="flex items-center gap-3">
+                @php $cartCount = session('cart') ? array_sum(array_column(session('cart'), 'qty')) : 0; @endphp
                 {{-- Language Switcher --}}
                 <div class="relative language-menu" id="customer-language-menu">
-                    <button type="button" class="language-menu-toggle flex items-center gap-1 px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 transition text-sm font-medium text-gray-700">
+                    <button type="button" class="language-menu-toggle flex items-center gap-1 px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 transition text-sm font-medium text-gray-700 touch-target" aria-expanded="false" aria-haspopup="true">
                         <i class="fa-solid fa-globe text-amber-600"></i>
-                        <span>{{ config('app.available_locales')[app()->getLocale()] ?? 'English' }}</span>
+                        <span class="hidden xs:inline">{{ config('app.available_locales')[app()->getLocale()] ?? 'English' }}</span>
                         <i class="fa-solid fa-chevron-down text-xs"></i>
                     </button>
                     
                     <div class="language-menu-panel hidden absolute right-0 mt-2 w-36 bg-white rounded-lg shadow-lg border border-gray-200 z-[100] py-1">
                         @foreach(config('app.available_locales', ['en' => 'English', 'km' => 'Khmer']) as $locale => $label)
                         <a href="{{ route('language.switch', $locale) }}" 
-                           class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-700 {{ app()->getLocale() === $locale ? 'bg-amber-50 text-amber-700 font-medium' : '' }}">
+                           class="block px-4 py-3 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-700 {{ app()->getLocale() === $locale ? 'bg-amber-50 text-amber-700 font-medium' : '' }}">
                             {{ $label }}
                         </a>
                         @endforeach
                     </div>
                 </div>
 
-                <a href="{{ route('customerOrder.cart.index') }}" class="relative p-2 rounded-full hover:bg-gray-100 transition" title="{{ __('app.cart') }}">
+                <a href="{{ route('customerOrder.cart.index') }}" class="relative p-2 rounded-full hover:bg-gray-100 transition touch-target" title="{{ __('app.cart') }}" aria-label="{{ __('app.cart') }} ({{ $cartCount }} items)">
                     <i class="fa-solid fa-basket-shopping text-xl text-gray-700"></i>
-                    @php $cartCount = session('cart') ? array_sum(array_column(session('cart'), 'qty')) : 0; @endphp
                     @if($cartCount > 0)
                     <span class="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-amber-500 text-white text-xs flex items-center justify-center font-bold">{{ $cartCount }}</span>
                     @endif
                 </a>
-                <button class="md:hidden p-2 rounded-full hover:bg-gray-100 transition" id="mobile-menu-btn">
-                    <i class="fa-solid fa-bars text-gray-700"></i>
-                </button>
+                {{-- <button class="md:hidden p-2 rounded-full hover:bg-gray-100 transition touch-target" id="mobile-menu-btn" aria-label="Toggle Menu" aria-controls="mobile-menu" aria-expanded="false">
+                    <span class="material-symbols-outlined">
+                        menu
+                        </span>
+                </button> --}}
 
                 {{-- Login + Signup--}}
                 @auth
@@ -191,15 +168,17 @@
                     </div>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="p-2 rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50 transition" title="{{ __('app.logout') }}">
-                            <i class="fa-solid fa-right-from-bracket"></i>
+                        <button type="submit" class="p-2 rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50 transition touch-target" title="{{ __('app.logout') }}" aria-label="{{ __('app.logout') }}">
+                            <span class="material-symbols-outlined">
+                                logout
+                                </span>
                         </button>
                     </form>
                 </div>
                 @else
                 <div class="flex items-center gap-2 ml-2">
-                    <a href="{{ route('login') }}" class="text-sm font-medium text-gray-600 hover:text-amber-600 px-3 py-2 transition">{{ __('app.login') }}</a>
-                    <a href="{{ route('register') }}" class="text-xs font-bold px-4 py-2 rounded-lg shadow-sm bg-amber-600 text-white hover:bg-amber-700 transition">{{ __('app.register') }}</a>
+                    <a href="{{ route('login') }}" class="text-sm font-medium text-gray-600 hover:text-amber-600 px-3 py-2 transition touch-target">{{ __('app.login') }}</a>
+                    <a href="{{ route('register') }}" class="text-xs font-bold px-4 py-2 rounded-lg shadow-sm bg-amber-600 text-white hover:bg-amber-700 transition touch-target">{{ __('app.register') }}</a>
                 </div>
                 @endauth
                 
