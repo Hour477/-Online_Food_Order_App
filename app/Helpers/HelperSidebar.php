@@ -15,16 +15,7 @@ class HelperSidebar
                 'icon' => 'home',
             ],
 
-            [
-                'title'   => __('app.users_and_roles'),
-                'icon'    => 'users',
-                'folder'  => 'users-roles',
-                'active'  => 'admin.users.*|admin.roles.*',
-                'children' => [
-                    ['title' => __('app.users'),  'route' => 'admin.users.index',  'active' => 'admin.users.*'],
-                    ['title' => __('app.roles'),  'route' => 'admin.roles.index',  'active' => 'admin.roles.*'],
-                ],
-            ],
+           
 
             [
                 'title' => __('app.categories'),
@@ -34,13 +25,7 @@ class HelperSidebar
                 
             ],
 
-            [
-                'title' => __('app.banners'),
-                'route' => 'admin.banners.index',
-                'active' => 'admin.banners.*',
-                'icon' => 'image',
-            ],
-
+            
             [
                 'title' => __('app.menu_items'),
                 'route' => 'admin.menu_items.index',
@@ -63,6 +48,8 @@ class HelperSidebar
                     ['title' => __('app.cancelled'), 'route' => 'admin.orders.index', 'active' => 'admin.orders.index', 'params' => ['status' => 'cancelled'], 'badge' => 'cancelled'],
                 ],
             ],
+
+
             
 
 
@@ -106,6 +93,26 @@ class HelperSidebar
                     ['title' => __('app.all_customer'), 'route' => 'admin.customers.index', 'active' => 'admin.customers.index'],
                 ],
             ], 
+
+
+            [
+                'title' => __('app.banners'),
+                'route' => 'admin.banners.index',
+                'active' => 'admin.banners.*',
+                'icon' => 'image',
+            ],
+
+             [
+                'title'   => __('app.users_and_roles'),
+                'icon'    => 'users',
+                'folder'  => 'users-roles',
+                'active'  => 'admin.users.*|admin.roles.*',
+                'children' => [
+                    ['title' => __('app.users'),  'route' => 'admin.users.index',  'active' => 'admin.users.*'],
+                    ['title' => __('app.roles'),  'route' => 'admin.roles.index',  'active' => 'admin.roles.*'],
+                ],
+            ],
+
 
             [
                 'title' => __('app.settings'),

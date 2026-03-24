@@ -8,6 +8,6 @@ trait HasDisplayImage
 {
     public function getDisplayImageAttribute()
     {
-        return DisplayImageHelper::get($this->image);
+        return DisplayImageHelper::get($this->image, 'assets/img/placeholder.png');
     }
 }

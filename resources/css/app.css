@@ -30,7 +30,7 @@
     --spacing-touch: 3rem; /* 48px */
 
     --font-sans:
-        "Battambang", "Momo Trust Sans", ui-sans-serif, system-ui, sans-serif,
+        "Kantumruy Pro", "Battambang", "Momo Trust Sans", ui-sans-serif, system-ui, sans-serif,
         "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
         "Noto Color Emoji";
 
@@ -91,7 +91,8 @@ body {
 @custom-variant dark (&:where(.dark, .dark *));
 
 @media (min-width: 1024px) {
-    #app-sidebar.sidebar-collapsed {
+    /* Base sidebar collapsed state */
+    .sidebar-collapsed #app-sidebar {
         width: 5rem;
     }
 
@@ -99,20 +100,27 @@ body {
         justify-content: center;
     }
 
+    /* Hide text/elements when collapsed */
     .sidebar-collapsed .brand-text,
     .sidebar-collapsed .sidebar-text,
     .sidebar-collapsed .chevron,
-    .sidebar-collapsed .orders-submenu {
-        display: none;
+    .sidebar-collapsed .sidebar-submenu {
+        display: none !important;
     }
 
+    /* Adjust padding for collapsed items */
     .sidebar-collapsed .sidebar-link,
-    .sidebar-collapsed .orders-toggle,
+    .sidebar-collapsed .sidebar-folder-toggle,
     .sidebar-collapsed .logout-link {
         justify-content: center;
         gap: 0;
         padding-left: 0.75rem;
         padding-right: 0.75rem;
+    }
+
+    /* Adjust submenu visibility */
+    .sidebar-collapsed .sidebar-submenu.is-open {
+        display: none !important;
     }
 }
 
@@ -223,7 +231,7 @@ body {
 }
 
 /* Khmer Font - Battambang */
-body {
+/* body {
     font-family: "Battambang", "Momo Trust Sans", system-ui;
     background-color: #fdf6ec;
     color: #1a1208;
@@ -256,8 +264,17 @@ body {
   font-family: "Battambang", system-ui;
   font-weight: 900;
   font-style: normal;
-}
+} */
 
+
+
+
+.kantumruy-pro {
+  font-family: "Kantumruy Pro", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 900;
+  font-style: normal;
+}
 
 
 /*  Sidebar link active state */
@@ -333,4 +350,7 @@ body {
             margin-left: 0;
         }
     }
+
+
+/* ToastMagic Position Override - Move to Bottom Right */
 

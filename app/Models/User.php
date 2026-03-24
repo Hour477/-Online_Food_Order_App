@@ -11,7 +11,11 @@ use Illuminate\Notifications\Notifiable;
 use App\Helpers\DisplayImageHelper;
 
 
+use App\Models\Like;
+use App\Models\MenuItem;
 use App\Models\Role;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 
 class User extends Authenticatable
@@ -19,6 +23,23 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
     protected  $appends = ['display_image'];
+
+    /**
+     * Get all of the products that the user has liked.
+     */
+    public function likedMenuItems(): MorphToMany
+    {
+        return $this->morphedByMany(MenuItem::class, 'likeable', 'likes')
+                    ->withTimestamps();
+    }
+
+    /**
+     * Check if the user has liked the given model.
+     */
+    public function hasLiked(MenuItem $model): bool
+    {
+        return $this->likedMenuItems()->where('likeable_id', $model->id)->exists();
+    }
 
     protected $fillable = [
         'name',
@@ -31,7 +52,7 @@ class User extends Authenticatable
 
      public function getDisplayImageAttribute()
     {
-        return DisplayImageHelper::get($this->image);
+        return DisplayImageHelper::get($this->image, 'assets/img/placeholder.png');
     }
     // relationship to user to role
     public function role()

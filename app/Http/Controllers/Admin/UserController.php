@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\UsersRequest;
 use App\Models\Role;
 use App\Models\User;
 use App\Services\UserServices;
+use Devrabiul\ToastMagic\Facades\ToastMagic;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -49,8 +50,8 @@ class UserController extends Controller
         //
         $data = $request->validated();
         $this->userServices->createUser($data, $request);
-
-        return redirect()->route("admin.users.index")->with("success", "User created successfully");
+        ToastMagic::success("User created successfully");
+        return redirect()->route("admin.users.index");
     }
 
     /**
@@ -69,12 +70,12 @@ class UserController extends Controller
     public function edit(User $user)
     {
         if (!$user) {
-            return redirect()->route('admin.users.index')
-                ->with('error', 'User not found or has been deleted.');
+            ToastMagic::warning('User not found or has been deleted.');
+            return redirect()->route('admin.users.index');
+                
         }
 
         $roles = Role::all();
-
         return view("admin.users.edit", compact("user", "roles"));
     }
 
@@ -87,9 +88,8 @@ class UserController extends Controller
 
         // Let service handle image upload
         $this->userServices->updateUser($data, $id, $request);
-        
-        return redirect()->route("admin.users.index")
-            ->with("success", "User updated successfully");
+        ToastMagic::success("User updated successfully");
+        return redirect()->route("admin.users.index");
     }
 
     /**
@@ -100,8 +100,9 @@ class UserController extends Controller
         $user = User::find($id);
 
         if (!$user) {
-            return redirect()->route('admin.users.index')
-                ->with('error', 'User not found.');
+            ToastMagic::warning('User not found or has been deleted.');
+            return redirect()->route('admin.users.index');
+                
         }
 
         // Delete user image if exists
@@ -118,7 +119,8 @@ class UserController extends Controller
         }
 
         $user->delete();
-        return redirect()->route("admin.users.index")
-            ->with('success', 'User deleted successfully.');
+        ToastMagic::success('Delete User successfully');
+        return redirect()->route("admin.users.index");
+            
     }
 }

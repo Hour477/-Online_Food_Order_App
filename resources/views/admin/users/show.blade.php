@@ -5,7 +5,7 @@
 <div class="mx-auto">
 
     {{-- Header --}}
-    <div class="mb-8 flex items-center justify-between">
+    <div class="mb-4 flex items-center border justify-between bg-white dark:bg-gray-800 rounded-lg border-gray-200 dark:border-gray-700 p-4">
         <div>
             <h3 class="text-2xl font-bold text-gray-900">User Details</h3>
             <p class="text-sm text-gray-500 mt-1">Viewing profile information for {{ $user->name }}</p>
@@ -25,13 +25,13 @@
         </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {{-- Profile Card --}}
         <div class="lg:col-span-1">
-            <div class="bg-white shadow-sm rounded-xl border border-gray-200 p-6 text-center">
+            <div class="bg-white shadow-sm rounded-lg border border-gray-200 p-6 text-center">
                 <div class="relative w-32 h-32 mx-auto mb-4">
                     @if($user->image)
-                        <img src="{{ asset('storage/users/' . $user->image) }}" alt="{{ $user->name }}" class="w-full h-full rounded-full object-cover border-4 border-amber-600">
+                        <img src="{{ asset($user->display_image) }}" alt="{{ $user->name }}" class="w-full h-full rounded-full object-cover border-4 border-amber-600">
                     @else
                         <div class="w-full h-full rounded-full border-4 border-amber-600 bg-amber-100 flex items-center justify-center text-2xl font-bold text-amber-700">
                             {{ strtoupper(mb_substr($user->name, 0, 2)) }}
@@ -47,8 +47,8 @@
         </div>
 
         {{-- Details Card --}}
-        <div class="lg:col-span-2">
-            <div class="bg-white shadow-sm rounded-xl border border-gray-200 p-6 lg:p-8">
+        <div class="lg:col-span-2 h-full">
+            <div class="bg-white shadow-sm rounded-lg border border-gray-200 p-6 lg:p-8">
                 <h5 class="text-lg font-semibold text-gray-900 mb-6 border-b pb-4">Account Information</h5>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8">

@@ -41,8 +41,7 @@
 
             {{-- Add Button --}}
             <a href="{{ route('admin.menu_items.create') }}"
-               class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-white
-                      bg-amber-600 hover:bg-amber-700 rounded-lg shadow-sm transition-colors">
+               class="{{ btn_primary_class() }}">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                 </svg>
@@ -52,12 +51,13 @@
         </div>
     </div>
 
-    {{-- Table Card --}}
-    <div class="bg-white shadow-sm rounded-xl border border-gray-200 overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-100">
+    {{-- Table Card use x---}}
 
-                <thead class="bg-gray-50">
+    <div class="bg-white shadow-sm rounded-xl border border-gray-200 overflow-hidden">
+        <div class="overflow-x-auto w-full">
+            <table class="min-w-[800px] w-full lg:min-w-full divide-y divide-gray-100">
+
+                <thead class="bg-gray-50 whitespace-nowrap">
                     <tr>
                         <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">ID</th>
                         <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Image</th>
@@ -82,15 +82,7 @@
 
                         <td class="px-6 py-4 whitespace-nowrap">
                             <a href="{{ route('admin.menu_items.show', $item->id) }}">
-                                {{-- @if($item->image)
-                                    <img src="{{ Storage::url($item->image) }}"
-                                         alt="{{ $item->name }}"
-                                         class="w-10 h-10 rounded-lg object-cover">
-                                @else
-                                    <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
-                                        <i class="fas fa-image text-gray-400 text-sm"></i>
-                                    </div>
-                                @endif --}}
+
                                 @if ($item->image)
                                     <img src="{{ $item->display_image }}"
                                          alt="{{ $item->name }}"
@@ -128,34 +120,30 @@
                                     Unavailable
                                 </span>
                             @endif
+                        
                         </td>
 
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm space-x-1">
+
+                          
                             {{-- View --}}
                             <a href="{{ route('admin.menu_items.show', $item->id) }}"
-                               class=" inline-flex items-center justify-center w-8 h-8 rounded-lg text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
-                               title="View">
-                                <i class="fa-regular fa-eye text-sm"></i>
+                               class="{{ action_btn_class('view') }}" title="View">
+                                    <i class="{{ action_btn_icon('view') }}"></i>
                             </a>
 
                             {{-- Edit --}}
                             <a href="{{ route('admin.menu_items.edit', $item->id) }}"
-                               class=" inline-flex items-center justify-center w-8 h-8 rounded-lg text-amber-600 hover:bg-amber-50 hover:text-amber-700 transition-colors"
-                               title="Edit">
-                                <i class="fa-regular fa-pen-to-square text-sm"></i>
+                               class="{{ action_btn_class('edit') }}" title="Edit">
+                                    <i class="{{ action_btn_icon('edit') }}"></i>
                             </a>
 
                             {{-- Delete --}}
-                            <form action="{{ route('admin.menu_items.destroy', $item->id) }}" method="POST" class="inline-block">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit"
-                                        onclick="return confirm('Delete this menu item? This cannot be undone.')"
-                                        class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-red-500 hover:bg-red-50 hover:text-red-600 transition-colors"
-                                        title="Delete">
-                                    <i class="fas fa-trash-alt text-sm"></i>
-                                </button>
-                            </form>
+                            <button type="button" 
+                                onclick="showDeleteModal('{{ route('admin.menu_items.destroy', $item->id) }}', 'Are you sure you want to delete the menu item \'{{ $item->name }}\'?')"
+                                class="{{ action_btn_class('delete') }}" title="Delete">
+                                <i class="{{ action_btn_icon('delete') }}"></i>
+                            </button>
                         </td>
 
                     </tr>

@@ -2,7 +2,7 @@
 
 <nav class="flex items-center bg-white justify-between w-full">
     <!-- Right: Sidebar Collapse Button -->
-    <div class="flex items-center gap-3">
+    <div class="flex items-center gap-3 border border-gray-200 bg-gray-100 rounded-lg "> 
         <button type="button" id="sidebar-collapse-btn"
             class="ml-auto hidden lg:flex items-center justify-center w-10 h-10 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors flex-shrink-0 touch-target"
             aria-label="Toggle sidebar">
@@ -17,9 +17,9 @@
         </button>
     </div>
 
-    <div class="flex items-center gap-3"></div>
+    {{-- <div class="flex items-center gap-4"></div> --}}
     {{-- Right: User Area --}}
-    <div class="flex items-center gap-4 sm:gap-6">
+    <div class="flex items-center gap-4 sm:gap-4">
         @auth
             {{-- Language Switcher --}}
             <div class="relative language-menu" id="admin-language-menu">
@@ -41,15 +41,11 @@
             </div>
 
             {{-- Notifications --}}
-            <div class="relative notification-menu mr-2">
+            <div class="relative notification-menu mr-2 hover:bg-amber-50">
                 <button type="button" id="notification-bell"
-                    class="p-2 text-gray-400 hover:text-amber-600 transition-colors relative touch-target"
+                    class=" border border-gray-200 rounded-lg hover:border-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500 hover:opacity-80 touch-target transition-colors "
                     title="{{ __('app.notifications') }}" aria-label="{{ __('app.notifications') }}">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
-                        </path>
-                    </svg>
+                    <i class="fa-solid fa-bell "></i>
                     <span id="notification-count"
                         class="hidden absolute top-1 right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">0</span>
                 </button>
@@ -76,11 +72,10 @@
             {{-- Quick Actions --}}
             <div class="hidden md:flex items-center gap-2 mr-2">
                 <a href="{{ route('admin.orders.create') }}"
-                    class="p-2 text-gray-400 hover:text-amber-600 transition-colors touch-target" title="{{ __('app.new_order') }}" aria-label="{{ __('app.new_order') }}">
+                    class="border border-gray-200 hover:border-amber-600 rounded-lg p-2 text-gray-400 hover:text-amber-600 transition-colors touch-target active:bg-amber-50 active:text-amber-700" title="{{ __('app.new_order') }}" aria-label="{{ __('app.new_order') }}">
                     {{-- POS --}}
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path>
-                    </svg>
+                    <i class="fa-solid fa-plus"></i>
+                   
 
                 </a>
                 <div class="h-5 w-px bg-gray-200 mx-1"></div>
@@ -90,7 +85,7 @@
             <div class="relative user-menu">
 
                 <button type="button" aria-expanded="false" aria-haspopup="true"
-                    class="user-menu-toggle flex items-center gap-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 rounded-full transition hover:opacity-80 touch-target">
+                    class="border border-gray-200 hover:border-amber-600 user-menu-toggle flex rounded-lg gap-2 items-center px-2 py-1 focus:outline-none focus:ring-2 focus:ring-amber-500 transition hover:opacity-80 touch-target">
 
                     @php
                         $avatarUrl =
@@ -100,7 +95,7 @@
                                 '&background=d97706&color=fff';
                     @endphp
 
-                    <img class="h-9 w-9 rounded-full object-cover border-2 border-amber-200" src="{{ $avatarUrl }}"
+                    <img class="h-9 w-9 rounded-lg object-cover border-2 border-amber-200" src="{{ $avatarUrl }}"
                         alt="{{ Auth::user()?->name ?? 'User' }}">
 
                     <span class="hidden sm:block text-sm font-medium text-gray-900 truncate max-w-xs">

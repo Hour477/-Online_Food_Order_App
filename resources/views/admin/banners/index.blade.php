@@ -41,8 +41,7 @@
 
             {{-- Add Button --}}
             <a href="{{ route('admin.banners.create') }}"
-               class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-white
-                      bg-amber-600 hover:bg-amber-700 rounded-lg shadow-sm transition-colors">
+               class="{{ btn_primary_class() }}">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                 </svg>
@@ -52,7 +51,8 @@
         </div>
     </div>
 
-    {{-- Table Card --}}
+    {{-- Table Card use x-data --}}
+    
     <div class="bg-white shadow-sm rounded-xl border border-gray-200 overflow-hidden">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-100">
@@ -96,30 +96,26 @@
                             @endif
                         </td>
 
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm space-x-1">
                             {{-- Toggle Status --}}
                             <a href="{{ route('admin.banners.toggle-status', $banner->id) }}"
-                               class="inline-flex items-center justify-center w-8 h-8 rounded-lg {{ $banner->is_active ? 'text-green-600 hover:bg-green-50' : 'text-gray-400 hover:bg-gray-100' }} transition-colors mr-1"
+                               class="{{ action_btn_class($banner->is_active ? 'status_on' : 'status_off') }}"
                                title="{{ $banner->is_active ? 'Deactivate' : 'Activate' }}">
-                                <i class="fas {{ $banner->is_active ? 'fa-toggle-on' : 'fa-toggle-off' }} text-lg"></i>
+                                <i class="fas text-lg {{ $banner->is_active ? 'fa-toggle-on' : 'fa-toggle-off' }}"></i>
                             </a>
 
                             <a href="{{ route('admin.banners.edit', $banner->id) }}"
-                               class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-amber-600 hover:bg-amber-50 hover:text-amber-700 transition-colors mr-1"
+                               class="{{ action_btn_class('edit') }}"
                                title="Edit">
-                                <i class="fa-regular fa-pen-to-square text-sm"></i>
+                                <i class="{{ action_btn_icon('edit') }}"></i>
                             </a>
 
-                            <form action="{{ route('admin.banners.destroy', $banner->id) }}" method="POST" class="inline-block">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit"
-                                        onclick="return confirm('Delete this banner? This cannot be undone.')"
-                                        class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-red-500 hover:bg-red-50 hover:text-red-600 transition-colors"
-                                        title="Delete">
-                                    <i class="fas fa-trash-alt text-sm"></i>
-                                </button>
-                            </form>
+                            <button type="button" 
+                                onclick="showDeleteModal('{{ route('admin.banners.destroy', $banner->id) }}', 'Are you sure you want to delete the banner \'{{ $banner->title ?? 'Untitled' }}\'?')"
+                                class="{{ action_btn_class('delete') }}"
+                                title="Delete">
+                                <i class="fas text-lg fa-trash"></i>
+                            </button>
                         </td>
 
                     </tr>

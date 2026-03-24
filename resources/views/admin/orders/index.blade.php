@@ -102,7 +102,7 @@
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
 
-                <thead class="bg-gray-50 dark:bg-gray-900/70">
+                <thead class="bg-gray-50 dark:bg-gray-900/70 whitespace-nowrap">
                     <tr>
                         <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider dark:text-gray-300">
                             Order ID

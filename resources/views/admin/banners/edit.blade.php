@@ -30,24 +30,24 @@
 
                 {{-- Current Image --}}
                 <div>
-                    <label class="block text-xs font-medium text-gray-500 uppercase tracking-widest mb-1.5">
+                    <label class="block font-medium text-gray-500 uppercase tracking-widest mb-1.5">
                         Current Image
                     </label>
                     <div class="flex items-center gap-4">
                         <img src="{{ Storage::url($banner->image) }}" alt="{{ $banner->title ?? 'Banner' }}"
-                             class="w-48 h-28 object-cover rounded-lg border border-gray-200">
-                    </div>
+                             class="object-contain rounded-lg border border-gray-200 shadow-md h-[480px] w-full">
+                    </div>  
                 </div>
 
                 {{-- New Image --}}
                 <div>
-                    <label for="image" class="block text-xs font-medium text-gray-500 uppercase tracking-widest mb-1.5">
+                    <label for="image" class="block text-lg font-medium text-gray-500 uppercase tracking-widest mb-1.5">
                         New Image <span class="text-gray-400 font-normal normal-case tracking-normal">(leave empty to keep current)</span>
                     </label>
                     
                     {{-- Image Preview --}}
                     <div class="mb-3 flex items-center gap-4">
-                        <div id="preview-placeholder" class="w-48 h-28 bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center">
+                        <div id="preview-placeholder" class="w-full h-[480px] bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center">
                             <div class="text-center">
                                 <i class="fas fa-image text-2xl text-gray-300 mb-1"></i>
                                 <p class="text-xs text-gray-400">No new image</p>

@@ -19,10 +19,7 @@ class RoleSeeder extends Seeder
        // 1️⃣ Insert roles with slug
         $roles = [
             'Admin',    // id = 1
-            'Manager',  // id = 2
-            'Cashier',  // id = 3
-            'Waiter',   // id = 4
-            'Customer', // id = 5
+            'Customer', // id = 2
         ];
 
         foreach ($roles as $roleName) {
@@ -39,7 +36,7 @@ class RoleSeeder extends Seeder
         DB::table('users')->insert([
             [
                 'name' => 'Super Admin',
-                'email' => 'admin@admin.com',
+                'email' => 'admin@example.com',
                 'role_id' => 1, // Admin
                 'password' => Hash::make('password123'),
                 'created_at' => now(),
@@ -48,7 +45,7 @@ class RoleSeeder extends Seeder
             [
                 'name' => 'Jane Smith',
                 'email' => 'customer@example.com',
-                'role_id' => 5, // Customer
+                'role_id' => 2, // Customer
                 'password' => Hash::make('password123'),
                 'created_at' => now(),
                 'updated_at' => now(),

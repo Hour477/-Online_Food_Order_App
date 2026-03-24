@@ -44,9 +44,9 @@
             </div>
         @else
             <!-- Responsive Table -->
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                    <thead class="bg-gray-50 dark:bg-gray-700/50">
+            <div class="overflow-x-auto w-full">
+                <table class="min-w-[600px] w-full lg:min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead class="bg-gray-50 dark:bg-gray-700/50 whitespace-nowrap">
                         <tr>
                             <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                 Table No
@@ -62,7 +62,7 @@
                             </th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700 whitespace-nowrap">
                         @foreach($tables as $table)
                             <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
@@ -85,15 +85,11 @@
                                         <i class="fas fa-edit"></i> Edit
                                     </a>
                                     @if(auth()->user()->role === 'admin')
-                                    <form action="{{ route('admin.tables.destroy', $table->id) }}" method="POST" class="inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                                onclick="return confirm('Are you sure you want to delete Table {{ $table->table_number }}? This action cannot be undone.')"
-                                                class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 transition">
-                                            <i class="fas fa-trash-alt"></i> Delete
-                                        </button>
-                                    </form>
+                                    <button type="button" 
+                                            onclick="showDeleteModal('{{ route('admin.tables.destroy', $table->id) }}', 'Are you sure you want to delete Table {{ $table->table_number }}? This action cannot be undone.')"
+                                            class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 transition">
+                                        <i class="fas fa-trash-alt"></i> Delete
+                                    </button>
                                     @endif
                                 </td>
                             </tr>
