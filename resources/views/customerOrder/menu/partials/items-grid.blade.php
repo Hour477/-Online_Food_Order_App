@@ -13,6 +13,17 @@
         <span class="absolute top-3 left-3 bg-white/90 backdrop-blur text-xs font-semibold px-2 py-1 rounded-full text-gray-700 battambang-regular">
             🍽 {{ $item->category->name ?? __('app.uncategorized') }}
         </span>
+
+        {{-- Like Button --}}
+        <button type="button" 
+                onclick="toggleLike(this, {{ $item->id }})" 
+                class="absolute top-3 right-3 w-10 h-10 rounded-full bg-white/90 backdrop-blur shadow-sm flex items-center justify-center transition-all duration-300 hover:scale-110 group {{ Auth::check() && $item->isLikedBy(Auth::user()) ? 'text-red-500' : 'text-gray-400 hover:text-red-500' }}"
+                id="like-btn-{{ $item->id }}">
+            <i class="{{ Auth::check() && $item->isLikedBy(Auth::user()) ? 'fa-solid' : 'fa-regular' }} fa-heart text-xl"></i>
+            <span class="absolute -bottom-1 -right-1 bg-amber-500 text-white text-[10px] px-1 rounded-full font-bold likes-count">
+                {{ $item->likes_count }}
+            </span>
+        </button>
     </div>
 
     {{-- Info --}}

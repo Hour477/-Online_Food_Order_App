@@ -41,8 +41,7 @@
 
             {{-- Add Button --}}
             <a href="{{ route('admin.categories.create') }}"
-               class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-white
-                      bg-amber-600 hover:bg-amber-700 rounded-lg shadow-sm transition-colors">
+               class="{{ btn_primary_class() }}">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                 </svg>
@@ -98,23 +97,28 @@
                             @endif
                         </td>
 
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
-                            <a href="{{ route('admin.categories.edit', $category->id) }}"
-                               class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-amber-600 hover:bg-amber-50 hover:text-amber-700 transition-colors mr-1"
-                               title="Edit">
-                                <i class="fa-regular fa-pen-to-square text-sm"></i>
-                            </a>
 
-                            <form action="{{ route('admin.categories.destroy', $category->id) }}" method="POST" class="inline-block">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit"
-                                        onclick="return confirm('Delete this category? This cannot be undone.')"
-                                        class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-red-500 hover:bg-red-50 hover:text-red-600 transition-colors"
-                                        title="Delete">
-                                    <i class="fas fa-trash-alt text-sm"></i>
-                                </button>
-                            </form>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm space-x-1">
+
+                            {{-- Toggle Status --}}
+                            <a href="{{ route('admin.categories.toggle-status', $category->id) }}"
+                               class="{{ action_btn_class($category->status ? 'status_on' : 'status_off') }}"
+                               title="{{ $category->status ? 'Deactivate' : 'Activate' }}">
+                                <i class="fas text-lg {{ $category->status ? 'fa-toggle-on' : 'fa-toggle-off' }}"></i>
+                            </a>
+                            
+                            <a href="{{ route('admin.categories.edit', $category->id) }}"
+                               class="{{ action_btn_class('edit') }}"
+                               title="Edit">
+                                <i class="fas text-lg fa-edit"></i>
+                            </a>
+                            
+
+                            <button type="button" 
+                                onclick="showDeleteModal('{{ route('admin.categories.destroy', $category->id) }}', 'Are you sure you want to delete the category \'{{ $category->name }}\'?')"
+                                 class="{{ action_btn_class('delete') }}" title="Delete">
+                                <i class="fas text-lg fa-trash"></i>
+                            </button>
                         </td>
 
                     </tr>

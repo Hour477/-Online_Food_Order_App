@@ -93,4 +93,13 @@ class CategoryController extends Controller
         return redirect()->route('admin.categories.index');
 
     }
+        
+    public function toggleStatus(string $id)
+    {
+        $category = Category::findOrFail($id);
+        $category->status = !$category->status;
+        $category->save();
+        ToastMagic::success('Category ' . $category->name . '' . ($category->status ? 'activated' : 'deactivated') . ' successfully');
+        return redirect()->route('admin.categories.index');
+    }
 }

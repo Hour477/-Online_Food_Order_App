@@ -9,7 +9,7 @@ class DisplayImageHelper
     /**
      * Get full image URL or placeholder
      */
-    public static function get($image = null, $default = 'assets/img/placeholder.jpg')
+    public static function get($image = null, $default = 'assets/img/placeholder.png')
     {
         if ($image && Storage::disk('public')->exists($image)) {
             return Storage::url($image);
@@ -27,7 +27,7 @@ class DisplayImageHelper
             return Storage::url($image);
         }
 
-        return $default ? asset($default) : asset('assets/img/placeholder.jpg');
+        return $default ? asset($default) : asset('assets/img/placeholder.png');
     }
 
     /**

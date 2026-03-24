@@ -107,7 +107,10 @@ Route::middleware(['auth', 'role:admin'])
 
         Route::resource('user',        UserController::class);
         Route::resource('categories',   CategoryController::class);
+        Route::get('categories/{category}/toggle-status', [CategoryController::class, 'toggleStatus'])->name('categories.toggle-status');
         Route::resource('menu_items',   MenuItemController::class);     // ← hyphen, convention
+        
+
         Route::resource('tables',       TableController::class);
         
         // Custom customer routes MUST be before resource

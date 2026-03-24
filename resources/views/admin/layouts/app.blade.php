@@ -21,7 +21,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@100;300;400;700;900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:ital,wght@0,100..700;1,100..700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Momo+Trust+Sans:wght@200..800&family=Roboto:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
 
@@ -50,7 +52,7 @@
     @stack('styles')
 </head>
 
-<body class="font-battambang-regular">
+<body class="font-sans">
     
 
     <div class="flex min-h-screen">
@@ -68,7 +70,7 @@
 
             {{-- Header --}}
             <header class="bg-white shadow-sm sticky top-0 z-40">
-                <div class="flex items-center justify-between px-4 py-3 lg:px-6">
+                <div class="flex items-center justify-between px-4 py-3 lg:px-4">
 
                     
                     
@@ -80,7 +82,7 @@
             </header>
 
             {{-- Page Content --}}
-            <main class="flex-1 overflow-y-auto p-4 lg:p-6">
+            <main class="flex-1 overflow-y-auto lg:p-4">
                 @yield('content')
             </main>
 
@@ -89,9 +91,12 @@
         </div>
     </div>
 
-    {!! ToastMagic::scripts() !!}
+    
     @stack('scripts')
     @yield('scripts')
+
+    {{-- Delete Confirmation Modal --}}
+    @include('admin.layouts.partials.delete-confirm')
 
     {{-- Notification Script --}}
     @auth
@@ -220,6 +225,8 @@
         });
     </script>
     @endauth
+
+    {!! ToastMagic::scripts() !!}
 
 </body>
 </html>

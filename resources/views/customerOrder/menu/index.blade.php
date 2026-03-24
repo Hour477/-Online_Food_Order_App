@@ -155,22 +155,7 @@
     <div class="absolute bottom-0 left-0 right-0 h-24 z-10"></div>
     
     {{-- Floating Food Images --}}
-    <div class="absolute right-8 top-1/2 -translate-y-1/2 hidden xl:block z-10">
-        <div class="relative">
-            <div class="floating-food absolute -top-20 -left-10 animate-float" style="animation-delay: 0s;">
-                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=150&q=80" 
-                     alt="Burger" class="w-28 h-28 object-cover rounded-2xl shadow-2xl border-4 border-white/20">
-            </div>
-            <div class="floating-food animate-float" style="animation-delay: 0.5s;">
-                <img src="https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=150&q=80" 
-                     alt="Drink" class="w-28 h-28 object-cover rounded-2xl shadow-2xl border-4 border-white/20">
-            </div>
-            <div class="floating-food absolute -bottom-20 -left-10 animate-float" style="animation-delay: 1s;">
-                <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=150&q=80" 
-                     alt="Pizza" class="w-28 h-28 object-cover rounded-2xl shadow-2xl border-4 border-white/20">
-            </div>
-        </div>
-    </div>
+    
 </section>
 
 {{-- ===== SEARCH & FILTER BAR ===== --}}
@@ -277,6 +262,59 @@ function incQty(btn) {
 function decQty(btn) {
     const input = btn.parentElement.querySelector('.qty-input');
     input.value = Math.max(1, parseInt(input.value) - 1);
+}
+
+/**
+ * Toggle Product Like/Unlike
+ */
+async function toggleLike(btn, productId) {
+    @guest
+        window.location.href = "{{ route('login') }}";
+        return;
+    @endguest
+
+    const icon = btn.querySelector('i');
+    const likesCountSpan = btn.querySelector('.likes-count');
+    const isLiked = icon.classList.contains('fa-solid');
+    
+    // Optimistic UI update
+    icon.classList.toggle('fa-solid');
+    icon.classList.toggle('fa-regular');
+    btn.classList.toggle('text-red-500');
+    btn.classList.toggle('text-gray-400');
+
+    try {
+        const url = isLiked 
+            ? `/api/products/${productId}/unlike` 
+            : `/api/products/${productId}/like`;
+        
+        const response = await fetch(url, {
+            method: isLiked ? 'DELETE' : 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            likesCountSpan.textContent = data.likes_count;
+        } else {
+            // Rollback on error
+            throw new Error(data.message || 'Something went wrong');
+        }
+    } catch (error) {
+        console.error('Error toggling like:', error);
+        // Rollback UI
+        icon.classList.toggle('fa-solid');
+        icon.classList.toggle('fa-regular');
+        btn.classList.toggle('text-red-500');
+        btn.classList.toggle('text-gray-400');
+        
+        alert(error.message || 'Failed to update like status');
+    }
 }
 
 // Hero Banner Slider with Animations

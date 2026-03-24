@@ -47,7 +47,6 @@ class MenuItemSeeder extends Seeder
 
             // Rice & Noodles (Category 3)
             ['name' => 'Fried Rice', 'description' => 'Wok-fried rice with egg and vegetables', 'price' => 9.99, 'status' => 'available', 'image' => null],
-            ['name' => 'Pad Thai', 'description' => 'Thai stir-fried noodles with shrimp and peanuts', 'price' => 12.99, 'status' => 'available', 'image' => null],
             ['name' => 'Pho Bo', 'description' => 'Vietnamese beef noodle soup', 'price' => 11.99, 'status' => 'available', 'image' => null],
             ['name' => 'Lo Mein', 'description' => 'Soft noodles with vegetables and meat', 'price' => 10.99, 'status' => 'available', 'image' => null],
             ['name' => 'Biryani', 'description' => 'Aromatic rice with spiced meat', 'price' => 13.99, 'status' => 'available', 'image' => null],

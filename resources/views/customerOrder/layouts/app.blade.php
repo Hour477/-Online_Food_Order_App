@@ -17,10 +17,10 @@
     <meta name="description" content="{{ $sidebarSettings['description'] ?? 'Order System' }}">
     <title>{{ $sidebarName ?? 'Order System' }}</title>
     
-    {{-- Google Fonts - Battambang for Khmer text --}}
+    {{-- Google Fonts - Kantumruy Pro and Battambang --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@100;300;400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:ital,wght@0,100..700;1,100..700&family=Battambang:wght@100;300;400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -31,9 +31,9 @@
     
     {{-- Custom Styles matching system default --}}
     <style>
-        /* Khmer Font - Battambang */
+        /* Khmer Font - Kantumruy Pro & Battambang */
         body {
-            font-family: "Battambang", "Momo Trust Sans", system-ui;
+            font-family: "Kantumruy Pro", "Battambang", "Momo Trust Sans", system-ui;
             background-color: #fdf6ec;
             color: #1a1208;
         }

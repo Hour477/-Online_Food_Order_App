@@ -21,20 +21,20 @@ class MenuItemService
         return $menuItem;
         
     }
-    public function update(string $id, array $data){
-        // Update the menu item
+    public function update(string $id, array $data)
+    {
         $menuItem = MenuItem::findOrFail($id);
-        if ($menuItem->update($data)) {
-            if (isset($data['image'])) {
-                $data['image'] = ImageHelper::update(
-                    $data['image'],
-                    $menuItem->image,
-                    'menu-items',
-                );
-            }
+        $oldImage = $menuItem->image;
+
+        if (isset($data['image'])) {
+            $data['image'] = ImageHelper::update(
+                $data['image'],
+                $oldImage,
+                'menu-items'
+            );
         }
-        
-        $menuItem->update($data , ['id' => $id]);
+
+        $menuItem->update($data);
         return $menuItem;
     }
 

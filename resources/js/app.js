@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const toggleButton = document.getElementById('sidebar-toggle');
     const menuIcon = document.getElementById('icon-menu');
     const closeIcon = document.getElementById('icon-close');
+    const desktopOpenIcon = document.getElementById('collapse-icon-open');
+    const desktopClosedIcon = document.getElementById('collapse-icon-closed');
     const desktopQuery = window.matchMedia('(min-width: 1024px)');
 
     let sidebarOpen = false;
@@ -19,13 +21,13 @@ document.addEventListener('DOMContentLoaded', () => {
         backdrop.classList.toggle('pointer-events-auto', open);
         backdrop.classList.toggle('opacity-0', !open);
         backdrop.classList.toggle('pointer-events-none', !open);
-        menuIcon.classList.toggle('hidden', open);
-        closeIcon.classList.toggle('hidden', !open);
+        if (menuIcon) menuIcon.classList.toggle('hidden', open);
+        if (closeIcon) closeIcon.classList.toggle('hidden', !open);
     };
 
     const setDesktopState = (collapsed) => {
-        sidebar.classList.toggle('sidebar-collapsed', collapsed);
-        localStorage.setItem('sidebarCollapsed', collapsed ? 'true' : 'false');
+        document.documentElement.classList.toggle('sidebar-collapsed', collapsed);
+        localStorage.setItem('sidebar_collapsed', collapsed ? 'true' : 'false');
     };
 
     const isDesktop = () => desktopQuery.matches;
@@ -33,21 +35,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const syncByViewport = () => {
         if (isDesktop()) {
             setMobileState(false);
-            menuIcon.classList.remove('hidden');
-            closeIcon.classList.add('hidden');
-            const collapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+            const collapsed = localStorage.getItem('sidebar_collapsed') === 'true';
             setDesktopState(collapsed);
         } else {
-            sidebar.classList.remove('sidebar-collapsed');
+            document.documentElement.classList.remove('sidebar-collapsed');
             setMobileState(false);
         }
     };
 
-    if (sidebar && backdrop && toggleButton && menuIcon && closeIcon) {
+    if (sidebar && backdrop && toggleButton) {
         toggleButton.addEventListener('click', () => {
             if (isDesktop()) {
-                const collapsed = !sidebar.classList.contains('sidebar-collapsed');
-                setDesktopState(collapsed);
+                const isCollapsed = document.documentElement.classList.contains('sidebar-collapsed');
+                setDesktopState(!isCollapsed);
                 return;
             }
 
@@ -56,6 +56,65 @@ document.addEventListener('DOMContentLoaded', () => {
 
         backdrop.addEventListener('click', () => setMobileState(false));
         desktopQuery.addEventListener('change', syncByViewport);
+
+        // Initial sync
+        syncByViewport();
+    }
+
+    // Delete Modal Logic
+    const deleteModal = document.getElementById('delete-modal');
+    const deleteModalBackdrop = document.getElementById('delete-modal-backdrop');
+    const deleteModalContent = document.getElementById('delete-modal-content');
+    const deleteModalCancel = document.getElementById('delete-modal-cancel');
+    const deleteModalForm = document.getElementById('delete-modal-form');
+    const deleteModalMessage = document.getElementById('delete-modal-message');
+
+    if (deleteModal && deleteModalBackdrop && deleteModalContent && deleteModalCancel && deleteModalForm) {
+        // Show Modal
+        window.showDeleteModal = function(url, message = null) {
+            deleteModalForm.action = url;
+            if (message) {
+                deleteModalMessage.textContent = message;
+            } else {
+                deleteModalMessage.textContent = 'Are you sure you want to delete this item? This action cannot be undone.';
+            }
+            
+            // Show container
+            deleteModal.classList.remove('hidden');
+            // Prevent body scroll
+            document.body.classList.add('overflow-hidden');
+
+            // Animate in (using a tiny timeout to ensure classes are applied after hidden is removed)
+            requestAnimationFrame(() => {
+                deleteModalBackdrop.classList.replace('opacity-0', 'opacity-100');
+                deleteModalContent.classList.remove('opacity-0', 'translate-y-4', 'sm:translate-y-0', 'sm:scale-95');
+                deleteModalContent.classList.add('opacity-100', 'translate-y-0', 'sm:scale-100');
+            });
+        };
+
+        // Hide Modal
+        const hideDeleteModal = function() {
+            // Animate out
+            deleteModalBackdrop.classList.replace('opacity-100', 'opacity-0');
+            deleteModalContent.classList.remove('opacity-100', 'translate-y-0', 'sm:scale-100');
+            deleteModalContent.classList.add('opacity-0', 'translate-y-4', 'sm:translate-y-0', 'sm:scale-95');
+
+            // Wait for animation to finish before hiding container
+            setTimeout(() => {
+                deleteModal.classList.add('hidden');
+                document.body.classList.remove('overflow-hidden');
+            }, 300); // Match duration-300
+        };
+
+        deleteModalCancel.addEventListener('click', hideDeleteModal);
+        deleteModalBackdrop.addEventListener('click', hideDeleteModal);
+
+        // Escape key to close
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && !deleteModal.classList.contains('hidden')) {
+                hideDeleteModal();
+            }
+        });
     }
 
     // Handle folder toggle clicks (accordion behavior)
@@ -63,12 +122,17 @@ document.addEventListener('DOMContentLoaded', () => {
         button.addEventListener('click', (e) => {
             e.stopPropagation(); // Prevent event from bubbling up
 
+            // If sidebar is collapsed, don't allow opening folders
+            if (document.documentElement.classList.contains('sidebar-collapsed')) {
+                return;
+            }
+
             const menu = button.closest('.sidebar-folder');
             if (!menu) return;
 
             const submenu = menu.querySelector('.orders-submenu');
             const chevron = menu.querySelector('.chevron');
-            const isOpen = submenu && !submenu.classList.contains('hidden') && submenu.classList.contains('is-open');
+            const isOpen = submenu && submenu.classList.contains('is-open');
 
             // Close all OTHER folders first (accordion behavior)
             sidebar?.querySelectorAll('.sidebar-folder').forEach((otherMenu) => {
@@ -79,8 +143,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const otherToggle = otherMenu.querySelector('.sidebar-folder-toggle');
 
                 if (otherSubmenu) {
-                    otherSubmenu.classList.add('hidden');
                     otherSubmenu.classList.remove('is-open');
+                    otherSubmenu.style.maxHeight = null;
                 }
                 if (otherChevron) {
                     otherChevron.classList.remove('rotate-180');
@@ -95,12 +159,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (submenu) {
                 if (isOpen) {
                     // Close
-                    submenu.classList.add('hidden');
                     submenu.classList.remove('is-open');
+                    submenu.style.maxHeight = null;
                 } else {
                     // Open
-                    submenu.classList.remove('hidden');
                     submenu.classList.add('is-open');
+                    submenu.style.maxHeight = submenu.scrollHeight + 'px';
                 }
             }
 
