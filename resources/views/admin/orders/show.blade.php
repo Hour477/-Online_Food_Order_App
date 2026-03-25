@@ -22,7 +22,8 @@
                 </svg>
                 Back to Orders
             </a>
-            @if($orders->status === 'completed')
+            
+            @if($orders->status === 'completed' )
                 <a href="{{ route('admin.orders.receipt', $orders->id) }}"
                    target="_blank"
                    class="ml-4 px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-2">
@@ -32,6 +33,7 @@
                     Download Receipt
                 </a>
             @endif
+            
         </div>
     </div>
 
@@ -65,16 +67,7 @@
                         <p class="text-sm text-gray-900 font-medium uppercase">{{ str_replace('_', ' ', $orders->order_type ?? 'N/A') }}</p>
                     </div>
 
-                    <div>
-                        <p class="text-xs font-medium text-gray-500 uppercase tracking-widest mb-1">Table</p>
-                        <p class="text-sm text-gray-900 font-medium">
-                            @if($orders->table)
-                                Table {{ $orders->table->table_number }} ({{ $orders->table->capacity }} seats)
-                            @else
-                                N/A
-                            @endif
-                        </p>
-                    </div>
+                    
 
                     <div>
                         <p class="text-xs font-medium text-gray-500 uppercase tracking-widest mb-1">Customer</p>

@@ -34,7 +34,7 @@
         <div class="flex items-center justify-between mt-auto">
             <span class="font-bold text-amber-600 text-lg">${{ number_format($item->price, 2) }}</span>
 
-            <form method="POST" action="{{ route('customerOrder.cart.add') }}" class="flex items-center gap-2">
+            <form onsubmit="addToCart(event, this)" method="POST" action="{{ route('customerOrder.cart.add') }}" class="flex items-center gap-2">
                 @csrf
                 <input type="hidden" name="item_id" value="{{ $item->id }}">
                 <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden">
@@ -51,8 +51,3 @@
     </div>
 </div>
 @endforeach
-
-{{-- Pagination Links for AJAX/Infinite Scroll --}}
-@if($items->hasMorePages())
-    <div id="pagination-next-url" class="hidden">{{ $items->nextPageUrl() }}</div>
-@endif

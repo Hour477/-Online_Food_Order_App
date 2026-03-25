@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @method static \Illuminate\Database\Eloquent\Builder|Banner active()
+ */
 class Banner extends Model
 {
     use HasFactory;

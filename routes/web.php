@@ -10,7 +10,7 @@ use App\Http\Controllers\Admin\{
     UserController,
     CategoryController,
     MenuItemController,
-    TableController,
+    
     CustomerController,
     OrderController as AdminOrderController,
     SettingController,
@@ -27,8 +27,16 @@ use App\Http\Controllers\CustomerOrder\{
     customerMenuController,
     customerCartController,
     customerCheckoutController,
-    customerOrderController
+    customerOrderController,
+    CustomerProfileController
 };
+
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [CustomerProfileController::class, 'show'])->name('customerOrder.profile.show');
+    Route::get('/profile/edit', [CustomerProfileController::class, 'edit'])->name('customerOrder.profile.edit');
+    Route::put('/profile', [CustomerProfileController::class, 'update'])->name('customerOrder.profile.update');
+});
 
 
 
@@ -111,12 +119,13 @@ Route::middleware(['auth', 'role:admin'])
         Route::resource('menu_items',   MenuItemController::class);     // ← hyphen, convention
         
 
-        Route::resource('tables',       TableController::class);
+        
         
         // Custom customer routes MUST be before resource
         Route::get('customers/best',   [CustomerController::class, 'best'])->name('customers.best');
         Route::get('customers/recent', [CustomerController::class, 'recent'])->name('customers.recent');
         Route::resource('customers',    CustomerController::class);
+        Route::put('/customers/{id}', [CustomerController::class, 'update'])->name('admin.customers.update');
 
         Route::resource('orders', AdminOrderController::class);
         Route::post('orders/{order}/checkout', [AdminOrderController::class, 'checkout'])->name('orders.checkout');
@@ -140,14 +149,18 @@ Route::middleware(['auth', 'role:admin'])
 
               // ← keep only one
         Route::resource('users', UserController::class);
+        Route::get('roles/generate-slug', [RoleController::class, 'generateSlug'])->name('roles.generate-slug');
         Route::resource('roles', RoleController::class);
 
 
 
         Route::prefix('reports')->name('reports.')->group(function () {
-            Route::get('/', [ReportController::class, 'reportsIndex'])->name('index');
+            Route::get('/', [ReportController::class, 'index'])->name('index');
+            Route::get('/sales', [ReportController::class, 'sales'])->name('sales');
             Route::get('/orders', [ReportController::class, 'orders'])->name('orders');
             Route::get('/income', [ReportController::class, 'income'])->name('income');
+            Route::get('/export/pdf/{type}', [ReportController::class, 'exportPdf'])->name('export.pdf');
+            Route::get('/export/csv/{type}', [ReportController::class, 'exportCsv'])->name('export.csv');
         });
 
         Route::resource('payment', PaymentController::class);

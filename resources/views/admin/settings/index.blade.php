@@ -1,28 +1,18 @@
 ﻿@extends('admin.layouts.app')
 
+@section('title', 'Business Settings')
+
 @section('content')
 <div class="mx-auto">
-    {{-- Header --}}
-    <div class="mb-8 flex items-center justify-between">
-        <div>
-            <h3 class="text-2xl font-bold text-gray-900">Business Settings</h3>
-            <p class="text-sm text-gray-500 mt-1">Update your restaurant information and branding</p>
-        </div>
-    </div>
-
-    {{-- Error Messages --}}
-    @if($errors->any())
-        <div class="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-700">
-            <ul class="list-disc pl-5">
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
+    
     {{-- Form Card --}}
-    <div class="bg-white shadow-sm rounded-xl border border-gray-200 p-6 lg:p-8">
+   <div
+        class="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 overflow-hidden p-5">
+        {{-- Header --}}
+            <div class="mb-6">
+                <h3 class="text-2xl font-bold text-gray-900">Business Settings</h3>
+                <p class="text-sm text-gray-500 mt-1">Update your restaurant information and branding</p>
+            </div>
         <form action="{{ route('admin.settings.update', $setting->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
@@ -87,7 +77,7 @@
                                   file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100">
                     @if(!empty($settings['logo']))
                         <div class="mt-3 flex items-center gap-3">
-                            <img src="{{ asset('storage/settings/' . $settings['logo']) }}" alt="Logo" 
+                            <img src="{{ Storage::url($settings['logo']) }}" alt="Logo" 
                                  class="h-14 w-14 rounded-lg border border-gray-200 object-contain bg-gray-50">
                             <span class="text-xs text-gray-400">Current logo</span>
                         </div>
@@ -106,7 +96,7 @@
                                   file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100">
                     @if(!empty($settings['favicon']))
                         <div class="mt-3 flex items-center gap-3">
-                            <img src="{{ asset('storage/settings/' . $settings['favicon']) }}" alt="Favicon" 
+                            <img src="{{ Storage::url($settings['favicon']) }}" alt="Favicon" 
                                  class="h-10 w-10 rounded-lg border border-gray-200 object-contain bg-gray-50">
                             <span class="text-xs text-gray-400">Current favicon</span>
                         </div>

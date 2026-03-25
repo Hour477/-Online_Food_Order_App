@@ -1,10 +1,10 @@
 @use('Illuminate\Support\Facades\Auth')
 
-<nav class="flex items-center bg-white justify-between w-full">
+<nav class="flex items-center justify-between w-full">
     <!-- Right: Sidebar Collapse Button -->
-    <div class="flex items-center gap-3 border border-gray-200 bg-gray-100 rounded-lg "> 
+    <div class="flex items-center gap-3"> 
         <button type="button" id="sidebar-collapse-btn"
-            class="ml-auto hidden lg:flex items-center justify-center w-10 h-10 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors flex-shrink-0 touch-target"
+            class="hidden lg:flex items-center justify-center w-10 h-10 rounded-lg text-gray-500 bg-gray-100 hover:bg-gray-200 hover:text-gray-700 transition-all duration-200 flex-shrink-0"
             aria-label="Toggle sidebar">
             <svg id="collapse-icon-open" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                 stroke-width="2">
@@ -41,13 +41,13 @@
             </div>
 
             {{-- Notifications --}}
-            <div class="relative notification-menu mr-2 hover:bg-amber-50">
+            <div class="relative notification-menu mr-2">
                 <button type="button" id="notification-bell"
-                    class=" border border-gray-200 rounded-lg hover:border-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500 hover:opacity-80 touch-target transition-colors "
+                    class="flex items-center justify-center w-10 h-10 rounded-lg text-gray-500 bg-gray-100 hover:bg-amber-50 hover:text-amber-600 hover:border-amber-200 border border-transparent transition-all duration-200"
                     title="{{ __('app.notifications') }}" aria-label="{{ __('app.notifications') }}">
                     <i class="fa-solid fa-bell "></i>
                     <span id="notification-count"
-                        class="hidden absolute top-1 right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">0</span>
+                        class="hidden absolute top-1.5 right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white">0</span>
                 </button>
 
                 {{-- Notification Dropdown --}}
@@ -72,13 +72,10 @@
             {{-- Quick Actions --}}
             <div class="hidden md:flex items-center gap-2 mr-2">
                 <a href="{{ route('admin.orders.create') }}"
-                    class="border border-gray-200 hover:border-amber-600 rounded-lg p-2 text-gray-400 hover:text-amber-600 transition-colors touch-target active:bg-amber-50 active:text-amber-700" title="{{ __('app.new_order') }}" aria-label="{{ __('app.new_order') }}">
-                    {{-- POS --}}
+                    class="flex items-center justify-center w-10 h-10 rounded-lg text-gray-500 bg-gray-100 hover:bg-amber-50 hover:text-amber-600 hover:border-amber-200 border border-transparent transition-all duration-200" title="{{ __('app.new_order') }}" aria-label="{{ __('app.new_order') }}">
                     <i class="fa-solid fa-plus"></i>
-                   
-
                 </a>
-                <div class="h-5 w-px bg-gray-200 mx-1"></div>
+                <div class="h-6 w-px bg-gray-200 mx-1"></div>
             </div>
 
             {{-- User Dropdown --}}

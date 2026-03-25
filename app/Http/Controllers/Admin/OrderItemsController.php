@@ -19,10 +19,10 @@ class OrderItemsController extends Controller
        $categories = Category::where('status', 1)->get();
         $order_types = ['dine_in', 'takeaway', 'delivery'];
         $customers = Customer::all();
-        $tables = Table::where('status', 'available')->get();
+        
          
         $menuItems = MenuItem::where('status', 'available')->get();
-        return view('admin.order_items.create', compact('order', 'menuItems', 'categories', 'order_types', 'customers', 'tables'));
+        return view('admin.order_items.create', compact('order', 'menuItems', 'categories', 'order_types', 'customers'));
         
     }
 

@@ -50,21 +50,17 @@ class HelperSidebar
             ],
 
 
-            
-
-
             [
-                'title' => __('app.tables'),
-                'route' => 'admin.tables.index',
-                'active' => 'admin.tables.*',
-                'icon' => 'table',
-            ],
-
-            [
-                'title' => __('app.reports'),
-                'route' => 'admin.reports.index',
-                'active' => 'admin.reports.*',
-                'icon' => 'chart',
+                'title'   => __('app.reports'),
+                'icon'    => 'chart',
+                'folder'  => 'reports',
+                'active'  => 'admin.reports.*',
+                'children' => [
+                    ['title' => __('app.reports_overview'), 'route' => 'admin.reports.index',  'active' => 'admin.reports.index'],
+                    ['title' => __('app.sales_report'),      'route' => 'admin.reports.sales',  'active' => 'admin.reports.sales'],
+                    ['title' => __('app.orders_report'),     'route' => 'admin.reports.orders', 'active' => 'admin.reports.orders'],
+                    ['title' => __('app.income_report'),     'route' => 'admin.reports.income', 'active' => 'admin.reports.income'],
+                ],
             ],
 
             [

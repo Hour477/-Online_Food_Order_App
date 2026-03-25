@@ -1,28 +1,25 @@
 @extends('admin.layouts.app')
 
-@section('content')
+@section('title' , 'Edit Banner')
 
+@section('content')
 <div class="mx-auto">
 
-    {{-- Header --}}
-    <div class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    
+
+    {{-- Form Card --}}
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+
+        {{-- Header --}}
+    <div class=" pt-8 px-8 pb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
             <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Edit Banner</h1>
             <p class="mt-1 text-sm text-gray-500">Update "{{ $banner->title ?? 'Banner #' . $banner->id }}" details</p>
         </div>
-        <a href="{{ route('admin.banners.index') }}"
-           class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-600
-                  bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors shadow-sm">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            Back to Banners
-        </a>
+        
     </div>
 
-    {{-- Form Card --}}
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div class="p-6 lg:p-8">
+        <div class="px-8 pb-8">
 
             <form action="{{ route('admin.banners.update', $banner->id) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                 @csrf
@@ -35,7 +32,7 @@
                     </label>
                     <div class="flex items-center gap-4">
                         <img src="{{ Storage::url($banner->image) }}" alt="{{ $banner->title ?? 'Banner' }}"
-                             class="object-contain rounded-lg border border-gray-200 shadow-md h-[480px] w-full">
+                             class="object-contain rounded-lg border border-gray-200  h-[480px] w-full">
                     </div>  
                 </div>
 
@@ -53,7 +50,7 @@
                                 <p class="text-xs text-gray-400">No new image</p>
                             </div>
                         </div>
-                        <img id="image-preview" src="" alt="Preview" class="hidden w-48 h-28 object-cover rounded-lg border border-gray-200">
+                        <img id="image-preview" src="" alt="Preview" class="hidden object-contain  h-[480px] w-full  rounded-lg border border-gray-200">
                     </div>
 
                     <input type="file" name="image" id="image" accept="image/*"

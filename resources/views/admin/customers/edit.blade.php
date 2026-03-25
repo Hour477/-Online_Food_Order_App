@@ -1,85 +1,116 @@
 @extends('admin.layouts.app')
 
-@section('content')
-    {{-- Manage Customer Information --}}
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <!-- Header -->
-        <div class="mb-10 text-center sm:text-left">
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
-                Edit Customer: {{ $customer->name }}
-            </h1>
+@section('title', 'Edit Customer')
 
-            <p class="mt-2 text-gray-600 dark:text-gray-400">
-                Update customer details and contact information
-            </p>
+@section('content')
+<div class="mx-auto">
+    {{-- Manage Customer Information --}}
+    <div
+        class="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 overflow-hidden p-5">
+        
+        <!-- Header -->
+        <div class="mb-6">
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white">Edit Customer: {{ $customer->name }}</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Update customer details and contact information</p>
         </div>
 
-        <!-- Form Card -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-            <div class="p-8">
+        <form action="{{ route('admin.customers.update', $customer->id) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+            @csrf
+            @method('PUT')
 
-                <form action="{{ route('admin.customers.update', $customer->id) }}" method="POST" class="space-y-8">
-                    @csrf
-                    @method('PUT')
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Name -->
+                <div class="md:col-span-2">
+                    <label for="name" class="block text-xs font-medium text-gray-500 uppercase tracking-widest mb-1.5">
+                        Name <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" name="name" id="name" required
+                           value="{{ old('name', $customer->name) }}"
+                           class="block w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-colors text-sm"
+                           placeholder="e.g. John Doe">
+                    @error('name')
+                        <p class="mt-1.5 text-xs text-red-600 dark:text-red-400">{{ $message }}</p>
+                    @enderror
+                </div>
 
-                    <!-- Name -->
-                    <div>
-                        <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Name <span class="text-red-500">*</span>
+                <!-- Email -->
+                <div>
+                    <label for="email" class="block text-xs font-medium text-gray-500 uppercase tracking-widest mb-1.5">
+                        Email
+                    </label>
+                    <input type="email" name="email" id="email"
+                           value="{{ old('email', $customer->email) }}"
+                           class="block w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-colors text-sm"
+                           placeholder="e.g. john.doe@example.com">
+                    @error('email')
+                        <p class="mt-1.5 text-xs text-red-600 dark:text-red-400">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Phone -->
+                <div>
+                    <label for="phone" class="block text-xs font-medium text-gray-500 uppercase tracking-widest mb-1.5">
+                        Phone
+                    </label>
+                    <input type="text" name="phone" id="phone"
+                           value="{{ old('phone', $customer->phone) }}"
+                           class="block w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-colors text-sm"
+                           placeholder="e.g. +1 (555) 123-4567">
+                    @error('phone')
+                        <p class="mt-1.5 text-xs text-red-600 dark:text-red-400">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Image -->
+                <div class="md:col-span-2">
+                    <label class="block text-xs font-medium text-gray-500 uppercase tracking-widest mb-3">
+                        Profile Image
+                    </label>
+                    <div class="relative group w-32 h-32">
+                        <img id="image-preview" 
+                             src="{{ $customer->user->display_image }}"
+                             class="w-32 h-32 rounded-2xl border-4 border-white dark:border-gray-700 shadow-md object-cover bg-gray-50 dark:bg-gray-700 transition-all group-hover:brightness-90">
+                        
+                        <label for="image-upload" class="absolute inset-0 flex items-center justify-center bg-black/40 text-white rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                            <i class="fa-solid fa-camera text-xl"></i>
                         </label>
-                        <input type="text" name="name" id="name" required
-                               value="{{ old('name', $customer->name) }}"
-                               class="block w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                               placeholder="e.g. John Doe">
-                        @error('name')
-                            <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                        @enderror
+                        <input type="file" id="image-upload" name="image" class="hidden" accept="image/*" onchange="previewImage(this)">
                     </div>
-
-                    <!-- Email -->
-                    <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Email
-                        </label>
-                        <input type="email" name="email" id="email"
-                               value="{{ old('email', $customer->email) }}"
-                               class="block w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                               placeholder="e.g. john.doe@example.com">
-                        @error('email')
-                            <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <!-- Phone -->
-                    <div>
-                        <label for="phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Phone
-                        </label>
-                        <input type="text" name="phone" id="phone"
-                               value="{{ old('phone', $customer->phone) }}"
-                               class="block w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                               placeholder="e.g. +1 (555) 123-4567">
-                        @error('phone')
-                            <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                        @enderror
-                    </div>
-                    <div class="pt-6">
-                        <button type="submit"
-                                class="inline-flex items-center px-6 py-3 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-sm transition-all transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            <i class="fas fa-save mr-2"></i>
-                            Save Changes
-                        </button>
-                        <a href="{{ route('admin.customers.index') }}"
-                           class="ml-4 inline-flex items-center px-6 py-3 text-sm font-medium text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-xl transition">
-                            <i class="fas fa-arrow-left mr-2"></i>
-                            Back to Customers
-                        </a>
-                    </div>
-                </form>
+                    <p class="mt-2 text-[10px] text-gray-500 dark:text-gray-400 italic">Recommended: Square image, max 2MB. Leave empty to keep current image.</p>
+                    @error('image')
+                        <p class="mt-1.5 text-xs text-red-600 dark:text-red-400">{{ $message }}</p>
+                    @enderror
+                </div>
             </div>
 
-        </div>
+            <div class="flex justify-end gap-3 pt-6 border-t border-gray-100 dark:border-gray-700">
+                <a href="{{ route('admin.customers.index') }}"
+                   class="px-5 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Cancel
+                </a>
+                <button type="submit"
+                        class="px-6 py-2.5 text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 rounded-lg transition-colors shadow-sm">
+                    <i class="fas fa-save mr-2"></i>
+                    Save Changes
+                </button>
+            </div>
+        </form>
     </div>
-    
+</div>
+
+@push('scripts')
+<script>
+function previewImage(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('image-preview').src = e.target.result;
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
+@endpush
 
 @endsection

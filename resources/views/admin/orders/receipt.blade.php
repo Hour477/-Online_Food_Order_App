@@ -152,12 +152,7 @@
                 <span class="order-info-label">Status:</span>
                 <span class="status-badge status-completed">{{ ucfirst($order->status) }}</span>
             </div>
-            @if($order->table)
-                <div class="order-info-row">
-                    <span class="order-info-label">Table:</span>
-                    <span>{{ $order->table->table_number }}</span>
-                </div>
-            @endif
+          
             @if($order->customer)
                 <div class="order-info-row">
                     <span class="order-info-label">Customer:</span>

@@ -39,6 +39,15 @@ class customerCartController extends Controller
         }
 
         session(['cart' => $cart]);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => "{$menuItem->name} added to your basket!",
+                'cart_count' => array_sum(array_column($cart, 'qty'))
+            ]);
+        }
+
         return back()->with('success', "{$menuItem->name} added to your basket!");
     }
 

@@ -15,14 +15,18 @@ class DashboardController extends Controller
 {
     /**
      * Display the dashboard index.
+     * 
      */
     public function index()
+    
     {
         // Today's stats
         $ordersToday = Order::whereDate('created_at', today())->count();
         $incomeToday = Order::whereDate('created_at', today())
             ->whereIn('status', ['completed', 'delivered'])
             ->sum('total_amount');
+
+        
         
         // Total stats
         $totalOrders = Order::where('status', 'completed')->count();
@@ -30,10 +34,7 @@ class DashboardController extends Controller
         $totalCustomers = Customer::count();
         $totalMenuItems = MenuItem::where('status', 'available')->count();
         
-        // Tables
-        $totalAvailableTable = Table::where('status', 'available')->count();
-        $totalTables = Table::count();
-        $occupiedTables = Table::where('status', 'occupied')->count();
+      
         
         // Pending orders count
         $pendingOrders = Order::whereIn('status', ['pending', 'confirmed'])->count();
@@ -74,9 +75,7 @@ class DashboardController extends Controller
             'totalRevenue',
             'totalCustomers',
             'totalMenuItems',
-            'totalAvailableTable',
-            'totalTables',
-            'occupiedTables',
+            
             'pendingOrders',
             'recentOrders',
             'topSellingItems',
@@ -99,4 +98,3 @@ class DashboardController extends Controller
         return response()->json($stats);
     }
 }
-

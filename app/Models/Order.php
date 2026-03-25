@@ -50,10 +50,7 @@ class Order extends Model
         return $this->hasMany(Payment::class);
     }
 
-    public function table()
-    {
-        return $this->belongsTo(Table::class);
-    }
+   
     public function customer()
     {
         return $this->belongsTo(Customer::class);

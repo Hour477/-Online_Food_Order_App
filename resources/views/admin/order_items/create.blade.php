@@ -328,7 +328,7 @@ const submitFormHandler = e => {
 
     // also copy customer, table, and order_type selections into hidden fields
     const customerIdSelect = document.getElementById('customer_id');
-    const tableIdSelect = document.getElementById('table_id');
+    
     const orderTypeSelect = document.getElementById('order_type');
     
     if (customerIdSelect) {
@@ -342,25 +342,7 @@ const submitFormHandler = e => {
         }
         el.value = customerIdSelect.value || null;
     }
-    if (tableIdSelect) {
-        // Only send table_id for dine-in orders
-        const orderType = orderTypeSelect?.value || 'dine_in';
-        if (orderType === 'dine_in') {
-            let el = document.getElementById('table_id_hidden');
-            if (!el) {
-                el = document.createElement('input');
-                el.type = 'hidden';
-                el.name = 'table_id';
-                el.id = 'table_id_hidden';
-                orderFormEl.appendChild(el);
-            }
-            el.value = tableIdSelect.value || null;
-        } else {
-            // Remove table_id hidden input for non-dine-in orders
-            const el = document.getElementById('table_id_hidden');
-            if (el) el.remove();
-        }
-    }
+   
     if (orderTypeSelect) {
         let el = document.getElementById('order_type_hidden');
         if (!el) {
@@ -395,7 +377,7 @@ renderCart();
 
 const orderTypeSelect = document.getElementById('order_type');
 const tableFieldContainer = document.getElementById('table-field-container');
-const tableSelect = document.getElementById('table_id');
+
 
 function updateFieldsForOrderType() {
     const selectedType = orderTypeSelect?.value || 'dine_in';
@@ -436,7 +418,7 @@ placeOrderBtn?.addEventListener('click', () => {
 
     // also copy selected customer, table, and order_type into hidden inputs
     const customerIdSelect = document.getElementById('customer_id');
-    const tableIdSelect = document.getElementById('table_id');
+    
     const orderTypeSelect = document.getElementById('order_type');
     
     if (customerIdSelect) {
@@ -450,25 +432,7 @@ placeOrderBtn?.addEventListener('click', () => {
         }
         el.value = customerIdSelect.value || null;
     }
-    if (tableIdSelect) {
-        // Only send table_id for dine-in orders
-        const orderType = orderTypeSelect?.value || 'dine_in';
-        if (orderType === 'dine_in') {
-            let el = document.getElementById('table_id_hidden');
-            if (!el) {
-                el = document.createElement('input');
-                el.type = 'hidden';
-                el.name = 'table_id';
-                el.id = 'table_id_hidden';
-                orderFormEl.appendChild(el);
-            }
-            el.value = tableIdSelect.value || null;
-        } else {
-            // Remove table_id hidden input for non-dine-in orders
-            const el = document.getElementById('table_id_hidden');
-            if (el) el.remove();
-        }
-    }
+   
     if (orderTypeSelect) {
         let el = document.getElementById('order_type_hidden');
         if (!el) {

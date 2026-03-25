@@ -32,7 +32,7 @@
             <div class="max-w-2xl">
                 {{-- Animated Badge --}}
                 <div class="hero-content opacity-0 translate-y-4" data-delay="0">
-                    <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/20 backdrop-blur-sm border border-amber-500/30 text-amber-400 text-sm font-medium mb-6 battambang-regular">
+                    <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/20 backdrop-blur-sm border border-amber-500/30 text-amber-400 text-sm font-medium mb-6 ">
                         <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
                         {{ __('app.hero_badge') }}
                     </span>
@@ -40,7 +40,12 @@
                 
                 {{-- Animated Title --}}
                 <div class="hero-content opacity-0 translate-y-4" data-delay="200">
-                    <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-tight mb-4 battambang-bold">
+                    {{-- 'title_welcome' => 'សូមស្វាគមន៍', --}}
+                    <span class="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-tight mb-4 ">{{ __('app.title_welcome') }}</span>
+                    <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-tight mb-4 ">
+                        
+                    
+
                         {{ __('app.hero_title') }}
                         <span class="block mt-2">
                             <em class="text-amber-400 not-italic relative">
@@ -56,7 +61,7 @@
                 
                 {{-- Animated Description --}}
                 <div class="hero-content opacity-0 translate-y-4" data-delay="400">
-                    <p class="text-gray-300 text-lg md:text-xl mb-8 max-w-lg leading-relaxed battambang-regular">
+                    <p class="text-gray-300 text-lg md:text-xl mb-8 max-w-lg leading-relaxed ">
                         {{ __('app.hero_description') }}
                     </p>
                 </div>
@@ -64,13 +69,13 @@
                 {{-- Animated CTA Buttons --}}
                 <div class="hero-content opacity-0 translate-y-4 flex flex-wrap gap-4" data-delay="600">
                     <a href="#menu-grid" 
-                       class="group inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-base bg-amber-600 text-white hover:bg-amber-500 transition-all duration-300 shadow-lg shadow-amber-600/30 hover:shadow-amber-500/40 hover:scale-105 battambang-bold">
+                       class="group inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-base bg-amber-600 text-white hover:bg-amber-500 transition-all duration-300 shadow-lg shadow-amber-600/30 hover:shadow-amber-500/40 hover:scale-105 ">
                         <i class="fa-solid fa-utensils group-hover:rotate-12 transition-transform"></i>
                         {{ __('app.browse_menu') }}
                         <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
                     </a>
                     <a href="#specials" 
-                       class="group inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-base bg-white/10 backdrop-blur-sm text-white border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105 battambang-regular">
+                       class="group inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-base bg-white/10 backdrop-blur-sm text-white border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105 ">
                         <i class="fa-solid fa-star text-amber-400"></i>
                         {{ __('app.todays_specials') }}
                     </a>
@@ -81,7 +86,7 @@
                     <div id="banner-titles" class="relative h-8 overflow-hidden">
                         @foreach($banners as $index => $banner)
                         @if($banner->title)
-                        <p class="banner-title absolute inset-0 text-amber-400/80 text-lg font-medium transition-all duration-500 battambang-regular {{ $index === 0 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4' }}" 
+                        <p class="banner-title absolute inset-0 text-amber-400/80 text-lg font-medium transition-all duration-500  {{ $index === 0 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4' }}" 
                            data-index="{{ $index }}">
                             <i class="fa-solid fa-bolt mr-2"></i>{{ $banner->title }}
                         </p>
@@ -126,22 +131,22 @@
     <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full min-h-[500px] md:min-h-[600px] flex items-center">
         <div class="w-full py-16">
             <div class="max-w-2xl">
-                <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/20 backdrop-blur-sm border border-amber-500/30 text-amber-400 text-sm font-medium mb-6 battambang-regular">
+                <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/20 backdrop-blur-sm border border-amber-500/30 text-amber-400 text-sm font-medium mb-6 ">
                     <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
                     {{ __('app.hero_badge') }}
                 </span>
-                <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-tight mb-4 battambang-bold">
+                <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-tight mb-4 ">
                     {{ __('app.hero_title') }}
                     <span class="block mt-2">
                         <em class="text-amber-400 not-italic">{{ __('app.hero_craving') }}</em>{{ __('app.hero_today') }}
                     </span>
                 </h1>
-                <p class="text-gray-300 text-lg md:text-xl mb-8 max-w-lg leading-relaxed battambang-regular">
+                <p class="text-gray-300 text-lg md:text-xl mb-8 max-w-lg leading-relaxed ">
                     {{ __('app.hero_description') }}
                 </p>
                 <div class="flex flex-wrap gap-4">
                     <a href="#menu-grid" 
-                       class="group inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-base bg-amber-600 text-white hover:bg-amber-500 transition-all duration-300 shadow-lg hover:scale-105 battambang-bold">
+                       class="group inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-base bg-amber-600 text-white hover:bg-amber-500 transition-all duration-300 shadow-lg hover:scale-105 ">
                         <i class="fa-solid fa-utensils"></i>
                         {{ __('app.browse_menu') }}
                     </a>
@@ -174,23 +179,53 @@
             <div class="mb-6 border-b border-gray-200 pb-6">
                 <h3 class="text-sm font-bold text-gray-900 mb-4">Sort by</h3>
                 <div class="space-y-3" id="sort-container">
-                    <label class="flex items-center cursor-pointer group"><input type="radio" name="sort" value="relevance" class="w-5 h-5 text-amber-600 bg-gray-100 border-gray-300 focus:ring-amber-600 accent-amber-600" checked><span class="ml-3 text-sm text-gray-700 group-hover:text-amber-600">Relevance</span></label>
-                    <label class="flex items-center cursor-pointer group"><input type="radio" name="sort" value="fastest" class="w-5 h-5 text-amber-600 bg-gray-100 border-gray-300 focus:ring-amber-600 accent-amber-600"><span class="ml-3 text-sm text-gray-700 group-hover:text-amber-600">Fastest delivery</span></label>
-                    <label class="flex items-center cursor-pointer group"><input type="radio" name="sort" value="rating" class="w-5 h-5 text-amber-600 bg-gray-100 border-gray-300 focus:ring-amber-600 accent-amber-600"><span class="ml-3 text-sm text-gray-700 group-hover:text-amber-600">Top rated</span></label>
+                    <label class="flex items-center cursor-pointer group">
+                        <input type="radio" name="sort" value="relevance" class="w-5 h-5 text-amber-600 bg-gray-100 border-gray-300 focus:ring-amber-600 accent-amber-600" {{ request('sort', 'relevance') == 'relevance' ? 'checked' : '' }}>
+                        <span class="ml-3 text-sm text-gray-700 group-hover:text-amber-600">Relevance</span>
+                    </label>
+                    <label class="flex items-center cursor-pointer group">
+                        <input type="radio" name="sort" value="price_asc" class="w-5 h-5 text-amber-600 bg-gray-100 border-gray-300 focus:ring-amber-600 accent-amber-600" {{ request('sort') == 'price_asc' ? 'checked' : '' }}>
+                        <span class="ml-3 text-sm text-gray-700 group-hover:text-amber-600">Price: Low to High</span>
+                    </label>
+                    <label class="flex items-center cursor-pointer group">
+                        <input type="radio" name="sort" value="price_desc" class="w-5 h-5 text-amber-600 bg-gray-100 border-gray-300 focus:ring-amber-600 accent-amber-600" {{ request('sort') == 'price_desc' ? 'checked' : '' }}>
+                        <span class="ml-3 text-sm text-gray-700 group-hover:text-amber-600">Price: High to Low</span>
+                    </label>
+                    <label class="flex items-center cursor-pointer group">
+                        <input type="radio" name="sort" value="rating" class="w-5 h-5 text-amber-600 bg-gray-100 border-gray-300 focus:ring-amber-600 accent-amber-600" {{ request('sort') == 'rating' ? 'checked' : '' }}>
+                        <span class="ml-3 text-sm text-gray-700 group-hover:text-amber-600">Top rated</span>
+                    </label>
                 </div>
             </div>
 
             <!-- Quick filters & Offers -->
             <div class="mb-6 border-b border-gray-200 pb-6">
                 <h3 class="text-sm font-bold text-gray-900 mb-4">Quick filters</h3>
+
                 <label class="flex items-center cursor-pointer group mb-3">
-                    <input type="checkbox" id="filter-rating" class="w-5 h-5 rounded border-gray-300 text-amber-600 focus:ring-amber-600 accent-amber-600">
-                    <span class="ml-3 text-sm text-gray-700 group-hover:text-amber-600">Ratings 4.5+</span>
+                    <input type="checkbox" name="popular_like" value="1" class="quick-filter w-5 h-5 rounded border-gray-300 text-amber-600 focus:ring-amber-600 accent-amber-600">
+                    <span class="ml-3 text-sm text-gray-700 group-hover:text-amber-600">Popular Like</span> 
                 </label>
-                <label class="flex items-center cursor-pointer group">
-                    <input type="checkbox" id="filter-free-delivery" class="w-5 h-5 rounded border-gray-300 text-amber-600 focus:ring-amber-600 accent-amber-600">
-                    <span class="ml-3 text-sm text-gray-700 group-hover:text-amber-600">Free delivery</span>
+
+                <label class="flex items-center cursor-pointer group mb-3">
+                    <input type="checkbox" name="top_rated" value="1" class="quick-filter w-5 h-5 rounded border-gray-300 text-amber-600 focus:ring-amber-600 accent-amber-600">
+                    <span class="ml-3 text-sm text-gray-700 group-hover:text-amber-600">Top Rated</span> 
                 </label>
+
+                <label class="flex items-center cursor-pointer group mb-3">
+                    <input type="checkbox" name="top_dishes" value="1" class="quick-filter w-5 h-5 rounded border-gray-300 text-amber-600 focus:ring-amber-600 accent-amber-600">
+                    <span class="ml-3 text-sm text-gray-700 group-hover:text-amber-600">Top Dishes</span> 
+                </label>
+            </div>
+
+            <!-- Price Range Filter -->
+            <div class="mb-6 border-b border-gray-200 pb-6">
+                <h3 class="text-sm font-bold text-gray-900 mb-4">Price Range</h3>
+                <div class="flex items-center gap-2">
+                    <input type="number" name="min_price" placeholder="Min" class="price-filter w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-amber-600 focus:border-amber-600">
+                    <span class="text-gray-400">-</span>
+                    <input type="number" name="max_price" placeholder="Max" class="price-filter w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-amber-600 focus:border-amber-600">
+                </div>
             </div>
 
             <!-- Cuisines Filter -->
@@ -222,15 +257,23 @@
 
     {{-- ===== MENU GRID ===== --}}
     <section class="flex-1 py-10 lg:pl-10" id="menu-grid">
-        {{-- Result Count --}}
-        <div class="flex items-center justify-between mb-6">
-            <h2 class="text-2xl font-bold text-gray-900 battambang-bold">
-                {{ request('category', 'all') == 'all' ? __('app.all_items') : ucfirst(request('category')) }}
-                @if(request('search'))
-                <span class="text-amber-600"> — "{{ request('search') }}"</span>
-                @endif
-            </h2>
-            <span class="text-sm text-gray-500 battambang-regular">{{ $items->total() }} {{ __('app.items_count_suffix') }}</span>
+        {{-- Search and Result Count --}}
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900 ">
+                    {{ request('category', 'all') == 'all' ? __('app.all_items') : ucfirst(request('category')) }}
+                </h2>
+                <span class="text-sm text-gray-500 " id="total-items-count">{{ $items->total() }} {{ __('app.items_count_suffix') }}</span>
+            </div>
+
+            <div class="relative w-full md:w-72">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
+                </div>
+                <input type="text" id="global-search" name="search" value="{{ request('search') }}" 
+                    class="block w-full pl-10 pr-3 py-2.5 border border-gray-200 rounded-xl bg-white shadow-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all text-sm" 
+                    placeholder="{{ __('app.search_dishes') }}">
+            </div>
         </div>
 
         {{-- Menu Items Grid --}}
@@ -241,13 +284,9 @@
     {{-- No More Items Message --}}
         <div id="no-more-items" class="hidden py-12 text-center">
             <i class="fa-solid fa-check-circle text-4xl text-green-500 mb-3"></i>
-            <p class="text-gray-600 font-medium battambang-regular">{{ __('app.no_more_items') }}</p>
+            <p class="text-gray-600 font-medium ">{{ __('app.no_more_items') }}</p>
         </div>
 
-        {{-- Pagination Links (Hidden, for URL reference) --}}
-        @if($items->hasMorePages())
-        <div id="pagination-next-url" class="hidden">{{ $items->nextPageUrl() }}</div>
-        @endif
     </section>
 </div>
 
@@ -262,6 +301,78 @@ function incQty(btn) {
 function decQty(btn) {
     const input = btn.parentElement.querySelector('.qty-input');
     input.value = Math.max(1, parseInt(input.value) - 1);
+}
+
+/**
+ * Add to Cart via AJAX
+ */
+async function addToCart(event, form) {
+    event.preventDefault();
+    
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalContent = submitBtn.innerHTML;
+    
+    // Disable button and show loading
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-xs"></i>';
+
+    try {
+        const formData = new FormData(form);
+        const response = await fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            // Update cart badge
+            const badge = document.getElementById('cart-badge');
+            if (badge) {
+                badge.textContent = data.cart_count;
+                badge.classList.remove('hidden');
+            }
+
+            // Show success toast (using existing flash message logic or custom)
+            showToast(data.message, 'success');
+            
+            // Reset quantity to 1
+            form.querySelector('.qty-input').value = 1;
+        } else {
+            throw new Error(data.message || 'Failed to add item to cart');
+        }
+    } catch (error) {
+        console.error('Error adding to cart:', error);
+        showToast(error.message, 'error');
+    } finally {
+        // Re-enable button
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalContent;
+    }
+}
+
+/**
+ * Custom Toast Notification
+ */
+function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    const bgColor = type === 'success' ? 'bg-emerald-500' : 'bg-red-500';
+    const icon = type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation';
+    
+    toast.className = `fixed top-20 right-4 z-[60] ${bgColor} text-white px-5 py-3 rounded-lg shadow-lg flex items-center gap-2 animate-fade-in`;
+    toast.innerHTML = `<i class="fa-solid ${icon}"></i> ${message}`;
+    
+    document.body.appendChild(toast);
+    
+    // Remove toast after 3 seconds
+    setTimeout(() => {
+        toast.classList.replace('animate-fade-in', 'opacity-0');
+        setTimeout(() => toast.remove(), 500);
+    }, 3000);
 }
 
 /**
@@ -320,6 +431,9 @@ async function toggleLike(btn, productId) {
 // Hero Banner Slider with Animations
 let currentHeroSlide = 0;
 let heroAutoInterval;
+let isLoading = false;
+let hasMorePages = {{ $items->hasMorePages() ? 'true' : 'false' }};
+let nextPageUrl = '{{ $items->nextPageUrl() }}';
 const heroSlides = document.querySelectorAll('.hero-slide');
 const totalHeroSlides = heroSlides.length;
 
@@ -414,9 +528,6 @@ function initSidebarFilters() {
     const cuisineSearch = document.getElementById('cuisine-search');
     const toggleBtn = document.getElementById('toggle-cuisines-btn');
     const badge = document.getElementById('cuisine-count-badge');
-    const sortContainer = document.getElementById('sort-container');
-    const filterRating = document.getElementById('filter-rating');
-    const filterFreeDelivery = document.getElementById('filter-free-delivery');
 
     // 1. Populate Cuisines
     const categories = @json($categories);
@@ -453,34 +564,9 @@ function initSidebarFilters() {
         }
     }
 
-    // Initialize cuisine list
     renderCuisines();
 
-    // 2. Set initial state from URL
-    const urlParams = new URLSearchParams(window.location.search);
-    
-    // Sort
-    if (urlParams.has('sort')) {
-        const radio = sortContainer.querySelector(`input[value="${urlParams.get('sort')}"]`);
-        if (radio) radio.checked = true;
-    }
-    
-    // Quick filters
-    if (urlParams.has('rating_4_5')) filterRating.checked = true;
-    if (urlParams.has('free_delivery')) filterFreeDelivery.checked = true;
-    
-    // Cuisines
-    if (urlParams.has('cuisines')) {
-        const selectedIds = urlParams.get('cuisines').split(',');
-        selectedIds.forEach(id => {
-            const cb = cuisineList.querySelector(`input[value="${id}"]`);
-            if (cb) cb.checked = true;
-        });
-        badge.textContent = selectedIds.length;
-        badge.classList.toggle('hidden', selectedIds.length === 0);
-    }
-
-    // 3. Event Listeners
+    // 2. Event Listeners
     cuisineSearch.addEventListener('input', (e) => renderCuisines(e.target.value));
     
     toggleBtn.addEventListener('click', () => {
@@ -488,7 +574,6 @@ function initSidebarFilters() {
         updateCuisineVisibility();
     });
 
-    // Handle filter changes
     const triggerUpdate = () => {
         const selectedCuisines = Array.from(document.querySelectorAll('.cuisine-checkbox:checked')).map(cb => cb.value);
         badge.textContent = selectedCuisines.length;
@@ -497,192 +582,148 @@ function initSidebarFilters() {
         applyFilters();
     };
 
-    cuisineList.addEventListener('change', (e) => {
-        if (e.target.classList.contains('cuisine-checkbox')) {
+    // Debounce search and price input
+    let searchTimeout;
+    document.getElementById('global-search').addEventListener('input', () => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(triggerUpdate, 500);
+    });
+
+    let priceTimeout;
+    document.querySelectorAll('.price-filter').forEach(input => {
+        input.addEventListener('input', () => {
+            clearTimeout(priceTimeout);
+            priceTimeout = setTimeout(triggerUpdate, 500);
+        });
+    });
+
+    document.addEventListener('change', (e) => {
+        if (e.target.classList.contains('cuisine-checkbox') || 
+            e.target.classList.contains('quick-filter') || 
+            e.target.name === 'sort') {
             triggerUpdate();
         }
     });
 
-    sortContainer.addEventListener('change', triggerUpdate);
-    filterRating.addEventListener('change', triggerUpdate);
-    filterFreeDelivery.addEventListener('change', triggerUpdate);
-
-    // 4. Mobile Toggle
+    // Mobile Toggle
     const mobileToggle = document.getElementById('mobile-filter-toggle');
     const filterContent = document.getElementById('filter-content');
-    
     mobileToggle?.addEventListener('click', () => {
         filterContent.classList.toggle('hidden');
-        const isHidden = filterContent.classList.contains('hidden');
-        mobileToggle.querySelector('span').textContent = isHidden ? 'Options' : 'Close';
     });
 }
 
-async function applyFilters() {
-    const sort = document.querySelector('input[name="sort"]:checked').value;
-    const rating45 = document.getElementById('filter-rating').checked;
-    const freeDelivery = document.getElementById('filter-free-delivery').checked;
-    const cuisines = Array.from(document.querySelectorAll('.cuisine-checkbox:checked')).map(cb => cb.value);
-    
+async function applyFilters(page = 1) {
     const params = new URLSearchParams();
-    if (sort) params.append('sort', sort);
-    if (rating45) params.append('rating_4_5', '1');
-    if (freeDelivery) params.append('free_delivery', '1');
-    if (cuisines.length) params.append('cuisines', cuisines.join(','));
     
-    // Add current search/category if any
+    // Sort
+    const sort = document.querySelector('input[name="sort"]:checked')?.value;
+    if (sort) params.append('sort', sort);
+
+    // Quick Filters
+    document.querySelectorAll('.quick-filter:checked').forEach(cb => {
+        params.append(cb.name, '1');
+    });
+
+    // Price
+    const minPrice = document.querySelector('input[name="min_price"]').value;
+    const maxPrice = document.querySelector('input[name="max_price"]').value;
+    if (minPrice) params.append('min_price', minPrice);
+    if (maxPrice) params.append('max_price', maxPrice);
+
+    // Cuisines
+    const cuisines = Array.from(document.querySelectorAll('.cuisine-checkbox:checked')).map(cb => cb.value);
+    if (cuisines.length) params.append('cuisines', cuisines.join(','));
+
+    // Search
+    const search = document.getElementById('global-search').value;
+    if (search) params.append('search', search);
+
+    // Category from URL (persist if present)
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('search')) params.append('search', urlParams.get('search'));
     if (urlParams.has('category')) params.append('category', urlParams.get('category'));
+    
+    if (page > 1) params.append('page', page);
 
     const baseUrl = window.location.pathname;
     const fullUrl = `${baseUrl}?${params.toString()}`;
-
-    // Update URL without refreshing
     window.history.pushState({}, '', fullUrl);
 
-    // Fetch filtered data
-    isLoading = true;
     const container = document.getElementById('menu-items-container');
     const noMoreItems = document.getElementById('no-more-items');
+    
+    if (page === 1) {
+        container.innerHTML = '<div class="col-span-full py-20 text-center"><i class="fas fa-spinner fa-spin text-3xl text-amber-600"></i></div>';
+    }
 
-    container.innerHTML = ''; // Clear current items
-    noMoreItems.classList.add('hidden');
+    isLoading = true;
 
     try {
         const response = await fetch(fullUrl, {
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
-                'Accept': 'text/html'
+                'Accept': 'application/json'
             }
         });
 
         if (!response.ok) throw new Error('Failed to fetch filtered menu');
 
-        const html = await response.text();
+        const data = await response.json();
         
-        // Parse the response HTML
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-        
-        // Update items container
-        const newCards = Array.from(doc.querySelectorAll('.card-hover'));
-        container.innerHTML = '';
-        
-        if (newCards.length === 0) {
-            container.innerHTML = `
-                <div class="col-span-full py-20 text-center">
-                    <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-100 mb-4">
-                        <i class="fa-solid fa-utensils text-3xl text-gray-300"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">No items found</h3>
-                    <p class="text-gray-500">Try adjusting your filters to find what you're looking for.</p>
-                </div>
-            `;
+        if (page === 1) {
+            container.innerHTML = data.html || '<div class="col-span-full py-20 text-center">No items found</div>';
         } else {
-            newCards.forEach(card => container.appendChild(card));
+            container.insertAdjacentHTML('beforeend', data.html);
         }
 
-        // Update pagination URL for next page
-        const nextUrlElement = doc.querySelector('#pagination-next-url');
-        const currentNextUrlElement = document.getElementById('pagination-next-url');
-        
-        if (nextUrlElement) {
-            if (currentNextUrlElement) {
-                currentNextUrlElement.textContent = nextUrlElement.textContent;
-                currentNextUrlElement.classList.remove('hidden');
-            } else {
-                const hiddenDiv = document.createElement('div');
-                hiddenDiv.id = 'pagination-next-url';
-                hiddenDiv.className = 'hidden';
-                hiddenDiv.textContent = nextUrlElement.textContent;
-                document.getElementById('menu-grid').appendChild(hiddenDiv);
-            }
+        // Update total count display
+        const countDisplay = document.getElementById('total-items-count');
+        if (countDisplay) {
+            countDisplay.textContent = `${data.pagination.total} items found`;
+        }
+
+        // Update category title if needed
+        const categoryTitle = document.querySelector('#menu-grid h2');
+        if (categoryTitle) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const category = urlParams.get('category') || 'all';
+            categoryTitle.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+        }
+
+        // Update infinite scroll state
+        if (data.pagination.has_more) {
+            nextPageUrl = data.pagination.next_page_url;
+            noMoreItems.classList.add('hidden');
             hasMorePages = true;
             window.addEventListener('scroll', handleScroll);
         } else {
-            if (currentNextUrlElement) currentNextUrlElement.remove();
+            nextPageUrl = '';
+            noMoreItems.classList.toggle('hidden', data.pagination.total === 0);
             hasMorePages = false;
-            showNoMoreItems();
+            window.removeEventListener('scroll', handleScroll);
         }
 
     } catch (error) {
-        console.error('Error applying filters:', error);
+        console.error('Error:', error);
+        container.innerHTML = '<div class="col-span-full py-20 text-center text-red-500">Error loading items</div>';
     } finally {
         isLoading = false;
     }
 }
 
 // ===== INFINITE SCROLL FUNCTIONALITY =====
-let isLoading = false;
-let hasMorePages = document.getElementById('pagination-next-url') !== null;
-
 function initInfiniteScroll() {
     window.addEventListener('scroll', handleScroll);
 }
 
 function handleScroll() {
+    if (isLoading || !hasMorePages || !nextPageUrl) return;
+    
     const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-    
-    // Check if we're near the bottom (within 100px)
-    if (scrollTop + clientHeight >= scrollHeight - 100 && !isLoading && hasMorePages) {
-        loadMoreItems();
-    }
-}
-
-async function loadMoreItems() {
-    isLoading = true;
-    const nextUrlElement = document.getElementById('pagination-next-url');
-    
-    if (!nextUrlElement) {
-        showNoMoreItems();
-        return;
-    }
-    
-    const nextUrl = nextUrlElement.textContent;
-    
-    try {
-        const response = await fetch(nextUrl, {
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'Accept': 'text/html,application/xhtml+xml'
-            }
-        });
-        
-        if (!response.ok) throw new Error('Network response was not ok');
-        
-        const html = await response.text();
-        
-        // Parse the response HTML
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-        const newItems = doc.querySelectorAll('.card-hover'); // Select all menu item cards
-        
-        if (newItems.length === 0) {
-            showNoMoreItems();
-            return;
-        }
-        
-        // Append new items to the grid
-        const container = document.getElementById('menu-items-container');
-        newItems.forEach(item => {
-            container.appendChild(item);
-        });
-        
-        // Update pagination URL for next page
-        const nextPageUrl = doc.querySelector('#pagination-next-url');
-        if (nextPageUrl) {
-            nextUrlElement.textContent = nextPageUrl.textContent;
-        } else {
-            hasMorePages = false;
-            nextUrlElement.remove();
-            showNoMoreItems();
-        }
-        
-    } catch (error) {
-        console.error('Error loading more items:', error);
-    } finally {
-        isLoading = false;
+    if (scrollTop + clientHeight >= scrollHeight - 600) {
+        const url = new URL(nextPageUrl);
+        const page = url.searchParams.get('page');
+        if (page) applyFilters(parseInt(page));
     }
 }
 
@@ -741,7 +782,7 @@ function showNoMoreItems() {
 }
 
 .floating-food {
-    transition: transform  0.3s ease;
+    transition: transform  0.5s ease;
 }
 
 .floating-food:hover {

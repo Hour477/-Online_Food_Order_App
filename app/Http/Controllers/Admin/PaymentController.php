@@ -136,7 +136,8 @@ class PaymentController extends Controller
 
                 // Update order status if the new total paid amount covers the order's total amount
                 if ($newTotalPaidForOrder >= $order->total_amount) {
-                    $order->update(['status' => 'completed']);
+                    $newStatus = ($order->order_type === 'dine_in') ? 'completed' : 'confirmed';
+                    $order->update(['status' => $newStatus]);
                 }
             });
 

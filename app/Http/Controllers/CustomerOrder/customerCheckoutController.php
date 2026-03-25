@@ -109,11 +109,14 @@ class customerCheckoutController extends Controller
                     'status'         => $request->payment === 'khqr' ? 'pending' : 'paid',
                 ];
 
-                // For cash payment, mark as paid
+                // For cash payment, mark as paid and update order status to confirmed
                 if ($request->payment === 'cash') {
                     $paymentData['paid_amount'] = $total;
                     $paymentData['change_amount'] = 0;
                     $paymentData['paid_at'] = now();
+                    
+                    // Update order status to confirmed since it's paid
+                    $order->update(['status' => 'confirmed']);
                 }
 
                 // For KHQR, generate QR code
@@ -233,6 +236,9 @@ class customerCheckoutController extends Controller
                 'paid_at' => now(),
                 'khqr_transaction_id' => $result['transaction_id'] ?? null,
             ]);
+
+            // Update order status to confirmed
+            $order->update(['status' => 'confirmed']);
 
             return response()->json([
                 'success' => true,

@@ -108,13 +108,20 @@ class CheckoutController extends Controller
                     'wallet' => 'qr'
                 ];
                 
+                // Update order status based on payment method
+                // For non-COD payments, mark as confirmed since it's paid
+                if ($request->payment !== 'cod') {
+                    $order->update(['status' => 'confirmed']);
+                }
+
                 Payment::create([
                     'order_id'       => $order->id,
                     'payment_method' => $methodMap[$request->payment],
                     'total_amount'   => $total,
                     'paid_amount'    => $total, // For guest checkout we assume full payment if not COD
                     'change_amount'  => 0,
-                    'paid_at'        => now()
+                    'paid_at'        => now(),
+                    'status'         => $request->payment === 'cod' ? 'pending' : 'paid'
                 ]);
 
                 return $order;

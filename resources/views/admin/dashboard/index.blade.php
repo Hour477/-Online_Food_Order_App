@@ -98,27 +98,7 @@
             </div>
         </div>
 
-        <!-- Tables Status -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden transition-all duration-300 ease-out hover:shadow-xl hover:scale-[1.02] hover:-translate-y-1 group animate-bounce-in" style="animation-delay: 0.4s;">
-            <div class="p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-500 uppercase tracking-wide">
-                            Tables Available
-                        </p>
-                        <p class="mt-2 text-4xl font-bold text-amber-600">
-                            {{ $totalAvailableTable ?? 0 }}/{{ $totalTables ?? 0 }}
-                        </p>
-                        <p class="mt-2 text-xs text-gray-500">
-                            Occupied: <span class="font-semibold text-rose-600">{{ $occupiedTables ?? 0 }}</span>
-                        </p>
-                    </div>
-                    <div class="p-4 bg-amber-100 rounded-xl group-hover:scale-125 group-hover:rotate-6 transition-all duration-300">
-                        <i class="fas fa-chair text-4xl text-amber-600"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
+        
 
         <!-- Pending Orders -->
         <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden transition-all duration-300 ease-out hover:shadow-xl hover:scale-[1.02] hover:-translate-y-1 group animate-bounce-in" style="animation-delay: 0.5s;">
@@ -263,11 +243,7 @@
                 <i class="fas fa-tags text-3xl text-blue-600 mb-2 group-hover:scale-110 transition-all"></i>
                 <span class="text-sm font-medium text-gray-700">Categories</span>
             </a>
-            <a href="{{ route('admin.tables.index') }}"
-               class="flex flex-col items-center justify-center p-4 bg-white rounded-xl hover:bg-amber-50 transition group hover:shadow-lg hover:-translate-y-1">
-                <i class="fas fa-chair text-3xl text-amber-600 mb-2 group-hover:scale-110 transition-all"></i>
-                <span class="text-sm font-medium text-gray-700">Tables</span>
-            </a>
+            
             <a href="{{ route('admin.customers.index') }}"
                class="flex flex-col items-center justify-center p-4 bg-white rounded-xl hover:bg-pink-50 transition group hover:shadow-lg hover:-translate-y-1">
                 <i class="fas fa-users text-3xl text-pink-600 mb-2 group-hover:scale-110 transition-all"></i>
