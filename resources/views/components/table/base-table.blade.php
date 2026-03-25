@@ -1,4 +1,4 @@
-<div class="w-full overflow-x-auto rounded-[10px] border border-gray-200 dark:border-gray-700">
+<div class="w-full overflow-x-auto rounded-[10px] border border-gray-200 dark:border-gray-700 ">
     {{-- TABLE horizontal --}}
     <table {{ $attributes->merge(['class' => 'min-w-[600px] w-full lg:min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm text-left rtl:text-right' ]) }}>
         

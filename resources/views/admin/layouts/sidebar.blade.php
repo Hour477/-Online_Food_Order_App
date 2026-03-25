@@ -1,5 +1,6 @@
 @use('App\Helpers\HelperSidebar')
 @use('App\Models\Order')
+@use('Illuminate\Support\Facades\Storage')
 @php
     $sidebarSettings = \App\Models\Setting::query()
         ->whereIn('key', ['logo', 'resturant_name'])
@@ -7,31 +8,22 @@
     $sidebarLogo = $sidebarSettings['logo'] ?? null;
     $sidebarName = $sidebarSettings['resturant_name'] ?? config('app.name');
     $menus = HelperSidebar::menus();
-    
-
-    // use App\Helpers\DisplayImageHelper;
-
 @endphp
 
 <aside id="app-sidebar"
-       class="fixed inset-y-0 left-0 z-50 w-72 h-screen overflow-hidden bg-white border-r border-gray-200 flex flex-col shadow-sm transform transition-all duration-300 ease-in-out -translate-x-full lg:translate-x-0 lg:sticky lg:top-0 lg:inset-y-auto">
+       class="fixed inset-y-0 left-0 z-50 w-72 h-screen overflow-hidden top-0 bg-white border-r border-gray-200 flex flex-col shadow-sm transform transition-all duration-300 ease-in-out -translate-x-full lg:translate-x-0 lg:sticky lg:top-0 lg:inset-y-auto">
 
     {{-- Brand --}}
-    <div class="brand-wrap p-4 border-b border-gray-100 flex items-center gap-3">
-        @if(!empty($sidebarLogo))
-            <img src="{{ asset('storage/settings/' . $sidebarLogo) }}" alt="{{ $sidebarName }}"
+    <div class="brand-wrap p-4 border-b  bg-white border-gray-100 flex items-center gap-3">
+        @if(!empty($sidebarLogo) && Storage::disk('public')->exists($sidebarLogo))
+            <img src="{{ Storage::url($sidebarLogo) }}" alt="{{ $sidebarName }}"
                  class="h-10 w-10 rounded-lg object-contain bg-gray-100 p-1 flex-shrink-0">
         @else
-            <div class="h-10 w-10 rounded-lg bg-amber-600 flex items-center justify-center flex-shrink-0">
-                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                    <circle cx="12" cy="12" r="4.5"></circle>
-                    <path d="M5 4v7m0 0a2 2 0 002 2M5 11a2 2 0 01-2-2V4"></path>
-                    <path d="M18 4v7a2 2 0 01-2 2"></path>
-                </svg>
+            <div class="h-10 w-10 rounded-lg bg-amber-600 flex items-center justify-center text-white font-bold text-xl flex-shrink-0">
+                {{ substr($sidebarName, 0, 1) }}
             </div>
         @endif
         <p class="brand-text text-sm font-semibold text-gray-900 truncate">{{ $sidebarName }}</p>
-        
     </div>
 
     {{-- Navigation --}}

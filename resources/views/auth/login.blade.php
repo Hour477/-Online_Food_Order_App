@@ -5,6 +5,8 @@
         ->pluck('value', 'key');
     $sidebarLogo = $sidebarSettings['logo'] ?? null;
     $sidebarName = $sidebarSettings['resturant_name'] ?? config('app.name');
+    $logoExists = !empty($sidebarLogo) && \Illuminate\Support\Facades\Storage::disk('public')->exists($sidebarLogo);
+    $sidebarLogoUrl = $logoExists ? \Illuminate\Support\Facades\Storage::url($sidebarLogo) : null;  
   
 @endphp
 
@@ -13,15 +15,15 @@
 
 @section('content')
 
-<div class="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12 shadow-lg sm:px-6 lg:px-8">
+<div class="min-h-screen flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
 
-    <div class="w-full max-w-md bg-white border border-gray-200 rounded-2xl overflow-hidden">
+    <div class="w-full max-w-md bg-white border border-gray-200 shadow-md rounded-lg overflow-hidden">
 
         {{-- Header --}}
         <div class="px-8 py-8 border-b border-gray-100">
             <div class="flex items-center gap-3 mb-6">
-                @if (!empty($sidebarLogo))
-                    <img src="{{ asset('storage/settings/' . $sidebarLogo) }}" alt="{{ $sidebarName }}"
+                @if ($sidebarLogoUrl)
+                    <img src="{{ $sidebarLogoUrl }}" alt="{{ $sidebarName }}"
                         class="h-10 w-10 rounded-lg object-contain bg-gray-100 p-1 flex-shrink-0">
                 @else
                     <div class="h-10 w-10 rounded-lg bg-amber-600 flex items-center justify-center flex-shrink-0">
@@ -36,7 +38,7 @@
             </div>
 
             <h1 class="text-2xl font-semibold text-gray-900 tracking-tight">Welcome back</h1>
-            <p class="mt-1 text-sm text-gray-500">Sign in to your staff account</p>
+            <p class="mt-1 text-sm text-gray-500">Login to your account</p>
         </div>
 
         {{-- Form --}}
@@ -64,7 +66,7 @@
                            required
                            autofocus
                            value="{{ old('email') }}"
-                           placeholder="you@saveur.com"
+                           placeholder="you@example.com"
                            class="w-full px-3.5 py-2.5 text-sm text-gray-900
                                   bg-gray-50 border border-gray-200 rounded-xl
                                   placeholder-gray-400
@@ -106,7 +108,7 @@
                 </div>
 
                 {{-- Remember me --}}
-                <div class="flex items-center gap-2.5">
+                {{-- <div class="flex items-center gap-2.5">
                     <input id="remember"
                            name="remember"
                            type="checkbox"
@@ -114,7 +116,7 @@
                     <label for="remember" class="text-sm text-gray-600">
                         Keep me signed in
                     </label>
-                </div>
+                </div> --}}
 
                 {{-- Submit --}}
                 <button type="submit"
@@ -122,7 +124,7 @@
                                text-white text-sm font-medium rounded-xl
                                focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500
                                transition-all duration-150 active:scale-[0.99]">
-                    Sign in
+                    Login
                 </button>
 
             </form>
@@ -131,10 +133,10 @@
             @if (Route::has('register'))
                 <div class="mt-6 pt-6 border-t border-gray-100 text-center">
                     <p class="text-sm text-gray-500">
-                        Need staff access?
+                        Don't have an account?
                         <a href="{{ route('register') }}"
                            class="font-medium text-amber-600 hover:text-amber-500 transition">
-                            Contact admin
+                            Register
                         </a>
                     </p>
                 </div>

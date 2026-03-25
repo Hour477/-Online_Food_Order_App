@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 // use App\Traits\HasDisplayImage;
 use App\Helpers\DisplayImageHelper;
@@ -21,7 +22,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
     protected  $appends = ['display_image'];
 
     /**
@@ -60,6 +61,14 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class, 'role_id');  // ← explicit foreign key
         
         
+    }
+
+    /**
+     * Get the orders for the user.
+     */
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
     }
 
     /**

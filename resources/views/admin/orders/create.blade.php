@@ -10,11 +10,18 @@
         height: 42px !important;
         padding: 4px 8px !important;
     }
+    .dark .select2-container--default .select2-selection--single {
+        border-color: #374151 !important;
+        background-color: #374151 !important;
+    }
     .select2-container--default .select2-selection--single .select2-selection__rendered {
         color: #111827 !important;
         font-size: 0.875rem !important;
         line-height: 1.5 !important;
         padding-left: 8px !important;
+    }
+    .dark .select2-container--default .select2-selection--single .select2-selection__rendered {
+        color: #f9fafb !important;
     }
     .select2-container--default .select2-selection--single .select2-selection__placeholder {
         color: #9ca3af !important;
@@ -30,6 +37,10 @@
         background-color: #fef3c7 !important;
         color: #92400e !important;
     }
+    .dark .select2-container--default .select2-results__option--selected {
+        background-color: #92400e !important;
+        color: #fef3c7 !important;
+    }
     .select2-container--default .select2-results__option--highlighted[aria-selected] {
         background-color: #f59e0b !important;
         color: white !important;
@@ -38,31 +49,28 @@
         border: 1px solid #e5e7eb !important;
         border-radius: 0.5rem !important;
     }
+    .dark .select2-dropdown {
+        border-color: #374151 !important;
+        background-color: #1f2937 !important;
+        color: #f9fafb !important;
+    }
+    .dark .select2-results__option {
+        color: #f9fafb !important;
+    }
 </style>
 @endpush
 
 @section('content')
 <div class="mx-auto">
 
-    {{-- Error Messages --}}
-    @if($errors->any())
-        <div class="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-700">
-            <ul class="list-disc pl-5">
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
     {{-- Header --}}
     <div class="mb-8 flex items-center justify-between">
         <div>
-            <h3 class="text-2xl font-bold text-gray-900">New Order</h3>
-            <p class="text-sm text-gray-500 mt-1">Select items, add to cart, and place the order</p>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white">New Order</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Select items, add to cart, and place the order</p>
         </div>
         <a href="{{ route('admin.orders.index') }}"
-           class="text-sm text-gray-500 hover:text-gray-900 flex items-center gap-1 transition-colors">
+           class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white flex items-center gap-1 transition-colors">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
@@ -79,7 +87,7 @@
             <div class="relative">
                 <input id="search-dishes" type="text"
                        placeholder="Search for dishes..."
-                       class="w-full pl-12 pr-5 py-3 border border-gray-200 bg-gray-50 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition shadow-sm">
+                       class="w-full pl-12 pr-5 py-3 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition shadow-sm">
                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <svg class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -88,7 +96,7 @@
             </div>
 
             {{-- Categories Tabs --}}
-            <div class="flex flex-wrap gap-3 pb-4 border-b border-gray-200 overflow-x-auto">
+            <div class="flex flex-wrap gap-3 pb-4 border-b border-gray-200 dark:border-gray-700 overflow-x-auto">
                 <button data-category="all"
                         class="category-tab px-5 py-2.5 rounded-full font-medium text-sm transition-all bg-amber-600 text-white shadow-md">
                     All Items
@@ -96,7 +104,7 @@
 
                 @foreach($categories as $category)
                     <button data-category="{{ $category->id }}"
-                            class="category-tab px-5 py-2.5 rounded-full font-medium text-sm transition-all text-gray-700 hover:bg-gray-200 border border-gray-300">
+                            class="category-tab px-5 py-2.5 rounded-full font-medium text-sm transition-all text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600">
                         {{ $category->name }}
                     </button>
                 @endforeach
@@ -105,29 +113,21 @@
             {{-- Menu Items Grid --}}
             <div id="menu-items" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                 @forelse($menuItems as $item)
-                    <div class="menu-item bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-[1.02] group"
+                    <div class="menu-item bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-[1.02] group"
                          data-category="{{ $item->category_id }}">
 
                         {{-- Image --}}
-                        <div class="h-40 bg-gray-100 relative overflow-hidden">
-                            @if($item->image)
-                                <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->name }}"
-                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                            @else
-                                <div class="absolute inset-0 flex items-center justify-center">
-                                    <svg class="w-12 h-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                                    </svg>
-                                </div>
-                            @endif
+                        <div class="h-40 bg-gray-100 dark:bg-gray-700 relative overflow-hidden">
+                            <img src="{{ $item->display_image }}" alt="{{ $item->name }}"
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                         </div>
 
                         {{-- Info --}}
                         <div class="p-4">
-                            <h3 class="font-semibold text-sm text-gray-900 line-clamp-1">
+                            <h3 class="font-semibold text-sm text-gray-900 dark:text-white line-clamp-1">
                                 {{ $item->name }}
                             </h3>
-                            <p class="text-xs text-gray-500 mt-1 line-clamp-2 min-h-8">
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2 min-h-8">
                                 {{ Str::limit($item->description ?? 'Delicious signature dish', 50) }}
                             </p>
 
@@ -149,8 +149,8 @@
                         </div>
                     </div>
                 @empty
-                    <div class="col-span-full text-center py-16 text-gray-500">
-                        <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div class="col-span-full text-center py-16 text-gray-500 dark:text-gray-400">
+                        <svg class="w-16 h-16 mx-auto text-gray-300 dark:text-gray-600 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                         </svg>
                         <p class="text-lg">No menu items available</p>
@@ -211,12 +211,12 @@ function renderCart() {
 
     if (cart.length === 0) {
         cartContainer.innerHTML = `
-            <div class="text-center py-8 text-gray-500">
-                <svg class="w-12 h-12 mx-auto text-gray-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div class="text-center py-8 text-gray-500 dark:text-gray-400">
+                <svg class="w-12 h-12 mx-auto text-gray-300 dark:text-gray-600 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
                 <p class="text-sm font-medium">Your cart is empty</p>
-                <p class="text-xs mt-1 text-gray-400">Start adding items from the menu</p>
+                <p class="text-xs mt-1 text-gray-400 dark:text-gray-500">Start adding items from the menu</p>
             </div>
         `;
         placeOrderBtn.disabled = true;
@@ -236,22 +236,22 @@ function renderCart() {
         subtotal += itemTotal;
 
         const itemRow = document.createElement('div');
-        itemRow.className = 'flex justify-between items-center bg-gray-50 p-3 rounded-lg border border-gray-200';
+        itemRow.className = 'flex justify-between items-center bg-gray-50 dark:bg-gray-900 p-3 rounded-lg border border-gray-200 dark:border-gray-700';
         itemRow.innerHTML = `
             <div class="flex-1 min-w-0">
-                <div class="font-medium text-gray-900 text-sm truncate">
+                <div class="font-medium text-gray-900 dark:text-white text-sm truncate">
                     ${item.name}
                 </div>
-                <div class="text-xs text-gray-500 mt-0.5">
+                <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                     $${item.price.toFixed(2)} × ${item.quantity}
                 </div>
             </div>
 
             <div class="flex items-center gap-3">
-                <div class="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-2 py-1">
-                    <button type="button" class="text-gray-600 hover:text-amber-600 text-sm font-bold decrease-qty" data-index="${index}">−</button>
-                    <span class="w-6 text-center font-medium text-sm">${item.quantity}</span>
-                    <button type="button" class="text-gray-600 hover:text-amber-600 text-sm font-bold increase-qty" data-index="${index}">+</button>
+                <div class="flex items-center gap-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-2 py-1">
+                    <button type="button" class="text-gray-600 dark:text-gray-400 hover:text-amber-600 text-sm font-bold decrease-qty" data-index="${index}">−</button>
+                    <span class="w-6 text-center font-medium text-sm text-gray-900 dark:text-white">${item.quantity}</span>
+                    <button type="button" class="text-gray-600 dark:text-gray-400 hover:text-amber-600 text-sm font-bold increase-qty" data-index="${index}">+</button>
                 </div>
                 <button type="button" class="text-red-500 hover:text-red-700 text-xs font-medium remove-item" data-index="${index}">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -300,11 +300,11 @@ if (document.querySelectorAll('.category-tab').length) {
         tab.addEventListener('click', function() {
             document.querySelectorAll('.category-tab').forEach(t => {
                 t.classList.remove('bg-amber-600', 'text-white', 'shadow-md');
-                t.classList.add('text-gray-700', 'hover:bg-gray-200', 'border', 'border-gray-300');
+                t.classList.add('text-gray-700', 'dark:text-gray-300', 'hover:bg-gray-200', 'dark:hover:bg-gray-700', 'border', 'border-gray-300', 'dark:border-gray-600');
             });
 
             this.classList.add('bg-amber-600', 'text-white', 'shadow-md');
-            this.classList.remove('text-gray-700', 'hover:bg-gray-200', 'border', 'border-gray-300');
+            this.classList.remove('text-gray-700', 'dark:text-gray-300', 'hover:bg-gray-200', 'dark:hover:bg-gray-700', 'border', 'border-gray-300', 'dark:border-gray-600');
 
             const category = this.dataset.category;
             document.querySelectorAll('.menu-item').forEach(item => {
@@ -422,36 +422,7 @@ const submitFormHandler = e => {
         }
         el.value = customerIdSelect.value || null;
     }
-    if (tableIdSelect) {
-        // Only send table_id for dine-in orders
-        const orderType = orderTypeSelect?.value || 'dine_in';
-        if (orderType === 'dine_in') {
-            let el = document.getElementById('table_id_hidden');
-            if (!el) {
-                el = document.createElement('input');
-                el.type = 'hidden';
-                el.name = 'table_id';
-                el.id = 'table_id_hidden';
-                orderFormEl.appendChild(el);
-            }
-            el.value = tableIdSelect.value || null;
-        } else {
-            // Remove table_id hidden input for non-dine-in orders
-            const el = document.getElementById('table_id_hidden');
-            if (el) el.remove();
-        }
-    }
-    if (orderTypeSelect) {
-        let el = document.getElementById('order_type_hidden');
-        if (!el) {
-            el = document.createElement('input');
-            el.type = 'hidden';
-            el.name = 'order_type';
-            el.id = 'order_type_hidden';
-            orderFormEl.appendChild(el);
-        }
-        el.value = orderTypeSelect.value;
-    }
+   
     // Add payment fields
     if (paymentMethodEl.value) {
         let paymentMethodHidden = document.querySelector('input[name="payment_method"]');
@@ -496,6 +467,7 @@ renderCart();
 const orderTypeSelect = document.getElementById('order_type');
 const tableFieldContainer = document.getElementById('table-field-container');
 const tableSelect = document.getElementById('table_id');
+
 
 function updateFieldsForOrderType() {
     const selectedType = orderTypeSelect?.value || 'dine_in';
@@ -550,25 +522,19 @@ placeOrderBtn?.addEventListener('click', () => {
         }
         el.value = customerIdSelect.value || null;
     }
+
     if (tableIdSelect) {
-        // Only send table_id for dine-in orders
-        const orderType = orderTypeSelect?.value || 'dine_in';
-        if (orderType === 'dine_in') {
-            let el = document.getElementById('table_id_hidden');
-            if (!el) {
-                el = document.createElement('input');
-                el.type = 'hidden';
-                el.name = 'table_id';
-                el.id = 'table_id_hidden';
-                orderFormEl.appendChild(el);
-            }
-            el.value = tableIdSelect.value || null;
-        } else {
-            // Remove table_id hidden input for non-dine-in orders
-            const el = document.getElementById('table_id_hidden');
-            if (el) el.remove();
+        let el = document.getElementById('table_id_hidden');
+        if (!el) {
+            el = document.createElement('input');
+            el.type = 'hidden';
+            el.name = 'table_id';
+            el.id = 'table_id_hidden';
+            orderFormEl.appendChild(el);
         }
+        el.value = tableIdSelect.value || null;
     }
+   
     if (orderTypeSelect) {
         let el = document.getElementById('order_type_hidden');
         if (!el) {

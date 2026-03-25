@@ -5,6 +5,8 @@
         ->pluck('value', 'key');
     $sidebarLogo = $sidebarSettings['logo'] ?? null;
     $sidebarName = $sidebarSettings['resturant_name'] ?? config('app.name');
+    $logoExists = !empty($sidebarLogo) && \Illuminate\Support\Facades\Storage::disk('public')->exists($sidebarLogo);
+    $sidebarLogoUrl = $logoExists ? \Illuminate\Support\Facades\Storage::url($sidebarLogo) : null;
    
 @endphp
 
@@ -12,50 +14,44 @@
 
 @section('content')
 
-<div class="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8 shadow-lg">
+<div class="min-h-screen flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8 ">
 
-        <div class="w-full max-w-md bg-white border-gray-200 rounded-2xl overflow-hidden">
+        <div class="min-w-[320px] w-[500px] bg-white border border-gray-200 shadow-md rounded-lg overflow-hidden ">
 
             {{-- Header --}}
-            <div class="brand-wrap p-4 border-b border-gray-100 flex items-center gap-3">
-            @if(!empty($sidebarLogo))
-                <img src="{{ asset('storage/settings/' . $sidebarLogo) }}" alt="{{ $sidebarName }}"
-                    class="h-10 w-10 rounded-lg object-contain bg-gray-100 p-1 flex-shrink-0">
-            @else
-                <div class="h-10 w-10 rounded-lg bg-amber-600 flex items-center justify-center flex-shrink-0">
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                        <circle cx="12" cy="12" r="4.5"></circle>
-                        <path d="M5 4v7m0 0a2 2 0 002 2M5 11a2 2 0 01-2-2V4"></path>
-                        <path d="M18 4v7a2 2 0 01-2 2"></path>
-                    </svg>
-                </div>
-            @endif
-            <p class="brand-text text-sm font-semibold text-gray-900 truncate">{{ $sidebarName }}</p>
+            <div class="px-8 py-8 border-b border-gray-100">
+            <div class="flex items-center gap-3 mb-6">
+                @if ($sidebarLogoUrl)
+                    <img src="{{ $sidebarLogoUrl }}" alt="{{ $sidebarName }}"
+                        class="h-10 w-10 rounded-lg object-contain bg-gray-100 p-1 flex-shrink-0">
+                @else
+                    <div class="h-10 w-10 rounded-lg bg-amber-600 flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                            <circle cx="12" cy="12" r="4.5"></circle>
+                            <path d="M5 4v7m0 0a2 2 0 002 2M5 11a2 2 0 01-2-2V4"></path>
+                            <path d="M18 4v7a2 2 0 01-2 2"></path>
+                        </svg>
+                    </div>
+                @endif
+                <span class="text-base font-semibold text-gray-900 tracking-tight">{{ $sidebarName }}</span>
+            </div>
 
+            <h1 class="text-2xl font-semibold text-gray-900 tracking-tight">Register</h1>
+            <p class="mt-1 text-sm text-gray-500">Create a new account</p>
         </div>
+
         
-        <p class="px-8 py-7 border-b border-gray-100 text-sm text-gray-500">
-            Create your account
-        </p>
 
         {{-- Form --}}
-        <div class="px-8 py-7">
+        <div class="px-8 py-7 grid grid-cols-1 gap-4">
 
-            @if ($errors->any())
-                <div class="mb-5 px-4 py-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl">
-                    <ul class="list-disc pl-4 space-y-1">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
 
             <form method="POST" action="{{ route('register') }}" class="space-y-4">
                 @csrf
 
                 {{-- Full Name --}}
-                <div>
+                <div class="col-span-1 grid grid-cols-subgrid gap-4">
+                    <div class="col-start-1">
                     <label for="name"
                            class="block text-[11px] font-medium text-gray-500 uppercase tracking-widest mb-1.5">
                         Full Name
@@ -78,7 +74,8 @@
                 </div>
 
                 <!-- Phone Number -->
-                <div>
+                <div class="col-span-1 grid grid-cols-subgrid gap-4">
+                    <div class="col-start-1">
                     <label for="phone"
                            class="block text-[11px] font-medium text-gray-500 uppercase tracking-widest mb-1.5">
                         Phone Number
@@ -97,11 +94,13 @@
                     @error('phone')
                         <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p>
                     @enderror
+                    </div>
 
                     
                 </div>
                 <!-- Address -->
-                <div>
+                <div class="col-span-1 grid grid-cols-subgrid gap-4">
+                    <div class="col-start-1">
                     <label for="address"
                            class="block text-[11px] font-medium text-gray-500 uppercase tracking-widest mb-1.5">
                         Address
@@ -120,10 +119,12 @@
                     @error('address')
                         <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p>
                     @enderror
+                    </div>
                 </div>
 
                 {{-- Email --}}
-                <div>
+                <div class="col-span-1 grid grid-cols-subgrid gap-4">
+                    <div class="col-start-2">
                     <label for="email"
                            class="block text-[11px] font-medium text-gray-500 uppercase tracking-widest mb-1.5">
                         Email
@@ -142,11 +143,13 @@
                     @error('email')
                         <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p>
                     @enderror
+                    </div>
                 </div>
 
                 {{-- Password --}}
-                <div>
-                    <label for="password"
+                <div class="col-span-1 grid grid-cols-subgrid gap-4">
+                    <div class="col-start-1">
+                            <label for="password"
                            class="block text-[11px] font-medium text-gray-500 uppercase tracking-widest mb-1.5">
                         Password
                     </label>
@@ -169,10 +172,13 @@
                     @error('password')
                         <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p>
                     @enderror
+                    </div>
+                    
                 </div>
 
                 {{-- Confirm Password --}}
-                <div>
+                <div class="col-span-1 grid grid-cols-subgrid gap-4">
+                    <div class="col-start-2">
                     <label for="password_confirmation"
                            class="block text-[11px] font-medium text-gray-500 uppercase tracking-widest mb-1.5">
                         Confirm Password
@@ -193,6 +199,11 @@
                             <i class="fas fa-eye text-xs" id="password_confirmation-eye"></i>
                         </button>
                     </div>
+                    @error('password_confirmation')
+                        <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p>
+                    @enderror
+                    </div>
+                    
                 </div>
 
                 {{-- Submit --}}

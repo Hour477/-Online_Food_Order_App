@@ -4,27 +4,27 @@
 
 <div class="mx-auto">
 
-    <!-- Page Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-        <div>
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
-                Top Customers
-            </h1>
-            <p class="mt-2 text-gray-600 dark:text-gray-400">
-                Your most valuable customers based on order count and total spending
-            </p>
-        </div>
-
-        <a href="{{ route('admin.customers.index') }}"
-           class="inline-flex items-center px-6 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 rounded-xl shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500">
-            <i class="fas fa-users mr-2"></i>
-            View All Customers
-        </a>
-    </div>
+    
 
     <!-- Table Card -->
-    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <!-- Page Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center p-6 sm:justify-between gap-4 ">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+                    Top Customers
+                </h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    Your most valuable customers based on order count and total spending
+                </p>
+            </div>
 
+            <a href="{{ route('admin.customers.index') }}"
+            class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 rounded-lg transition-colors shadow-sm">
+                <i class="fas fa-users mr-2"></i>
+                View All Customers
+            </a>
+        </div>
         @if($topCustomers->isEmpty())
             <!-- Empty State -->
             <div class="py-16 text-center">
@@ -45,8 +45,9 @@
             </div>
         @else
             <!-- Responsive Table -->
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <div class="overflow-x-auto p-4">
+                <x-table.base-table>
+                <x-slot name="head">
                     <thead class="bg-gray-50 dark:bg-gray-700/50">
                         <tr>
                             <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
@@ -68,8 +69,8 @@
                                 Total Spent
                             </th>
                         </tr>
-                    </thead>
-                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                    </x-slot>
+                    <x-slot name="body">
                         @foreach($topCustomers as $index => $customer)
                             <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -110,8 +111,8 @@
                                 </td>
                             </tr>
                         @endforeach
-                    </tbody>
-                </table>
+                    </x-slot>
+                </x-table.base-table>
             </div>
 
             <!-- Pagination -->

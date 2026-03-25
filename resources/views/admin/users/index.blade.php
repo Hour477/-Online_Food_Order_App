@@ -1,53 +1,48 @@
 @extends('admin.layouts.app')
 
+@section('title', 'User Management')
+
+
 @section('content')
 <div class="mx-auto">
     <!-- Table Card -->
     <div
         class="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 overflow-hidden p-5">
 
-        {{-- Title --}}
-        <!-- Page Header -->
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 ">
+        {{-- Page Header --}}
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <div>
-                <h1 class="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
-                    Users Management
-                </h1>
-                <p class="mt-2 text-gray-600 dark:text-gray-400">
-                    Manage system users, roles, and permissions
-                </p>
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white">Users Management</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage system users, roles, and permissions</p>
             </div>
 
             <a href="{{ route('admin.users.create') }}"
-                class="inline-flex w-[150px] justify-center items-center px-4 py-3 text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 rounded-xl shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500">
+                class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 rounded-lg transition-colors shadow-sm">
                 <i class="fas fa-user-plus mr-2"></i>
                 Add User
             </a>
         </div>
 
-
-
-    <div class="mb-2 bg-white dark:bg-gray-800 rounded-xl border-gray-200 dark:border-gray-700 justify-items-start">
-        <form method="GET" action="{{ route('admin.users.index') }}" class="flex flex-col-2 sm:flex-row gap-3">
-            <div class="flex relative ">
-                {{-- <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i> --}}
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by name..."
-                    class="min-w-[20px] max-w-[300px]  pl-4 pr-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-50 focus:border-transparent">
-            </div>
-            <button type="submit"
-                class="min-w-[50px] max-w-[50px]  px-4 py-2.5 text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 rounded-lg transition-colors ">
-                <i class="fa-solid fa-search "></i>
-            </button>
-            @if(request('search'))
-            <a href="{{ route('admin.users.index') }}"
-                class=" inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors">
-                <i class="fa-solid fa-times"></i>
-            </a>
-            @endif
-        </form>
-
-        {{--  --}}
-    </div>
+        {{-- Search and Filter --}}
+        <div class="mb-6 flex flex-col sm:flex-row gap-3">
+            <form method="GET" action="{{ route('admin.users.index') }}" class="flex items-center gap-2">
+                <div class="relative flex-1 sm:min-w-[300px]">
+                    <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by name or email..."
+                        class="w-full pl-9 pr-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500 transition-colors">
+                </div>
+                <button type="submit"
+                    class="px-4 py-2 text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 rounded-lg transition-colors shadow-sm">
+                    Search
+                </button>
+                @if(request('search'))
+                    <a href="{{ route('admin.users.index') }}"
+                        class="px-3 py-2 text-sm font-medium text-gray-500 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600 rounded-lg transition-colors" title="Clear Search">
+                        <i class="fa-solid fa-times"></i>
+                    </a>
+                @endif
+            </form>
+        </div>
         {{-- TABLE --}}
        <x-table.base-table>
 
@@ -110,13 +105,12 @@
                             <i class="{{ action_btn_icon('edit') }}"></i>
                         </a>
 
-                        <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="{{ action_btn_class('delete') }}" title="Delete">
-                                <i class="{{ action_btn_icon('delete') }}"></i>
-                            </button>
-                        </form>
+                        <button type="button" 
+                            onclick="showDeleteModal('{{ route('admin.users.destroy', $user->id) }}', 'Are you sure you want to delete the user \'{{ $user->name }}\'?')"
+                            class="{{ action_btn_class('delete') }}" 
+                            title="Delete">
+                            <i class="{{ action_btn_icon('delete') }}"></i>
+                        </button>
                     </div>
                 </td>
             </tr>

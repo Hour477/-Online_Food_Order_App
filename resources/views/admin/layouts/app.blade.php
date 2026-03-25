@@ -11,8 +11,8 @@
     @endphp
 
     <link rel="icon" type="image/x-icon"
-          href="{{ !empty($appFavicon) ? asset('storage/settings/' . $appFavicon) : asset('Restaurant-System.ico') }}">
-    <title>{{ $appTitle ?: config('app.name', 'Restaurant POS') }}</title>
+          href="{{ !empty($appFavicon) ? Storage::url($appFavicon) : asset('Restaurant-System.ico') }}">
+    <title>@yield('title') | {{ $appTitle ?? config('app.name') }}</title>
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet">
@@ -51,8 +51,7 @@
     {!! ToastMagic::styles() !!}
     @stack('styles')
 </head>
-
-<body class="font-sans">
+<body>
     
 
     <div class="flex min-h-screen">
@@ -66,14 +65,11 @@
         @include('admin.layouts.sidebar')
 
         {{-- Main Content --}}
-        <div class="flex-1 flex flex-col min-h-screen">
+        <div class="flex-1 flex flex-col">
 
             {{-- Header --}}
-            <header class="bg-white shadow-sm sticky top-0 z-40">
-                <div class="flex items-center justify-between px-4 py-3 lg:px-4">
-
-                    
-                    
+            <header class="bg-white border-b border-gray-200 sticky top-0 z-40">
+                <div class="flex items-center justify-between px-4 py-3 lg:px-6">
 
                     {{-- Navbar --}}
                     @include('admin.layouts.navbar')
@@ -82,7 +78,7 @@
             </header>
 
             {{-- Page Content --}}
-            <main class="flex-1 overflow-y-auto lg:p-4">
+            <main class="flex-1 p-4 lg:p-4">
                 @yield('content')
             </main>
 
@@ -225,6 +221,8 @@
         });
     </script>
     @endauth
+
+    @include('admin.layouts.delete-modal')
 
     {!! ToastMagic::scripts() !!}
 

@@ -2,103 +2,84 @@
 
 @section('content')
 <div class="mx-auto">
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
+    {{-- Header --}}
+    <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-            <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Orders Report</h1>
-            <p class="mt-1 text-gray-600">Filter and view order history</p>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Order Reports</h1>
+            <p class="mt-1 text-gray-500 dark:text-gray-400">Analysis of order types, statuses, and transaction logs</p>
         </div>
-        <a href="{{ route('admin.reports.index') }}" class="text-sm font-medium text-amber-600 hover:text-amber-700">
-            ← Back to Reports
-        </a>
+        
+        <div class="flex items-center gap-3">
+            <a href="{{ route('admin.reports.export.pdf', ['type' => 'orders', 'start_date' => $startDate, 'end_date' => $endDate]) }}" 
+               class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium flex items-center gap-2">
+                <i class="fas fa-file-pdf"></i> PDF
+            </a>
+            <a href="{{ route('admin.reports.export.csv', ['type' => 'orders', 'start_date' => $startDate, 'end_date' => $endDate]) }}" 
+               class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm font-medium flex items-center gap-2">
+                <i class="fas fa-file-excel"></i> CSV
+            </a>
+        </div>
     </div>
 
-    {{-- Filters --}}
-    <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-4 mb-6">
-        <form action="{{ route('admin.reports.orders') }}" method="GET" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div>
-                <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">From date</label>
-                <input type="date" name="date_from" value="{{ request('date_from') }}"
-                       class="w-full rounded-lg border-gray-300 text-sm focus:ring-amber-500 focus:border-amber-500">
+    {{-- Order Type Breakdown --}}
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        @foreach($ordersByType as $type)
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
+                <p class="text-xs font-medium text-gray-500 uppercase mb-1">{{ str_replace('_', ' ', $type->order_type) }}</p>
+                <div class="flex items-end justify-between">
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $type->count }} <span class="text-sm font-normal text-gray-400 ml-1">Orders</span></h3>
+                    <p class="text-sm font-semibold text-emerald-600">${{ number_format($type->revenue, 2) }}</p>
+                </div>
             </div>
-            <div>
-                <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">To date</label>
-                <input type="date" name="date_to" value="{{ request('date_to') }}"
-                       class="w-full rounded-lg border-gray-300 text-sm focus:ring-amber-500 focus:border-amber-500">
-            </div>
-            <div>
-                <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Status</label>
-                <select name="status" class="w-full rounded-lg border-gray-300 text-sm focus:ring-amber-500 focus:border-amber-500">
-                    <option value="">All</option>
-                    <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>Pending</option>
-                    <option value="preparing" {{ request('status') === 'preparing' ? 'selected' : '' }}>Preparing</option>
-                    <option value="ready" {{ request('status') === 'ready' ? 'selected' : '' }}>Ready</option>
-                    <option value="completed" {{ request('status') === 'completed' ? 'selected' : '' }}>Completed</option>
-                    <option value="cancelled" {{ request('status') === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
-                </select>
-            </div>
-            <div class="flex items-end gap-2">
-                <button type="submit" class="px-4 py-2 bg-amber-600 text-white text-sm font-medium rounded-lg hover:bg-amber-700">
-                    Apply
-                </button>
-                <a href="{{ route('admin.reports.orders') }}" class="px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50">
-                    Reset
-                </a>
-            </div>
-        </form>
+        @endforeach
     </div>
 
-    {{-- Summary --}}
-    <div class="mb-4 text-sm text-gray-600">
-        Total amount (filtered): <span class="font-semibold text-gray-900">${{ number_format($totalAmount ?? 0, 2) }}</span>
-    </div>
-
-    {{-- Table --}}
-    <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+    {{-- Transaction Logs --}}
+    <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
+        <div class="p-6 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white">Recent Transactions</h3>
+            <span class="text-xs font-medium text-gray-400 uppercase">Page {{ $recentOrders->currentPage() }} of {{ $recentOrders->lastPage() }}</span>
+        </div>
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Order #</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Date</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Status</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Customer / Table</th>
-                        <th class="px-4 py-3 text-right text-xs font-semibold text-gray-500 uppercase">Total</th>
+            <table class="w-full text-left">
+                <thead>
+                    <tr class="bg-gray-50 dark:bg-gray-900/50">
+                        <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase">Order #</th>
+                        <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase">Customer</th>
+                        <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase">Type</th>
+                        <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase">Status</th>
+                        <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase text-right">Amount</th>
+                        <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase text-right">Date</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100">
-                    @forelse($orders as $order)
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ $order->order_no }}</td>
-                        <td class="px-4 py-3 text-sm text-gray-600">{{ $order->created_at->format('M d, Y H:i') }}</td>
-                        <td class="px-4 py-3">
-                            <span class="inline-flex px-2 py-0.5 text-xs font-medium rounded-full
-                                @if($order->status === 'completed') bg-emerald-100 text-emerald-800
-                                @elseif($order->status === 'cancelled') bg-red-100 text-red-800
-                                @elseif($order->status === 'pending') bg-amber-100 text-amber-800
-                                @else bg-gray-100 text-gray-800
-                                @endif">
-                                {{ $order->status }}
-                            </span>
-                        </td>
-                        <td class="px-4 py-3 text-sm text-gray-600">
-                            {{ $order->customer?->name ?? 'Walk-in' }}
-                            @if($order->table)
-                                <span class="text-gray-400"> · Table {{ $order->table->table_number }}</span>
-                            @endif
-                        </td>
-                        <td class="px-4 py-3 text-sm text-right font-medium text-gray-900">${{ number_format($order->total_amount ?? 0, 2) }}</td>
-                    </tr>
+                <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+                    @forelse($recentOrders as $order)
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                            <td class="px-6 py-4 text-sm font-medium text-amber-600">#{{ $order->order_no }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">{{ $order->customer->name ?? 'Walk-in' }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400 capitalize">{{ str_replace('_', ' ', $order->order_type) }}</td>
+                            <td class="px-6 py-4 text-sm">
+                                <span class="px-2.5 py-1 rounded-full text-xs font-medium 
+                                    @if($order->status === 'completed' || $order->status === 'delivered') bg-emerald-100 text-emerald-700
+                                    @elseif($order->status === 'pending' || $order->status === 'confirmed') bg-blue-100 text-blue-700
+                                    @else bg-red-100 text-red-700 @endif">
+                                    {{ ucfirst($order->status) }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-sm font-bold text-gray-900 dark:text-white text-right">${{ number_format($order->total_amount, 2) }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400 text-right">{{ $order->created_at->format('d M, Y H:i') }}</td>
+                        </tr>
                     @empty
-                    <tr>
-                        <td colspan="5" class="px-4 py-8 text-center text-gray-500">No orders found.</td>
-                    </tr>
+                        <tr>
+                            <td colspan="6" class="px-6 py-12 text-center text-gray-400">No transactions found</td>
+                        </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
-        @if($orders->hasPages())
-            <div class="px-4 py-3 border-t border-gray-100">{{ $orders->links() }}</div>
-        @endif
+        <div class="p-6 border-t border-gray-100 dark:border-gray-700">
+            {{ $recentOrders->links() }}
+        </div>
     </div>
 </div>
 @endsection

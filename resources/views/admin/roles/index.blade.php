@@ -1,5 +1,8 @@
 @extends('admin.layouts.app')
 
+@section('title', 'Role Management')
+
+
 @section('content')
 <div class="mx-auto">
     <!-- Table Card -->
@@ -82,11 +85,11 @@
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div class="flex items-center justify-end gap-2">
-                        <a href="{{ route('admin.roles.show', $role->id) }}" class="{{ action_btn_class('show') }}" title="View">
-                            <i class="{{ action_btn_icon('show') }}"></i>
-                        </a>
+                       
 
-                        <a href="{{ route('admin.roles.edit', $role->id) }}" class="{{ action_btn_class('edit') }}" title="Edit">
+                        <a href="{{ route('admin.roles.edit', $role->id) }}"
+                            
+                            class="{{ action_btn_class('edit') }}" title="Edit">
                             <i class="{{ action_btn_icon('edit') }}"></i>
                         </a>
 
@@ -112,6 +115,7 @@
     </x-slot>
 
 </x-table.base-table>
+
 
         <!-- Pagination (if you use ->paginate() in controller) -->
         <div class="pt-4 pb-2 border-t border-gray-200 dark:border-amber-700 text-center sm:text-right">

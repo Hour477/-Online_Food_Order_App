@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Helpers\DisplayImageHelper;
 
+
 class Setting extends Model
 {
     use HasFactory;
@@ -17,6 +18,6 @@ class Setting extends Model
 
      public function getDisplayImageAttribute()
     {
-        return DisplayImageHelper::get($this->image);
+        return DisplayImageHelper::get($this->value, 'assets/img/placeholder.png'); 
     }
 }

@@ -4,6 +4,8 @@
         ->pluck('value', 'key');
     $sidebarLogo = $sidebarSettings['logo'] ?? null;
     $sidebarName = $sidebarSettings['resturant_name'] ?? config('app.name');
+    $logoExists = !empty($sidebarLogo) && \Illuminate\Support\Facades\Storage::disk('public')->exists($sidebarLogo);
+    $sidebarLogoUrl = $logoExists ? \Illuminate\Support\Facades\Storage::url($sidebarLogo) : null;
   
 @endphp
 
@@ -15,7 +17,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="description" content="{{ $sidebarSettings['description'] ?? 'Order System' }}">
-    <title>{{ $sidebarName ?? 'Order System' }}</title>
+    <title>@yield('title') | {{ $sidebarName ?? config('app.name') }}</title>
     
     {{-- Google Fonts - Kantumruy Pro and Battambang --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,11 +25,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:ital,wght@0,100..700;1,100..700&family=Battambang:wght@100;300;400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     
+
+   
+ 
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     @stack('styles')
-    <link rel="icon" href="{{ asset('storage/settings/' . $sidebarLogo) }}" alt="{{ $sidebarName }}" loading="lazy">
+    
+    
     
     {{-- Custom Styles matching system default --}}
     <style>
@@ -103,8 +110,8 @@
 
             {{-- Logo --}}
             <a href="{{ route('customerOrder.menu.index') }}" class="flex items-center gap-2 touch-target" aria-label="{{ $sidebarName }} Home">
-                @if(!empty($sidebarLogo))
-                <img src="{{ asset('storage/settings/' . $sidebarLogo) }}" alt="{{ $sidebarName }}"
+                @if($sidebarLogoUrl)
+                <img src="{{ $sidebarLogoUrl }}"
                     class="h-10 w-10 rounded-lg object-contain bg-gray-100 p-1 flex-shrink-0">
             @else
                 <div class="h-10 w-10 rounded-lg bg-amber-600 flex items-center justify-center flex-shrink-0">
@@ -149,9 +156,9 @@
 
                 <a href="{{ route('customerOrder.cart.index') }}" class="relative p-2 rounded-full hover:bg-gray-100 transition touch-target" title="{{ __('app.cart') }}" aria-label="{{ __('app.cart') }} ({{ $cartCount }} items)">
                     <i class="fa-solid fa-basket-shopping text-xl text-gray-700"></i>
-                    @if($cartCount > 0)
-                    <span class="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-amber-500 text-white text-xs flex items-center justify-center font-bold">{{ $cartCount }}</span>
-                    @endif
+                    <span id="cart-badge" class="{{ $cartCount > 0 ? '' : 'hidden' }} absolute -top-1 -right-1 w-5 h-5 rounded-full bg-amber-500 text-white text-xs flex items-center justify-center font-bold">
+                        {{ $cartCount }}
+                    </span>
                 </a>
                 {{-- <button class="md:hidden p-2 rounded-full hover:bg-gray-100 transition touch-target" id="mobile-menu-btn" aria-label="Toggle Menu" aria-controls="mobile-menu" aria-expanded="false">
                     <span class="material-symbols-outlined">
@@ -162,10 +169,10 @@
                 {{-- Login + Signup--}}
                 @auth
                 <div class="flex items-center gap-4 ml-2 border-l border-gray-200 pl-4">
-                    <div class="hidden lg:block text-right">
-                        <p class="text-[10px] uppercase tracking-wider text-gray-400 font-bold leading-none">{{ __('app.welcome') }}</p>
+                    <a href="{{ route('customerOrder.profile.show') }}" class="hidden lg:block text-right hover:opacity-80 transition group">
+                        <p class="text-[10px] uppercase tracking-wider text-gray-400 font-bold leading-none group-hover:text-amber-600 transition">{{ __('app.welcome') }}</p>
                         <p class="text-sm font-semibold text-gray-900 leading-tight">{{ Auth::user()->name }}</p>
-                    </div>
+                    </a>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="p-2 rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50 transition touch-target" title="{{ __('app.logout') }}" aria-label="{{ __('app.logout') }}">
@@ -190,6 +197,9 @@
     <div id="mobile-menu" class="hidden md:hidden border-t border-gray-200 bg-white px-4 py-3 space-y-2">
         <a href="{{ route('customerOrder.menu.index') }}" class="block py-2 text-sm font-medium text-gray-700 hover:text-amber-600">{{ __('app.menu') }}</a>
         <a href="{{ route('customerOrder.orders.history') }}" class="block py-2 text-sm font-medium text-gray-700 hover:text-amber-600">{{ __('app.my_orders') }}</a>
+        @auth
+        <a href="{{ route('customerOrder.profile.show') }}" class="block py-2 text-sm font-medium text-gray-700 hover:text-amber-600">{{ __('app.profile') }}</a>
+        @endauth
         {{-- Mobile Language Switcher --}}
         <div class="border-t border-gray-100 pt-2 mt-2">
             <p class="text-xs text-gray-400 uppercase tracking-wider mb-2">{{ __('app.language') }}</p>
@@ -228,8 +238,8 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
                 <div class="flex items-center gap-2 mb-3">
-                    @if(!empty($sidebarLogo))
-                    <img src="{{ asset('storage/settings/' . $sidebarLogo) }}" alt="{{ $sidebarName }}"
+                    @if($sidebarLogoUrl)
+                    <img src="{{ $sidebarLogoUrl }}" alt="{{ $sidebarName }}"
                          class="h-8 w-8 rounded-lg object-contain bg-gray-800 p-1">
                     @else
                     <span class="w-8 h-8 rounded-lg bg-amber-600 flex items-center justify-center">

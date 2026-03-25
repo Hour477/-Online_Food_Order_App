@@ -2,20 +2,15 @@
 
 namespace App\Services;
 
+use App\Helpers\ImageHelper;
 
-use App\Helpers\UploadImageHelper;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 
 class SettingServices
 {
 
-    public function getSetting(Request $request)
-    {
-        // $settings = Setting::all()->pluck('value', 'key')->toArray();
-            
 
-    }
 
 
     public function editSettings()
@@ -28,73 +23,49 @@ class SettingServices
 
     public function updateSetting(Setting $setting, array $data, $files = [])
     {
-        // updateSetting 
-        $setting->update($data);
-    }
-    public function storeSetting(array $data, $files = [])
-    {
-        // get value and key show on field
-        $setting_logo = Setting::where('key', 'logo')->first()->value;
-
-        // dd($data);
         try {
-     
+            // Handle regular fields
+            $keys = [
+                'resturant_name',
+                'resturant_phone',
+                'resturant_email',
+                'resturant_address',
+                'website_name',
+                'app_name',
+                'app_version',
+                'legal_policies',
+            ];
 
-            // Website Name
-             if (!empty($data['website_name'])) {
-                Setting::updateOrInsert(
-                    ['key' => 'website_name'],
-                    ['value' => $data['website_name']]
-                );
-             }
-            // Logo
-            if (!empty($data['logo'])) {
-                Setting::updateOrInsert(
-                    ['key' => 'logo'],
-                    ['value' => UploadImageHelper::update('settings/', $setting_logo, 'png', $data['logo'])]
-                );
+            foreach ($keys as $key) {
+                if (array_key_exists($key, $data)) {
+                    Setting::updateOrCreate(
+                        ['key' => $key],
+                        ['value' => (string) ($data[$key] ?? '')]
+                    );
+                }
             }
-            // Favicon
-            if (!empty($data['favicon'])) {
-                Setting::updateOrInsert(
-                    ['key' => 'favicon'],
-                    ['value' => UploadImageHelper::update('settings/', $setting_logo, 'png', $data['favicon'])]
-                );
-            }
-            // App Name
-            if (!empty($data['app_name'])) {
-                Setting::updateOrInsert(
-                    ['key' => 'app_name'],
-                    ['value' => $data['app_name']]
-                );
-            }
-            // App Version
-            if (!empty($data['app_version'])) {
-                Setting::updateOrInsert(
-                    ['key' => 'app_version'],
-                    ['value' => $data['app_version']]
-                );
-            }
-            // app logo
-            if (!empty($data['app_logo'])) {
-                Setting::updateOrInsert(
-                    ['key' => 'app_logo'],
-                    ['value' => UploadImageHelper::update('settings/', $setting_logo, 'png', $data['app_logo'])]
-                );
-            }
-            // Legal & Policies
-            if (!empty($data['legal_policies'])) {
-                Setting::updateOrInsert(
-                    ['key' => 'legal_policies'],
-                    ['value' => $data['legal_policies']]
-                );
+
+            // Handle images
+            $imageKeys = ['logo', 'favicon', 'app_logo'];
+            foreach ($imageKeys as $key) {
+                if (!empty($data[$key]) && $data[$key] instanceof \Illuminate\Http\UploadedFile) {
+                    $oldImage = Setting::where('key', $key)->value('value');
+                    $path = ImageHelper::update($data[$key], $oldImage, 'settings');
+                    Setting::updateOrCreate(
+                        ['key' => $key],
+                        ['value' => $path]
+                    );
+                }
             }
 
             return true;
         } catch (\Throwable $th) {
-            // dd($th);
             report($th);
             return false;
         }
+    }
+    public function storeSetting(array $data, $files = [])
+    {
+        
     }
 }

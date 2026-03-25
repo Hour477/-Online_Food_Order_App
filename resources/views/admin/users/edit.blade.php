@@ -1,15 +1,17 @@
 
 @extends('admin.layouts.app')
 
+@section('title', 'Edit User')
+
 @section('content')
 <div class="mx-auto">
 
     @if(!$user)
     {{-- User not found --}}
-    <div class="text-center py-24">
+    <div class="text-center py-24 bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700">
         <i class="fa-solid fa-circle-exclamation text-6xl text-red-400 mb-4"></i>
-        <h3 class="text-2xl font-bold text-gray-900 mb-2">User Not Found</h3>
-        <p class="text-gray-500 mb-6">The user you're trying to edit doesn't exist or has been deleted.</p>
+        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">User Not Found</h3>
+        <p class="text-gray-500 dark:text-gray-400 mb-6">The user you're trying to edit doesn't exist or has been deleted.</p>
         <a href="{{ route('admin.users.index') }}" 
            class="inline-flex items-center gap-2 px-6 py-3 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition font-medium">
             <i class="fa-solid fa-arrow-left"></i>
@@ -18,184 +20,142 @@
     </div>
     @else
 
-    {{-- Header --}}
-    <div class="mb-8 flex items-center justify-between">
-        <div>
-            <h3 class="text-2xl font-bold text-gray-900">Edit User</h3>
-            <p class="text-sm text-gray-500 mt-1">Update user information</p>
+    {{-- Edit User --}}
+    <div
+        class="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 overflow-hidden p-5">
+        
+        <!-- Header -->
+        <div class="mb-6">
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white">Edit User: {{ $user->name }}</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Update system user or staff member information</p>
         </div>
-        <a href="{{ route('admin.users.index') }}"
-           class="text-sm text-gray-500 hover:text-gray-900 flex items-center gap-1 transition-colors">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            Back to Users
-        </a>
-    </div>
 
-    {{-- Form Card --}}
-    <div class="bg-white shadow-sm rounded-xl border border-gray-200 p-6 lg:p-8">
-
-        <form action="{{ route('admin.users.update', $user->id) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('admin.users.update', $user->id) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
             @method('PUT')
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {{-- Name --}}
-                <div class="mb-2">
+                <!-- Name -->
+                <div class="md:col-span-2">
                     <label for="name" class="block text-xs font-medium text-gray-500 uppercase tracking-widest mb-1.5">
                         Full Name <span class="text-red-500">*</span>
                     </label>
-                    <input type="text" name="name" id="name" value="{{ old('name', $user->name) }}" required autofocus
-                           placeholder="e.g. John Doe"
-                           class="block w-full rounded-lg border border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-400
-                                  px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-colors">
+                    <input type="text" name="name" id="name" required autofocus
+                           value="{{ old('name', $user->name) }}"
+                           class="block w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-colors text-sm"
+                           placeholder="e.g. John Doe">
                     @error('name')
-                        <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p>
+                        <p class="mt-1.5 text-xs text-red-600 dark:text-red-400">{{ $message }}</p>
                     @enderror
                 </div>
 
-                {{-- Email --}}
-                <div class="mb-2">
+                <!-- Email -->
+                <div>
                     <label for="email" class="block text-xs font-medium text-gray-500 uppercase tracking-widest mb-1.5">
                         Email Address <span class="text-red-500">*</span>
                     </label>
-                    <input type="email" name="email" id="email" value="{{ old('email', $user->email) }}" required
-                           placeholder="e.g. john@example.com"
-                           class="block w-full rounded-lg border border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-400
-                                  px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-colors">
+                    <input type="email" name="email" id="email" required
+                           value="{{ old('email', $user->email) }}"
+                           class="block w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-colors text-sm"
+                           placeholder="e.g. john@example.com">
                     @error('email')
-                        <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p>
-                    @enderror
-                </div>
-                {{-- image --}}
-                
-
-                {{-- Password --}}
-                {{-- Leave empty to keep current password --}}
-                <div class="mb-2">
-                    <label for="password" class="block text-xs font-medium text-gray-500 uppercase tracking-widest mb-1.5">
-                        New Password (optional)
-                    </label>
-                    <input type="password" name="password" id="password"
-                           placeholder="Leave empty to keep current password"
-                           class="block w-full rounded-lg border border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-400
-                                  px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-colors">
-                    @error('password')
-                        <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p>
+                        <p class="mt-1.5 text-xs text-red-600 dark:text-red-400">{{ $message }}</p>
                     @enderror
                 </div>
 
-                {{-- Confirm Password --}}
-                <div class="mb-2">
-                    <label for="password_confirmation" class="block text-xs font-medium text-gray-500 uppercase tracking-widest mb-1.5">
-                        Confirm New Password
-                    </label>
-                    <input type="password" name="password_confirmation" id="password_confirmation"
-                           placeholder="Confirm new password"
-                           class="block w-full rounded-lg border border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-400
-                                  px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-colors">
-                </div>
-
-                {{-- Role --}}
-                <div class="mb-2">
+                <!-- Role -->
+                <div>
                     <label for="role_id" class="block text-xs font-medium text-gray-500 uppercase tracking-widest mb-1.5">
                         User Role <span class="text-red-500">*</span>
                     </label>
                     <select name="role_id" id="role_id" required
-                            class="block w-full rounded-lg border border-gray-200 bg-gray-50 text-gray-900
-                                   px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-colors">
+                            class="block w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500 transition-colors text-sm">
                         <option value="" disabled>Select a role</option>
-                        @foreach($roles as $role)
+                        @foreach ($roles as $role)
                             <option value="{{ $role->id }}" {{ old('role_id', $user->role_id) == $role->id ? 'selected' : '' }}>
                                 {{ $role->name }}
                             </option>
-                        @endforeach 
+                        @endforeach
                     </select>
                     @error('role_id')
-                        <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p>
+                        <p class="mt-1.5 text-xs text-red-600 dark:text-red-400">{{ $message }}</p>
                     @enderror
-                </div>
-                <div class="mb-2">
-                    <label for="image" class="block text-xs font-medium text-gray-500 uppercase tracking-widest mb-1.5">
-                        Profile Image (Optional)
-                    </label>
-                    <input type="file" name="image" id="image" accept="image/*"
-                           class="block w-full rounded-lg border border-gray-200 bg-gray-50 text-gray-900 
-                                  px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-colors
-                                  file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold
-                                  file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100">
-                    @error('image')
-                        <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p>
-                    @enderror
-                </div>
-                {{-- Current Image Display --}}
-                @if($user->image)
-                <div class="mb-2">
-                    <label class="block text-xs font-medium text-gray-500 uppercase tracking-widest mb-1.5">
-                        Current Image
-                    </label>
-                    <div class="flex items-center gap-4">
-                        <img src="{{ $user->display_image }}" 
-                             class="w-20 h-20 rounded-lg object-cover border-2 border-gray-200">
-                        <p class="text-xs text-gray-500">Upload a new image to replace this one</p>
-                    </div>
-                </div>
-                @endif
-                {{-- preview image--}}
-                <div class="mb-2">
-                    <label class="block text-xs font-medium text-gray-500 uppercase tracking-widest mb-1.5">
-                        Image Preview 
-                    </label>
-                    <div class="flex items-center gap-4">
-                        <div id="image-preview-container" class="w-16 h-16 rounded-lg border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden bg-gray-50">
-                            <img id="image-preview" src="#" alt="Preview" class="hidden w-full h-full object-cover">
-                            <svg id="preview-placeholder" class="w-8 h-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                        </div>
-                        <p class="text-[10px] text-gray-400 italic">Recommended: Square image, max 2MB</p>
-                    </div>
                 </div>
 
-                <script>
-                    document.getElementById('image').addEventListener('change', function(e) {
-                        const preview = document.getElementById('image-preview');
-                        const placeholder = document.getElementById('preview-placeholder');
-                        const file = e.target.files[0];
+                <!-- Password -->
+                <div>
+                    <label for="password" class="block text-xs font-medium text-gray-500 uppercase tracking-widest mb-1.5">
+                        New Password (optional)
+                    </label>
+                    <input type="password" name="password" id="password"
+                           class="block w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-colors text-sm"
+                           placeholder="Leave empty to keep current password">
+                    @error('password')
+                        <p class="mt-1.5 text-xs text-red-600 dark:text-red-400">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Confirm Password -->
+                <div>
+                    <label for="password_confirmation" class="block text-xs font-medium text-gray-500 uppercase tracking-widest mb-1.5">
+                        Confirm New Password
+                    </label>
+                    <input type="password" name="password_confirmation" id="password_confirmation"
+                           class="block w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-colors text-sm"
+                           placeholder="Confirm new password">
+                </div>
+
+                <!-- Image -->
+                <div class="md:col-span-2">
+                    <label class="block text-xs font-medium text-gray-500 uppercase tracking-widest mb-3">
+                        Profile Image
+                    </label>
+                    <div class="relative group w-32 h-32">
+                        <img id="image-preview" 
+                             src="{{ $user->display_image }}"
+                             class="w-32 h-32 rounded-2xl border-4 border-white dark:border-gray-700 shadow-md object-cover bg-gray-50 dark:bg-gray-700 transition-all group-hover:brightness-90">
                         
-                        if (file) {
-                            const reader = new FileReader();
-                            reader.onload = function(e) {
-                                preview.src = e.target.result;
-                                preview.classList.remove('hidden');
-                                placeholder.classList.add('hidden');
-                            };
-                            reader.readAsDataURL(file);
-                        } else {
-                            preview.classList.add('hidden');
-                            placeholder.classList.remove('hidden');
-                        }
-                    });
-                </script>
-
+                        <label for="image-upload" class="absolute inset-0 flex items-center justify-center bg-black/40 text-white rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                            <i class="fa-solid fa-camera text-xl"></i>
+                        </label>
+                        <input type="file" id="image-upload" name="image" class="hidden" accept="image/*" onchange="previewImage(this)">
+                    </div>
+                    <p class="mt-2 text-[10px] text-gray-500 dark:text-gray-400 italic">Recommended: Square image, max 2MB. Leave empty to keep current.</p>
+                    @error('image')
+                        <p class="mt-1.5 text-xs text-red-600 dark:text-red-400">{{ $message }}</p>
+                    @enderror
+                </div>
             </div>
-
-            {{-- Actions --}}
-            <div class="flex justify-end gap-3 pt-8 mt-8 border-t border-gray-100">
+            
+            <div class="flex justify-end gap-3 pt-6 border-t border-gray-100 dark:border-gray-700">
                 <a href="{{ route('admin.users.index') }}"
-                   class="px-5 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                   class="px-5 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>
                     Cancel
                 </a>
                 <button type="submit"
                         class="px-6 py-2.5 text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 rounded-lg transition-colors shadow-sm">
-                        <i class="fa-solid fa-pen-to-square mr-2"></i>
-                        Update User
+                    <i class="fas fa-save mr-2"></i>
+                    Update User
                 </button>
             </div>
-
         </form>
     </div>
     @endif
 </div>
+
+@push('scripts')
+<script>
+function previewImage(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('image-preview').src = e.target.result;
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
+@endpush
 
 @endsection

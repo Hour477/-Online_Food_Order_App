@@ -23,5 +23,10 @@ class AppServiceProvider extends ServiceProvider
         // Use Tailwind-styled pagination for all ->links() calls
         Paginator::defaultView('pagination::tailwind');
         Paginator::defaultSimpleView('pagination::simple-tailwind');
+
+        // Share order status counts with the sidebar (and all other views)
+        view()->composer('admin.layouts.sidebar', function ($view) {
+            $view->with('orderStatusCounts', \App\Models\Order::getStatusCounts());
+        });
     }
 }

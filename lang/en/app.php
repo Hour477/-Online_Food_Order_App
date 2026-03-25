@@ -64,14 +64,32 @@ return [
     'login' => 'Login',
     'register' => 'Register',
     'profile' => 'Profile',
+    'my_orders' => 'Order History',
+    'edit_profile' => 'Edit Profile',
+    'personal_information' => 'Personal Information',
+    'not_provided' => 'Not provided',
+    'account_summary' => 'Account Summary',
+    'favorites' => 'Favorites',
+    'total_orders' => 'Total Orders',
+    'view_order_history' => 'View Order History',
+    'save_changes' => 'Save Changes',
+    'basic_info' => 'Basic Info',
+    'security' => 'Security',
+    'password_hint' => 'Leave blank if you do not want to change your password',
+    'new_password' => 'New Password',
+    'confirm_password' => 'Confirm Password',
+    'cancel_and_go_back' => 'Cancel and go back',
+    'profile_updated' => 'Profile updated successfully!',
+    'language' => 'Language',
 
     // Menu Page
     'menu_title' => 'Menu',
     'hero_badge' => 'Fresh • Local • Delicious',
+    'title_welcome' => 'Welcome !',
     'hero_title' => 'What are you',
     'hero_craving' => 'craving',
     'hero_today' => 'today?',
-    'hero_description' => 'Explore our handcrafted menu — from hearty meals to refreshing drinks and indulgent desserts.',
+    'hero_description' => 'Explore your menu — from delicious food and refreshing drinks to delicious desserts.',
     'browse_menu' => 'Browse Menu',
     'todays_specials' => "Today's Specials",
     'search_placeholder' => 'Search dishes, drinks…',
@@ -149,7 +167,7 @@ return [
     'order_items' => 'Order Items',
     'order_history' => 'Order History',
     'order_history_subtitle' => 'All your past orders in one place.',
-    'my_orders' => 'My Orders',
+    'my_orders' => 'Order History',
     'no_orders_yet' => 'No orders yet',
     'order_history_empty' => 'Your order history will appear here.',
     'new_order' => 'New Order',
@@ -241,12 +259,18 @@ return [
     'payment_error' => 'Error',
 
     // Admin - Reports
+    'reports_overview' => 'Reports Overview',
     'sales_report' => 'Sales Report',
     'orders_report' => 'Orders Report',
     'income_report' => 'Income Report',
     'generate_report' => 'Generate Report',
     'export_pdf' => 'Export PDF',
     'export_excel' => 'Export Excel',
+
+
+    // Filter Customer Order
+    'filter_customer_order' => 'តម្រងការបញ្ជាទិញអតិថិជន',
+    'search_dishes' => 'Search Menu ....',
 
     // Admin Sidebar Menu
     'users_and_roles' => 'Users & Roles',

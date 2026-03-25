@@ -88,9 +88,26 @@
 </div>
 
 <script>
-    // Simple slug generator
+    // Simple slug generator using AJAX
+    document.getElementById('name').addEventListener('input', function() {
+        const name = this.value;
+        const slugInput = document.getElementById('slug');
+        
+        if (name.length > 2) {
+            fetch(`{{ route('admin.roles.generate-slug') }}?name=${encodeURIComponent(name)}`)
+                .then(response => response.json())
+                .then(data => {
+                    slugInput.value = data.slug;
+                })
+                .catch(error => console.error('Error generating slug:', error));
+        } else if (name.length === 0) {
+            slugInput.value = '';
+        }
+    });
+
+    // Manual slug override handling
     document.getElementById('slug').addEventListener('input', function() {
-        this.value = this.value.toLowerCase().replace(/\s+/g, '-');
+        this.value = this.value.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
     });
 </script>
 

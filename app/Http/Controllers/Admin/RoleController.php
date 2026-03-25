@@ -7,9 +7,23 @@ use App\Models\Role;
 use Devrabiul\ToastMagic\Facades\ToastMagic;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Str;
+
 class RoleController extends Controller
 {
     //
+    public function generateSlug(Request $request)
+    {
+        $name = $request->get('name');
+        $slug = Str::slug($name);
+        $count = Role::where('name', $name)->count();
+        if ($count > 0) {
+            $slug = "{$slug}";
+        }
+
+        return response()->json(['slug' => $slug]);
+    }
+
     public function index()
     {
         $roles = Role::select('id','name','slug','description', 'created_at','updated_at')
@@ -54,40 +68,45 @@ class RoleController extends Controller
 
     public function update(Request $request, $id)
     {
-        //
         $role = Role::findOrFail($id);
+
+        // Prevent changing core system slugs (admin, customer)
+        $systemRoles = ['admin', 'customer'];
+        if (in_array($role->slug, $systemRoles) && $request->slug !== $role->slug) {
+            ToastMagic::warning('System role slugs cannot be modified to ensure access stability.');
+            return redirect()->route('admin.roles.index');
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:roles,slug,' . $id,
-            'description' => 'required|string|max:255',
-
+            'description' => 'nullable|string|max:255',
         ]); 
+        
         $role->update($request->all());
         ToastMagic::success('Role updated successfully');
         return redirect()->route('admin.roles.index');
     }
 
-        public function destroy($id)
-        {
-            $role = Role::findOrFail($id);
+    public function destroy($id)
+    {
+        $role = Role::findOrFail($id);
 
-            try {
-                // Prevent deleting admin role
-                if ($role->slug === 'admin') {
-                    ToastMagic::warning('Admin role cannot be deleted');
-                    return redirect()->route('admin.roles.index');
-                }
-
-                // Delete role
-                $role->delete();
-
-                ToastMagic::success('Role deleted successfully');
-
-            } catch (\Exception $e) {
-                ToastMagic::error('Role deletion failed: ' . $e->getMessage());
+        try {
+            // Prevent deleting core system roles (admin, customer)
+            $systemRoles = ['admin', 'customer'];
+            if (in_array($role->slug, $systemRoles)) {
+                ToastMagic::warning("The {$role->name} role is a system role and cannot be deleted.");
+                return redirect()->route('admin.roles.index');
             }
 
-            return redirect()->route('admin.roles.index');
+            $role->delete();
+            ToastMagic::success('Role deleted successfully');
+
+        } catch (\Exception $e) {
+            ToastMagic::error('Cannot delete role. It may be assigned to users.');
         }
 
+        return redirect()->route('admin.roles.index');
+    }
 }

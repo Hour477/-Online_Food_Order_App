@@ -1,61 +1,105 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Food Ordering System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A comprehensive Restaurant Management and Food Ordering System built with Laravel 12, Tailwind CSS, and Vite. This system provides an intuitive interface for both administrators and customers to manage orders, menu items, and business settings.
 
-## About Laravel
+## 🚀 Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Customer Management**: Full CRUD operations with soft delete support and profile image handling.
+- **Menu Management**: Categorized menu items with image previews and "Like" functionality.
+- **Order System**: Real-time order tracking and management.
+- **Admin Dashboard**: Comprehensive stats and reporting tools.
+- **Business Settings**: Dynamic configuration for restaurant details, logos, and favicons.
+- **Responsive UI**: Modern design that works seamlessly across mobile and desktop.
+- **Soft Deletes**: Safety mechanism to prevent permanent data loss.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🛠 Prerequisites
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Before you begin, ensure you have the following installed:
+- **PHP**: ^8.2
+- **Composer**: Latest version
+- **Node.js & NPM**: Latest version
+- **Database**: MySQL or SQLite
 
-## Learning Laravel
+## 📥 Installation Steps
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+Follow these steps to get your development environment set up:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 1. Clone the Repository
+```bash
+git clone <repository-url>
+cd Food-Ordering-System
+```
 
-## Laravel Sponsors
+### 2. Install Dependencies
+Install PHP dependencies using Composer:
+```bash
+composer install
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Install frontend dependencies using NPM:
+```bash
+npm install
+```
 
-### Premium Partners
+### 3. Environment Configuration
+Copy the example environment file and configure your database:
+```bash
+cp .env.example .env
+```
+Open the `.env` file and update the database connection details:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=food_ordering_system
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 4. Generate Application Key
+```bash
+php artisan key:generate
+```
 
-## Contributing
+### 5. Database Setup
+Run the migrations and seed the database with initial data:
+```bash
+php artisan migrate --seed
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 6. Storage Link
+Create a symbolic link from `public/storage` to `storage/app/public` to make uploaded images accessible:
+```bash
+php artisan storage:link
+```
 
-## Code of Conduct
+### 7. Compile Assets
+Build the frontend assets using Vite:
+```bash
+# For development
+npm run dev
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# For production
+npm run build
+```
 
-## Security Vulnerabilities
+### 8. Start the Server
+Run the local development server:
+```bash
+php artisan serve
+```
+The application will be available at `http://127.0.0.1:8000`.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 🛡 Admin Access
+Default admin credentials (if seeded):
+- **Email**: `admin@example.com`
+- **Password**: `password`
 
-## License
+## 🧪 Testing
+Run the test suite to ensure everything is working correctly:
+```bash
+php artisan test
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-
-
+## 📄 License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
