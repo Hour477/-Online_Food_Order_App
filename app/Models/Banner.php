@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Helpers\DisplayImageHelper;
 
 /**
  * @method static \Illuminate\Database\Eloquent\Builder|Banner active()
@@ -11,6 +12,8 @@ use Illuminate\Database\Eloquent\Model;
 class Banner extends Model
 {
     use HasFactory;
+
+    protected $appends = ['display_image'];
 
     protected $fillable = [
         'image',
@@ -28,5 +31,10 @@ class Banner extends Model
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+
+    public function getDisplayImageAttribute()
+    {
+        return DisplayImageHelper::get($this->image, 'assets/img/placeholder.png');
     }
 }

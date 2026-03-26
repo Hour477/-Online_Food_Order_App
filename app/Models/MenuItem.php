@@ -54,7 +54,18 @@ class MenuItem extends Model
     public function scopeInCategory($query, $categoryIds)
     {
         if (empty($categoryIds)) return $query;
-        return $query->whereIn('category_id', $categoryIds);
+        
+        return $query->where(function($q) use ($categoryIds) {
+            $ids = array_filter($categoryIds, fn($id) => $id !== 'null' && $id !== null);
+            
+            if (!empty($ids)) {
+                $q->whereIn('category_id', $ids);
+            }
+            
+            if (in_array('null', $categoryIds) || in_array(null, $categoryIds)) {
+                $q->orWhereNull('category_id');
+            }
+        });
     }
 
     /**

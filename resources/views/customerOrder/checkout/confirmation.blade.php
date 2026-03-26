@@ -34,13 +34,7 @@
         <div class="space-y-3 mb-4">
             @foreach($order->orderItems as $item)
             <div class="flex items-center gap-3">
-                @if($item->menuItem->image)
-                    <img src="{{ Storage::url($item->menuItem->image) }}" alt="{{ $item->menuItem->name }}" class="w-12 h-12 object-cover rounded-lg flex-shrink-0">
-                @else
-                    <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-utensils text-xs text-gray-300"></i>
-                    </div>
-                @endif
+                <img src="{{ $item->menuItem->display_image }}" alt="{{ $item->menuItem->name }}" class="w-12 h-12 object-cover rounded-lg flex-shrink-0">
                 <div class="flex-1">
                     <p class="text-sm font-semibold text-gray-900">{{ $item->menuItem->name }}</p>
                     <p class="text-xs text-gray-500">x{{ $item->quantity }}</p>

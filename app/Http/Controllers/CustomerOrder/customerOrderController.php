@@ -42,12 +42,12 @@ class customerOrderController extends Controller
             // Transform order items
             $items = $order->orderItems->map(function ($item) {
                 return [
+                    'id' => $item->menu_item_id,
                     'name' => $item->menuItem->name ?? 'Unknown Item',
                     'qty' => $item->quantity,
                     'price' => $item->price,
-                    'image' => $item->menuItem && $item->menuItem->image 
-                        ? Storage::url($item->menuItem->image) 
-                        : 'https://via.placeholder.com/40',
+                    'image' => $item->menuItem->image ?? null,
+                    'display_image' => $item->menuItem->display_image ?? \App\Helpers\DisplayImageHelper::get(null),
                 ];
             })->toArray();
 

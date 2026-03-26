@@ -51,8 +51,16 @@ class customerMenuController extends Controller
 
         // Apply Category (single)
         if ($request->filled('category') && $request->input('category') !== 'all') {
-            $query->whereHas('category', function($q) use ($request) {
-                $q->where('name', (string)$request->input('category'));
+            $query->where(function($q) use ($request) {
+                $categoryName = (string)$request->input('category');
+                
+                if (strtolower($categoryName) === 'uncategorized' || strtolower($categoryName) === 'null') {
+                    $q->whereNull('category_id');
+                } else {
+                    $q->whereHas('category', function($subQ) use ($categoryName) {
+                        $subQ->where('name', $categoryName);
+                    });
+                }
             });
         }
 
