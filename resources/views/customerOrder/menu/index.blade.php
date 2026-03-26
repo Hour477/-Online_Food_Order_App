@@ -15,7 +15,7 @@
              data-index="{{ $index }}">
             {{-- Background Image with Ken Burns Effect --}}
             <div class="absolute inset-0 animate-kenburns">
-                <img src="{{ Storage::url($banner->image) }}" 
+                <img src="{{ $banner->display_image }}" 
                      alt="{{ $banner->title ?? 'Banner' }}" 
                      class="w-full h-full object-cover">
             </div>
@@ -410,9 +410,9 @@ async function toggleLike(btn, productId) {
 
         const data = await response.json();
 
-        if (response.ok) {
+        if (response.ok && likesCountSpan) {
             likesCountSpan.textContent = data.likes_count;
-        } else {
+        } else if (!response.ok) {
             // Rollback on error
             throw new Error(data.message || 'Something went wrong');
         }
@@ -534,7 +534,13 @@ function initSidebarFilters() {
     let isExpanded = false;
 
     function renderCuisines(filter = '') {
-        const filtered = categories.filter(c => c.name.toLowerCase().includes(filter.toLowerCase()));
+        let filtered = categories.filter(c => c.name.toLowerCase().includes(filter.toLowerCase()));
+        
+        // Add Uncategorized option if it matches filter
+        if ("uncategorized".includes(filter.toLowerCase())) {
+            filtered.push({ id: 'null', name: 'Uncategorized' });
+        }
+
         cuisineList.innerHTML = filtered.map(c => `
             <label class="flex items-center cursor-pointer group cuisine-item">
                 <input type="checkbox" name="cuisines[]" value="${c.id}" class="cuisine-checkbox w-5 h-5 rounded border-gray-300 text-amber-600 focus:ring-amber-600 accent-amber-600">

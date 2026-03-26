@@ -33,6 +33,7 @@ class customerCartController extends Controller
                 'name' => $menuItem->name,
                 'price' => $menuItem->price,
                 'image' => $menuItem->image,
+                'display_image' => $menuItem->display_image,
                 'category' => $menuItem->category->name,
                 'qty' => $qty
             ];

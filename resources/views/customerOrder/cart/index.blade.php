@@ -29,13 +29,7 @@
         <div class="lg:col-span-2 space-y-4">
             @foreach($cart as $id => $item)
             <div class="flex gap-4 bg-white rounded-xl p-4 shadow-sm border border-gray-200">
-                @if($item['image'])
-                    <img src="{{ Storage::url($item['image']) }}" alt="{{ $item['name'] }}" class="w-24 h-24 object-cover rounded-lg flex-shrink-0">
-                @else
-                    <div class="w-24 h-24 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-utensils text-2xl text-gray-300"></i>
-                    </div>
-                @endif
+                <img src="{{ $item['display_image'] ?? \App\Helpers\DisplayImageHelper::get($item['image']) }}" alt="{{ $item['name'] }}" class="w-24 h-24 object-cover rounded-lg flex-shrink-0">
                 <div class="flex-1 min-w-0">
                     <div class="flex items-start justify-between gap-2">
                         <div>

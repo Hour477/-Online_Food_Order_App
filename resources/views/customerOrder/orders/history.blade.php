@@ -64,7 +64,7 @@
                 <div class="flex items-center gap-2 flex-wrap">
                     @foreach(array_slice($order['items'], 0, 4) as $item)
                     <div class="flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-1.5">
-                        <img src="{{ $item['image'] }}" alt="{{ $item['name'] }}" class="w-6 h-6 rounded-full object-cover">
+                        <img src="{{ $item['display_image'] }}" alt="{{ $item['name'] }}" class="w-6 h-6 rounded-full object-cover">
                         <span class="text-xs font-medium text-gray-900">{{ $item['name'] }}</span>
                         <span class="text-xs text-gray-500">×{{ $item['qty'] }}</span>
                     </div>
