@@ -15,11 +15,6 @@
    - [ ] Add Pusher credentials (`PUSHER_APP_ID`, `PUSHER_APP_KEY`, etc.).
    - [ ] Ensure `npm run build` is executed for frontend assets (if using Echo).
 
-4. **Queue & Horizon**
-   - [ ] Run `php artisan horizon:install` if not done.
-   - [ ] Start Horizon using `php artisan horizon`.
-   - [ ] Monitor background jobs for like notifications.
-
 5. **Static Analysis & Docs**
    - [ ] Run `vendor/bin/phpstan analyse --level 8` to ensure no regressions.
    - [ ] Run `php artisan l5-swagger:generate` to update API documentation.
