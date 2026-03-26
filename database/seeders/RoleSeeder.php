@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -15,8 +14,7 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        //
-       // 1️⃣ Insert roles with slug
+        // 1️⃣ Insert roles with slug
         $roles = [
             'Admin',    // id = 1
             'Customer', // id = 2
@@ -24,21 +22,21 @@ class RoleSeeder extends Seeder
 
         foreach ($roles as $roleName) {
             DB::table('roles')->insert([
-                
                 'name' => $roleName,
-                'slug' => Str::slug($roleName), // e.g. admin, manager
+                'slug' => Str::slug($roleName), // e.g. admin, customer
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
         }
 
-        // 2️⃣ Insert some customers in users table
+        // 2️⃣ Insert some users with 'state' field
         DB::table('users')->insert([
             [
                 'name' => 'Super Admin',
                 'email' => 'admin@example.com',
                 'role_id' => 1, // Admin
                 'password' => Hash::make('password123'),
+                'state' => 'active',           // ✅ Add this
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -47,6 +45,7 @@ class RoleSeeder extends Seeder
                 'email' => 'customer@example.com',
                 'role_id' => 2, // Customer
                 'password' => Hash::make('password123'),
+                'state' => 'active',           // ✅ Add this
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
