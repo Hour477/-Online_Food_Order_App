@@ -129,6 +129,7 @@ class PaymentController extends Controller
                     'paid_amount'    => $currentPaymentAmount,
                     'change_amount'  => $changeAmount,
                     'paid_at'        => now(),
+                    'status'         => 'paid'
                 ]);
 
                 // Recalculate total paid after this new payment

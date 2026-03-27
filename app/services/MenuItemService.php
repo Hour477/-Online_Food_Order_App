@@ -16,8 +16,12 @@ class MenuItemService
         if (isset($data['image'])) {
             $data['image'] = ImageHelper::upload($data['image'], 'menu-items');
         }
+
+        // Ensure rating and popularity are not null
+        $data['rating'] = $data['rating'] ?? 0;
+        $data['popularity'] = $data['popularity'] ?? 0;
+
         $menuItem = MenuItem::create($data);
-        $menuItem->save();
         return $menuItem;
         
     }
@@ -32,6 +36,14 @@ class MenuItemService
                 $oldImage,
                 'menu-items'
             );
+        }
+
+        // Ensure rating and popularity are not null if they are present in the data
+        if (array_key_exists('rating', $data)) {
+            $data['rating'] = $data['rating'] ?? 0;
+        }
+        if (array_key_exists('popularity', $data)) {
+            $data['popularity'] = $data['popularity'] ?? 0;
         }
 
         $menuItem->update($data);

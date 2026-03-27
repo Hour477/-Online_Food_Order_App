@@ -6,11 +6,71 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Customer;
+use App\Models\MenuItemRating;
+use App\Models\MenuItem;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Devrabiul\ToastMagic\Facades\ToastMagic;
 
 class customerOrderController extends Controller
 {
+    /**
+     * Submit a rating for a menu item.
+     */
+    public function rate(Request $request)
+    {
+        $validated = $request->validate([
+            'order_id' => 'required|exists:orders,id',
+            'menu_item_id' => 'required|exists:menu_items,id',
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'nullable|string|max:500'
+        ]);
+
+        $customer = Customer::where('user_id', Auth::id())->first();
+
+        if (!$customer) {
+            ToastMagic::error('Customer record not found.');
+            return back();
+        }
+
+        // Verify the customer actually ordered this item in this order
+        $order = Order::where('id', $validated['order_id'])
+            ->where('customer_id', $customer->id)
+            ->where('status', 'completed') // Only completed orders can be rated
+            ->first();
+
+        if (!$order) {
+            ToastMagic::error('Order not found or not eligible for rating.');
+            return back();
+        }
+
+        $orderedItem = $order->orderItems()->where('menu_item_id', $validated['menu_item_id'])->first();
+        if (!$orderedItem) {
+            ToastMagic::error('Item not found in this order.');
+            return back();
+        }
+
+        // Create or update the rating
+        $rating = MenuItemRating::updateOrCreate(
+            [
+                'order_id' => $validated['order_id'],
+                'menu_item_id' => $validated['menu_item_id'],
+                'customer_id' => $customer->id
+            ],
+            [
+                'rating' => $validated['rating'],
+                'comment' => $validated['comment']
+            ]
+        );
+
+        // Update the average rating in MenuItem
+        $menuItem = MenuItem::find($validated['menu_item_id']);
+        $menuItem->updateAverageRating();
+
+        ToastMagic::success(__('app.thank_you_rating'));
+        return back();
+    }
+
     public function history()
     {
         // Get the authenticated user's customer record
@@ -29,8 +89,8 @@ class customerOrderController extends Controller
 
         // Transform orders for the view
         $orders = $dbOrders->map(function ($order) {
-            // Get the first payment method
-            $paymentMethod = $order->payments->first()?->payment_method ?? 'cash';
+            // Get the payment method with status consideration (from model attribute)
+            $paymentMethod = $order->payment_method;
 
             // Extract delivery address from notes
             $notes = $order->notes ?? '';
@@ -47,11 +107,12 @@ class customerOrderController extends Controller
                     'qty' => $item->quantity,
                     'price' => $item->price,
                     'image' => $item->menuItem->image ?? null,
-                    'display_image' => $item->menuItem->display_image ?? \App\Helpers\DisplayImageHelper::get(null),
+                    'display_image' => $item->menuItem?->display_image ?? asset('assets/img/placeholder.png'),
                 ];
             })->toArray();
 
             return [
+                'db_id' => $order->id,
                 'id' => $order->order_no,
                 'status' => $order->status,
                 'subtotal' => $order->subtotal,

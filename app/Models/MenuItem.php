@@ -87,11 +87,11 @@ class MenuItem extends Model
     }
 
     /**
-     * Scope: Top Rated (rating >= 4.5)
+     * Scope: Top Rated (High to Low)
      */
     public function scopeTopRated($query)
     {
-        return $query->where('rating', '>=', 4.5);
+        return $query->where('rating', '>', 0)->orderBy('rating', 'desc');
     }
 
     /**
@@ -111,5 +111,20 @@ class MenuItem extends Model
         return $this->belongsTo(Category::class);
     }
 
-    
+    /**
+     * Get all ratings for the menu item.
+     */
+    public function ratings()
+    {
+        return $this->hasMany(MenuItemRating::class);
+    }
+
+    /**
+     * Update the average rating for this menu item.
+     */
+    public function updateAverageRating(): void
+    {
+        $average = $this->ratings()->avg('rating');
+        $this->update(['rating' => $average ?? 0]);
+    }
 }

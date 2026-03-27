@@ -96,6 +96,10 @@ Route::get('/orders/history', [customerOrderController::class, 'history'])
     ->middleware('auth')                                      // ← only logged-in customers
     ->name('customerOrder.orders.history');
 
+Route::post('/orders/rate', [customerOrderController::class, 'rate'])
+    ->middleware('auth')
+    ->name('customerOrder.orders.rate');
+
 /*
 |--------------------------------------------------------------------------
 | Admin Area

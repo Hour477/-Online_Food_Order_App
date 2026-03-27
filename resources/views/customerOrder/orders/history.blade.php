@@ -105,8 +105,16 @@
                         <h4 class="text-xs uppercase tracking-wider text-gray-400 font-semibold mb-2 battambang-regular">{{ __('app.items') }}</h4>
                         <div class="space-y-2">
                             @foreach($order['items'] as $item)
-                            <div class="flex justify-between">
-                                <span class="text-gray-600">{{ $item['name'] }} ×{{ $item['qty'] }}</span>
+                            <div class="flex justify-between items-center group">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-gray-600">{{ $item['name'] }} ×{{ $item['qty'] }}</span>
+                                    @if($order['status'] == 'completed')
+                                    <button onclick="openRatingModal({{ $order['db_id'] }}, {{ $item['id'] }}, '{{ addslashes($item['name']) }}')" 
+                                            class="opacity-0 group-hover:opacity-100 transition-opacity text-[10px] bg-amber-50 text-amber-600 px-2 py-0.5 rounded border border-amber-100 hover:bg-amber-100">
+                                        <i class="fa-solid fa-star"></i> {{ __('app.rate') }}
+                                    </button>
+                                    @endif
+                                </div>
                                 <span class="font-medium text-gray-900">${{ number_format($item['price'] * $item['qty'], 2) }}</span>
                             </div>
                             @endforeach
@@ -122,7 +130,7 @@
                             </div>
                         </div>
                         <div class="mt-3">
-                            <p class="text-xs text-gray-400 battambang-regular">{{ __('app.payment') }}: <span class="text-gray-700 font-medium">{{ ucwords(str_replace('_', ' ', $order['payment'])) }}</span></p>
+                            <p class="text-xs text-gray-400 battambang-regular">{{ __('app.payment') }}: <span class="text-gray-700 font-medium">{{ $order['payment'] }}</span></p>
                         </div>
                     </div>
                 </div>
@@ -132,6 +140,61 @@
     </div>
     @endif
 </div>
+
+{{-- Rating Modal --}}
+<div id="rating-modal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" aria-hidden="true" onclick="closeRatingModal()"></div>
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        <div class="inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-2xl shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <form action="{{ route('customerOrder.orders.rate') }}" method="POST">
+                @csrf
+                <input type="hidden" name="order_id" id="modal-order-id">
+                <input type="hidden" name="menu_item_id" id="modal-item-id">
+                <input type="hidden" name="rating" id="modal-rating-value" value="5">
+
+                <div class="px-6 py-6 bg-white">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-bold text-gray-900" id="modal-title">{{ __('app.rate_item') }}</h3>
+                        <button type="button" onclick="closeRatingModal()" class="text-gray-400 hover:text-gray-500">
+                            <i class="fa-solid fa-times"></i>
+                        </button>
+                    </div>
+
+                    <div class="text-center mb-8">
+                        <p class="text-sm text-gray-500 mb-2">{{ __('app.how_was_your') }}</p>
+                        <h4 id="modal-item-name" class="text-lg font-bold text-amber-600 mb-6">Item Name</h4>
+                        
+                        <div class="flex items-center justify-center gap-2">
+                            @for($i = 1; $i <= 5; $i++)
+                            <button type="button" onclick="setRating({{ $i }})" class="star-btn text-3xl transition-colors text-amber-400" data-value="{{ $i }}">
+                                <i class="fa-solid fa-star"></i>
+                            </button>
+                            @endfor
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="comment" class="block text-sm font-medium text-gray-700 mb-2">{{ __('app.write_review') }}</label>
+                        <textarea name="comment" id="comment" rows="3" 
+                                  class="w-full rounded-xl border-gray-200 bg-gray-50 text-sm focus:ring-amber-500 focus:border-amber-500"
+                                  placeholder="..."></textarea>
+                    </div>
+                </div>
+
+                <div class="px-6 py-4 bg-gray-50 flex flex-col sm:flex-row-reverse gap-3">
+                    <button type="submit" class="w-full sm:w-auto px-6 py-2.5 bg-amber-600 text-white rounded-xl font-bold hover:bg-amber-700 transition shadow-lg shadow-amber-600/20">
+                        {{ __('app.submit_review') }}
+                    </button>
+                    <button type="button" onclick="closeRatingModal()" class="w-full sm:w-auto px-6 py-2.5 bg-white text-gray-600 border border-gray-200 rounded-xl font-bold hover:bg-gray-50 transition">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
@@ -142,6 +205,33 @@ function toggleDetails(id) {
     const chevron = document.getElementById('chevron-' + orderId);
     el.classList.toggle('hidden');
     chevron.classList.toggle('rotate-180');
+}
+
+function openRatingModal(orderId, itemId, itemName) {
+    document.getElementById('modal-order-id').value = orderId;
+    document.getElementById('modal-item-id').value = itemId;
+    document.getElementById('modal-item-name').innerText = itemName;
+    document.getElementById('rating-modal').classList.remove('hidden');
+    setRating(5); // Default rating
+}
+
+function closeRatingModal() {
+    document.getElementById('rating-modal').classList.add('hidden');
+}
+
+function setRating(val) {
+    document.getElementById('modal-rating-value').value = val;
+    const stars = document.querySelectorAll('.star-btn');
+    stars.forEach(star => {
+        const starVal = parseInt(star.getAttribute('data-value'));
+        if (starVal <= val) {
+            star.classList.remove('text-gray-300');
+            star.classList.add('text-amber-400');
+        } else {
+            star.classList.remove('text-amber-400');
+            star.classList.add('text-gray-300');
+        }
+    });
 }
 </script>
 @endpush

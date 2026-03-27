@@ -118,9 +118,9 @@ class CheckoutController extends Controller
                     'order_id'       => $order->id,
                     'payment_method' => $methodMap[$request->payment],
                     'total_amount'   => $total,
-                    'paid_amount'    => $total, // For guest checkout we assume full payment if not COD
+                    'paid_amount'    => $request->payment === 'cod' ? 0 : $total,
                     'change_amount'  => 0,
-                    'paid_at'        => now(),
+                    'paid_at'        => $request->payment === 'cod' ? null : now(),
                     'status'         => $request->payment === 'cod' ? 'pending' : 'paid'
                 ]);
 

@@ -186,6 +186,8 @@ class OrderController extends Controller
                 if ($request->filled('payment_method')) {
                     $paidAmount = $request->input('paid_amount', $total);
                     $changeAmount = $paidAmount - $total;
+                    
+                    $isDeliveryCash = ($order->order_type === 'delivery' && $request->input('payment_method') === 'cash');
 
                     Payment::create([
                         'order_id'       => $order->id,
@@ -193,7 +195,8 @@ class OrderController extends Controller
                         'total_amount'   => $total,
                         'paid_amount'    => $paidAmount,
                         'change_amount'  => $changeAmount,
-                        'paid_at'        => now(),
+                        'paid_at'        => $isDeliveryCash && $paidAmount < $total ? null : now(),
+                        'status'         => $isDeliveryCash && $paidAmount < $total ? 'pending' : 'paid',
                     ]);
 
                     // Update order status if paid in full
@@ -272,7 +275,8 @@ class OrderController extends Controller
                 'total_amount' => $order->total_amount,
                 'paid_amount' => $order->total_amount,
                 'change_amount' => 0,
-                'paid_at' => now()
+                'paid_at' => now(),
+                'status' => 'paid'
             ]);
 
             $newStatus = ($order->order_type === 'dine_in') ? 'completed' : 'confirmed';

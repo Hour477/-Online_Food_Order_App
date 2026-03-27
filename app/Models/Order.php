@@ -61,7 +61,25 @@ class Order extends Model
      */
     public function getPaymentMethodAttribute()
     {
-        return $this->payments->first()?->payment_method ?? 'Unpaid';
+        $payment = $this->payments->first();
+        if (!$payment) {
+            return __('app.unpaid');
+        }
+
+        // For delivery orders with cash payment that's still pending (COD)
+        if ($this->order_type === 'delivery' && $payment->payment_method === 'cash' && $payment->status === 'pending') {
+            return __('app.cash_pending');
+        }
+
+        // Return translated method name if available, otherwise formatted method name
+        return match($payment->payment_method) {
+            'cash' => __('app.payment_cash') ?? 'Cash',
+            'card' => __('app.payment_card') ?? 'Card',
+            'khqr' => __('app.payment_khqr') ?? 'KHQR',
+            'aba'  => __('app.payment_aba')  ?? 'ABA',
+            'qr'   => __('app.payment_qr')   ?? 'QR Code',
+            default => ucwords(str_replace('_', ' ', $payment->payment_method))
+        };
     }
 
     /**

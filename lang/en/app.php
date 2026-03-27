@@ -250,7 +250,14 @@ return [
     // Admin - Payments
     'payment_status' => 'Payment Status',
     'payment_pending' => 'Pending',
+    'cash_pending' => 'Cash Pending',
+    'unpaid' => 'Unpaid',
     'payment_paid' => 'Paid',
+    'payment_cash' => 'Cash',
+    'payment_card' => 'Card',
+    'payment_khqr' => 'KHQR',
+    'payment_aba' => 'ABA',
+    'payment_qr' => 'QR Code',
     'payment_failed' => 'Failed',
     'payment_refunded' => 'Refunded',
     'all_payments' => 'All Payments',
@@ -317,4 +324,12 @@ return [
     'new_orders' => 'New Orders',
     'no_new_orders' => 'No new orders',
     'view_all_orders' => 'View All Orders',
+
+    // Ratings
+    'rate' => 'Rate',
+    'rate_item' => 'Rate Item',
+    'how_was_your' => 'How was your',
+    'write_review' => 'Write a review (optional)',
+    'submit_review' => 'Submit Review',
+    'thank_you_rating' => 'Thank you for your rating!',
 ];

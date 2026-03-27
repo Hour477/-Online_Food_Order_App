@@ -17,7 +17,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="description" content="{{ $sidebarSettings['description'] ?? 'Order System' }}">
-    <title>@yield('title') | {{ $sidebarName ?? config('app.name') }}</title>
+    <title>{{ $sidebarName ?? config('app.name') }}</title>
     
     {{-- Google Fonts - Kantumruy Pro and Battambang --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">

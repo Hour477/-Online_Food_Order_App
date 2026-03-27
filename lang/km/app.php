@@ -251,7 +251,14 @@ return [
     // Admin - Payments
     'payment_status' => 'ស្ថានភាពទូទាត់',
     'payment_pending' => 'រង់ចាំ',
+    'cash_pending' => 'រង់ចាំប្រាក់សុទ្ធ',
+    'unpaid' => 'មិនទាន់បង់ប្រាក់',
     'payment_paid' => 'បានទូទាត់',
+    'payment_cash' => 'ប្រាក់សុទ្ធ',
+    'payment_card' => 'កាត',
+    'payment_khqr' => 'KHQR',
+    'payment_aba' => 'ABA',
+    'payment_qr' => 'QR Code',
     'payment_failed' => 'បរាជ័យ',
     'payment_refunded' => 'បានសងប្រាក់',
     'all_payments' => 'ការទូទាត់ទាំងអស់',
@@ -318,4 +325,12 @@ return [
     'new_orders' => 'ការបញ្ជាទិញថ្មី',
     'no_new_orders' => 'គ្មានការបញ្ជាទិញថ្មីទេ',
     'view_all_orders' => 'មើលការបញ្ជាទិញទាំងអស់',
+
+    // Ratings
+    'rate' => 'វាយតម្លៃ',
+    'rate_item' => 'វាយតម្លៃមុខម្ហូប',
+    'how_was_your' => 'តើអ្នកយល់យ៉ាងណាដែរចំពោះ',
+    'write_review' => 'សរសេរការវាយតម្លៃ (ស្រេចចិត្ត)',
+    'submit_review' => 'បញ្ជូនការវាយតម្លៃ',
+    'thank_you_rating' => 'សូមអរគុណសម្រាប់ការវាយតម្លៃរបស់អ្នក!',
 ];

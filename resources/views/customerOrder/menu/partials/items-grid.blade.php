@@ -8,13 +8,22 @@
             🍽 {{ $item->category->name ?? __('app.uncategorized') }}
         </span>
 
-        {{-- Like Button --}}
-        <button type="button" 
-                onclick="toggleLike(this, {{ $item->id }})" 
-                class="absolute top-3 right-3 w-10 h-10 rounded-full bg-white/90 backdrop-blur shadow-sm flex items-center justify-center transition-all duration-300 hover:scale-110 group {{ Auth::check() && $item->isLikedBy(Auth::user()) ? 'text-red-500' : 'text-gray-400 hover:text-red-500' }}"
-                id="like-btn-{{ $item->id }}">
-            <i class="{{ Auth::check() && $item->isLikedBy(Auth::user()) ? 'fa-solid' : 'fa-regular' }} fa-heart text-xl"></i>
-        </button>
+        {{-- Like & Rating Stack --}}
+        <div class="absolute top-3 right-3 flex flex-col items-end gap-2">
+            {{-- Like Button --}}
+            <button type="button" 
+                    onclick="toggleLike(this, {{ $item->id }})" 
+                    class="w-9 h-9 rounded-full bg-white/95 backdrop-blur shadow-sm flex items-center justify-center transition-all duration-300 hover:scale-110 group {{ Auth::check() && $item->isLikedBy(Auth::user()) ? 'text-red-500' : 'text-gray-400 hover:text-red-500' }}"
+                    id="like-btn-{{ $item->id }}">
+                <i class="{{ Auth::check() && $item->isLikedBy(Auth::user()) ? 'fa-solid' : 'fa-regular' }} fa-heart text-lg"></i>
+            </button>
+
+            {{-- Compact Rating Pill --}}
+            <div class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-white/95 backdrop-blur shadow-sm border border-amber-100 text-amber-600 transition-all duration-300 hover:scale-105 cursor-default">
+                <i class="fa-solid fa-star text-[10px]"></i>
+                <span class="text-[11px] font-extrabold tracking-tight">{{ number_format($item->rating, 1) }}</span>
+            </div>
+        </div>
     </div>
 
     {{-- Info --}}

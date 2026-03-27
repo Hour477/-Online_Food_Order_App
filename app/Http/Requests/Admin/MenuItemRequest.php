@@ -27,6 +27,8 @@ class MenuItemRequest extends FormRequest
             "category_id"   => "required|exists:categories,id",
             "description"   => "nullable|string|max:1000",
             "price"         => "required|numeric|min:0",
+            "rating"        => "nullable|numeric|min:0|max:5",
+            "popularity"    => "nullable|integer|min:0",
             "status"        => "required|in:available,unavailable",
             "image"         => "nullable|image|mimes:jpeg,png,jpg,gif,webp|max:16384",
         ];

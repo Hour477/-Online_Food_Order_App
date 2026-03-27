@@ -91,7 +91,7 @@ class MenuItemController extends Controller
 
         $categories = Category::all();
         $menu_item = MenuItem::with('category')
-            ->select('id', 'name', 'description', 'price', 'status', 'image', 'category_id')
+            ->select('id', 'name', 'description', 'price', 'rating', 'popularity', 'status', 'image', 'category_id')
             ->findOrFail($id);
         return view('admin.menu_items.edit', compact('menu_item', 'categories'));
     }
