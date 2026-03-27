@@ -61,6 +61,12 @@ class AuthController extends Controller
             'email'    => $data['email'],
             'password' => Hash::make($data['password']),
             'role_id'  => $customerRoleId,
+            'state'    => 'active',
+            'city'     => null,
+            'address'  => null,
+            'image'    => null,
+            'phone'    => null,
+
         ]);
 
         Auth::login($user);

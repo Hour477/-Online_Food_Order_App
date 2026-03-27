@@ -69,7 +69,7 @@
                     <input type="password" name="password" id="password"
                            class="block w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-colors text-sm"
                            placeholder="Minimum 6 characters">
-                    <p class="mt-1 text-[12px] text-gray-500 dark:text-gray-400 ">Default: password123</p>
+                    <p class="mt-1 text-[12px] text-gray-500 dark:text-gray-400 ">Default: password123 (if left empty)</p>
                     @error('password')
                         <p class="mt-1.5 text-xs text-red-600 dark:text-red-400">{{ $message }}</p>
                     @enderror

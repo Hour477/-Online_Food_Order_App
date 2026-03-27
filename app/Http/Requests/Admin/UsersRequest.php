@@ -30,7 +30,11 @@ class UsersRequest extends FormRequest
                 'email' => 'required|email|unique:users,email,' . $userId,
                 'password' => 'nullable|min:6|confirmed',
                 'role_id' => 'required|exists:roles,id',
-                'image' => 'nullable|image|max:2048'
+                'image' => 'nullable|image|max:2048',
+                'phone' => 'nullable|string|max:15',
+                'state' => 'in:active,inactive|default:active',
+                'city' => 'nullable|string|max:255',
+                'address' => 'nullable|string|max:255',
             ];
         } else {
             // Create: Password is required
@@ -39,7 +43,11 @@ class UsersRequest extends FormRequest
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required|min:6|confirmed',
                 'role_id' => 'required|exists:roles,id',
-                'image' => 'nullable|image|max:2048'
+                'image' => 'nullable|image|max:2048',
+                'phone' => 'nullable|string|max:15',
+                'state' => 'in:active,inactive|default:active',
+                'city' => 'nullable|string|max:255',
+                'address' => 'nullable|string|max:255',
             ];
         }
     }

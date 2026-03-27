@@ -6,6 +6,7 @@ use App\Helpers\ImageHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CustomerRequest;
 use App\Models\Customer;
+use App\Models\Role;
 use App\Models\User;
 use App\Services\CustomerService;
 use Devrabiul\ToastMagic\Facades\ToastMagic;
@@ -36,19 +37,45 @@ class CustomerController extends Controller
         // 1. Set the default if 'name' is missing
         $request->mergeIfMissing(['name' => 'Walk-in']); 
 
-        $customer = $this->customerService->store($request->all());
+        // 2. Get the Customer role by slug
+        $customerRole = Role::where('slug', 'customer')->first();
+        
+        if (!$customerRole) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['role' => 'Customer role not found in database.']);
+        }
 
-        // 4. Create user with role_id = 5 (Customer)
-            $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone ?? null,
+        // 3. Create user with the Customer role
+        $user = User::create([
+            'name'     => $request->name,
+            'email'    => $request->email,
+            'phone'    => $request->phone ?? null,
             'password' => Hash::make($request->password ?? 'password123'),
-            'role_id' => $customer->role_id, // Customer role
-            'image' => $customer->image,
+            'role_id'  => $customerRole->id,
+            'state'    => $request->state ?? 'active',
+            'city'     => $request->city ?? '',
+            'address'  => $request->address ?? '',
+            'image'    => null,
         ]);
 
-      
+        // 4. Prepare customer data with image
+        $customerData = [
+            'user_id' => $user->id,
+            'name'    => $request->name,
+            'email'   => $request->email ?? null,
+            'phone'   => $request->phone ?? null,
+            'address' => $request->address ?? null,
+            'city'    => $request->city ?? null,
+        ];
+
+        // 5. Handle image upload for customer
+        if ($request->hasFile('image')) {
+            $customerData['image'] = ImageHelper::upload($request->file('image'), 'customers');
+        }
+
+        // 6. Create customer linked to the user
+        $customer = Customer::create($customerData);
 
         return redirect()->route('admin.customers.index')
             ->with('success', 'Customer created successfully!');

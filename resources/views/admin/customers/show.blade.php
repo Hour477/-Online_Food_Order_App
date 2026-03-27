@@ -33,8 +33,8 @@
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
                 <div class="p-6 text-center">
                     <div class="relative inline-block mb-4">
-                        <img src="{{ $customer->user->display_image }}" 
-                             alt="{{ $customer->name }}" 
+                        <img src="{{ $customer->user?->display_image ?? asset('assets/img/placeholder.png') }}" 
+                             alt="{{ $customer->user?->name ?? 'N/A' }}" 
                              class="w-32 h-32 rounded-2xl border-4 border-amber-50 dark:border-amber-900/20 shadow-sm object-cover">
                     </div>
                     <h4 class="text-xl font-bold text-gray-900 dark:text-white">{{ $customer->name }}</h4>

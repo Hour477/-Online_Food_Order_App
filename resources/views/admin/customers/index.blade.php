@@ -68,7 +68,7 @@
                     <a href="{{ route('admin.customers.show', $customer->id) }}">
                         <div class="flex items-center">
                             <div class="flex-shrink-0 h-12 w-12">
-                                <img src="{{ $customer->user->display_image }}" alt="{{ $customer->name }}" class="w-full h-full rounded-full object-cover border-amber-600">
+                                <img src="{{ $customer->user?->display_image ?? asset('assets/img/placeholder.png') }}" alt="{{ $customer->name }}" class="w-full h-full rounded-full object-cover border-amber-600">
                             </div>
                             <div class="ml-4">
                                 <div class="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">

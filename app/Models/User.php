@@ -49,6 +49,9 @@ class User extends Authenticatable
         'role_id',
         'image',
         'phone',
+        'state',
+        'address',
+        'city',
     ];
 
      public function getDisplayImageAttribute()

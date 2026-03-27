@@ -37,6 +37,11 @@ class UserServices
             'password' => $data['password'],
             'role_id' => $data['role_id'] ?? null,
             'image' => $data['image'] ?? null,
+            'phone' => $data['phone'] ?? null,
+            'state' => $data['state'] ?? 'active',
+            'city' => $data['city'] ?? null,
+            'address' => $data['address'] ?? null,
+            
         ]);
         
 

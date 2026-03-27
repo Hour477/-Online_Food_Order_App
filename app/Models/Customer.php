@@ -21,7 +21,10 @@ class Customer extends Model
     ];
     public function getDisplayImageAttribute()
     {
-        return DisplayImageHelper::get($this->image, 'assets/img/placeholder.png');
+        if ($this->user) {
+            return $this->user->display_image;
+        }
+        return DisplayImageHelper::get(null, 'assets/img/placeholder.png');
     }
 
     public function orders(){

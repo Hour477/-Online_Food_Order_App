@@ -22,14 +22,17 @@ class CustomerRequest extends FormRequest
     public function rules(): array
     {   
         $customer = $this->route('customer');
+        $userId = $customer ? $customer->user_id : null;
 
         return [
-            'name'  => 'required|string|max:255',
-            'email' => 'nullable|email|max:255|unique:users,email,' . $customer->user_id,
-            'phone' => 'nullable|string|max:20',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
-            'address' => 'nullable|string|max:255',
-            'city' => 'nullable|string|max:255',
+            'name'     => 'required|string|max:255',
+            'email'    => 'nullable|email|max:255|unique:users,email,' . $userId,
+            'phone'    => 'nullable|string|max:20',
+            'password' => 'nullable|min:6|max:255',
+            'state'    => 'nullable|string|max:255',
+            'address'  => 'nullable|string|max:255',
+            'city'     => 'nullable|string|max:255',
+            'image'    => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
         ];
     }
 

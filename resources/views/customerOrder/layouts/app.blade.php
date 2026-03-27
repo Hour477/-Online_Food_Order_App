@@ -112,15 +112,9 @@
             <a href="{{ route('customerOrder.menu.index') }}" class="flex items-center gap-2 touch-target" aria-label="{{ $sidebarName }} Home">
                 @if($sidebarLogoUrl)
                 <img src="{{ $sidebarLogoUrl }}"
-                    class="h-10 w-10 rounded-lg object-contain bg-gray-100 p-1 flex-shrink-0">
+                    class="h-10 w-10 rounded-lg object-cover p-1 flex-shrink-0">
             @else
-                <div class="h-10 w-10 rounded-lg bg-amber-600 flex items-center justify-center flex-shrink-0">
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                        <circle cx="12" cy="12" r="4.5"></circle>
-                        <path d="M5 4v7m0 0a2 2 0 002 2M5 11a2 2 0 01-2-2V4"></path>
-                        <path d="M18 4v7a2 2 0 01-2 2"></path>
-                    </svg>
-                </div>
+                
             @endif
             <p class="text-2xl font-bold text-gray-900 hidden sm:block">{{ $sidebarName }}</p>
 
