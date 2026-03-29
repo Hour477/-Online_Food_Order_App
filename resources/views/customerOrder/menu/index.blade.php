@@ -156,10 +156,7 @@
     </div>
     @endif
     
-    {{-- Decorative Elements --}}
-    <div class="absolute bottom-0 left-0 right-0 h-24 z-10"></div>
-    
-    {{-- Floating Food Images --}}
+ 
     
 </section>
 
@@ -745,6 +742,11 @@ function showNoMoreItems() {
 
 {{-- Custom CSS for Animations --}}
 <style>
+/* Smooth scrolling for entire page */
+html {
+    scroll-behavior: smooth;
+}
+
 .animate-kenburns {
     animation: kenburns 20s ease-in-out infinite alternate;
 }
@@ -793,6 +795,36 @@ function showNoMoreItems() {
 
 .floating-food:hover {
     transform: scale(1.1) translateY(-5px);
+}
+
+/* Smooth button animation */
+.group { 
+    position: relative;
+    overflow: hidden;
+}
+
+.group::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+}
+
+.group:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.group i,
+.group span {
+    position: relative;
+    z-index: 1;
 }
 </style>
 @endpush

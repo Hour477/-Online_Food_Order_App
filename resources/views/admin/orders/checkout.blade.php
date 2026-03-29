@@ -1,14 +1,14 @@
 
 
-
-@extends('layouts.admin')
+@extends('admin.layouts.app')
+@section('title', 'Checkout')
 
 @section('content')
 <div class="container-fluid px-4">
     <h1 class="mt-4">Checkout</h1>
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-        <li class="breadcrumb-item"><a href="{{ route('admin.orders.index') }}">Orders</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('admin.orders.all') }}">Orders</a></li>
         <li class="breadcrumb-item active">Checkout</li>
     </ol>
 

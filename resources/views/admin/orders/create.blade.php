@@ -1,7 +1,9 @@
 @extends('admin.layouts.app')
+@section('title', 'Create Order')
 
+@section('content')
 @push('styles')
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
 <style>
     .select2-container--default .select2-selection--single {
         border: 1px solid #e5e7eb !important;
@@ -64,19 +66,21 @@
 <div class="mx-auto">
 
     {{-- Header --}}
-    <div class="mb-8 flex items-center justify-between">
-        <div>
+<div class="mb-8 flex items-center justify-between">
+    <div>
+        <div class="flex items-center gap-2 mb-1">
+            <span class="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center">
+                <i class="fas fa-plus text-amber-600 text-sm"></i>
+            </span>
             <h3 class="text-2xl font-bold text-gray-900 dark:text-white">New Order</h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Select items, add to cart, and place the order</p>
         </div>
-        <a href="{{ route('admin.orders.index') }}"
-           class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white flex items-center gap-1 transition-colors">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            Back to Orders
-        </a>
+        <p class="text-sm text-gray-500 dark:text-gray-400 ml-10">Select items, add to cart, and place the order</p>
     </div>
+    <a href="{{ route('admin.orders.all') }}"
+       class="inline-flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 hover:text-amber-600 dark:hover:text-amber-400 font-medium transition-colors bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 shadow-sm hover:shadow">
+        <i class="fas fa-arrow-left text-xs"></i> Back
+    </a>
+</div>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
@@ -84,79 +88,93 @@
         <div class="lg:col-span-8 space-y-6">
 
             {{-- Search Bar --}}
-            <div class="relative">
-                <input id="search-dishes" type="text"
-                       placeholder="Search for dishes..."
-                       class="w-full pl-12 pr-5 py-3 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition shadow-sm">
-                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <svg class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
+        <div class="relative">
+            <input id="search-dishes" type="text"
+                   placeholder="Search for dishes, drinks…"
+                   class="w-full pl-12 pr-5 py-3.5 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-2xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition shadow-sm text-sm">
+            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <i class="fas fa-search text-gray-400"></i>
+            </div>
+            <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                <kbd class="hidden sm:inline text-[10px] text-gray-300 dark:text-gray-600 border border-gray-200 dark:border-gray-700 rounded px-1.5 py-0.5">⌘K</kbd>
+            </div>
+        </div>
+
+        {{-- Categories Tabs --}}
+        <div class="flex flex-wrap gap-2 pb-4 border-b border-gray-200 dark:border-gray-700 overflow-x-auto">
+            <button data-category="all"
+                    class="category-tab px-4 py-2 rounded-full font-semibold text-xs transition-all bg-amber-500 text-white shadow-md shadow-amber-200 dark:shadow-amber-900/40 scale-105">
+                <i class="fas fa-th-large mr-1"></i> All
+            </button>
+            @foreach($categories as $category)
+            <button data-category="{{ $category->id }}"
+                    class="category-tab px-4 py-2 rounded-full font-semibold text-xs transition-all text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-amber-50 dark:hover:bg-amber-900/20 border border-gray-200 dark:border-gray-700 hover:border-amber-300 hover:text-amber-600">
+                {{ $category->name }}
+            </button>
+            @endforeach
+            <button data-category="null"
+                    class="category-tab px-4 py-2 rounded-full font-semibold text-xs transition-all text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-amber-50 dark:hover:bg-amber-900/20 border border-gray-200 dark:border-gray-700 hover:border-amber-300 hover:text-amber-600">
+                <i class="fas fa-question-circle mr-1"></i> Uncategorized
+            </button>
+        </div>
+
+        {{-- Menu Items Grid --}}
+        <div id="menu-items" class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
+            @forelse($menuItems as $item)
+            <div class="menu-item group relative bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden transition-all duration-200 hover:shadow-lg hover:-translate-y-1 cursor-pointer"
+                 data-category="{{ $item->category_id ?? 'null' }}"
+                 onclick="this.querySelector('.add-to-cart-btn').click()">
+
+                {{-- Image --}}
+                <div class="relative h-36 bg-gray-100 dark:bg-gray-700 overflow-hidden">
+                    <img src="{{ $item->display_image }}" alt="{{ $item->name }}"
+                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    {{-- Hover overlay --}}
+                    <div class="absolute inset-0 bg-amber-600/80 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+                        <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-lg">
+                            <i class="fas fa-plus text-amber-600 text-lg"></i>
+                        </div>
+                    </div>
+                    {{-- Rating badge --}}
+                    @if($item->rating > 0)
+                    <div class="absolute top-2 left-2 flex items-center gap-0.5 bg-black/50 backdrop-blur-sm text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                        <i class="fas fa-star text-amber-400 text-[8px]"></i> {{ number_format($item->rating, 1) }}
+                    </div>
+                    @endif
+                    {{-- Category badge --}}
+                    @if($item->category)
+                    <div class="absolute top-2 right-2 bg-amber-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full truncate max-w-[70px]">
+                        {{ $item->category->name }}
+                    </div>
+                    @endif
+                </div>
+
+                {{-- Info --}}
+                <div class="p-3">
+                    <h3 class="font-bold text-sm text-gray-900 dark:text-white line-clamp-1">{{ $item->name }}</h3>
+                    <p class="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5 line-clamp-1">
+                        {{ Str::limit($item->description ?? 'Signature dish', 38) }}
+                    </p>
+                    <div class="mt-2.5 flex items-center justify-between">
+                        <span class="text-base font-black text-amber-600">${{ number_format($item->price, 2) }}</span>
+                        <button type="button"
+                                class="add-to-cart-btn w-7 h-7 rounded-full bg-amber-500 hover:bg-amber-600 text-white flex items-center justify-center shadow transition-all hover:scale-110 active:scale-95"
+                                data-id="{{ $item->id }}"
+                                data-name="{{ addslashes($item->name) }}"
+                                data-price="{{ $item->price }}"
+                                onclick="event.stopPropagation()">
+                            <i class="fas fa-plus text-xs"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
-
-            {{-- Categories Tabs --}}
-            <div class="flex flex-wrap gap-3 pb-4 border-b border-gray-200 dark:border-gray-700 overflow-x-auto">
-                <button data-category="all"
-                        class="category-tab px-5 py-2.5 rounded-full font-medium text-sm transition-all bg-amber-600 text-white shadow-md">
-                    All Items
-                </button>
-
-                @foreach($categories as $category)
-                    <button data-category="{{ $category->id }}"
-                            class="category-tab px-5 py-2.5 rounded-full font-medium text-sm transition-all text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600">
-                        {{ $category->name }}
-                    </button>
-                @endforeach
+            @empty
+            <div class="col-span-full flex flex-col items-center justify-center py-20 text-gray-400">
+                <i class="fas fa-utensils text-5xl mb-4 text-gray-200 dark:text-gray-700"></i>
+                <p class="text-lg font-semibold">No menu items available</p>
             </div>
-
-            {{-- Menu Items Grid --}}
-            <div id="menu-items" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-                @forelse($menuItems as $item)
-                    <div class="menu-item bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-[1.02] group"
-                         data-category="{{ $item->category_id }}">
-
-                        {{-- Image --}}
-                        <div class="h-40 bg-gray-100 dark:bg-gray-700 relative overflow-hidden">
-                            <img src="{{ $item->display_image }}" alt="{{ $item->name }}"
-                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        </div>
-
-                        {{-- Info --}}
-                        <div class="p-4">
-                            <h3 class="font-semibold text-sm text-gray-900 dark:text-white line-clamp-1">
-                                {{ $item->name }}
-                            </h3>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2 min-h-8">
-                                {{ Str::limit($item->description ?? 'Delicious signature dish', 50) }}
-                            </p>
-
-                            <div class="mt-3 flex items-center justify-between">
-                                <div class="text-lg font-bold text-amber-600">
-                                    ${{ number_format($item->price, 2) }}
-                                </div>
-
-                                <button type="button"
-                                        class="add-to-cart-btn px-3 py-2 bg-amber-600 hover:bg-amber-700 text-white text-xs font-medium rounded-lg shadow-sm transition-all transform hover:scale-105 active:scale-95"
-                                        data-id="{{ $item->id }}"
-                                        data-name="{{ addslashes($item->name) }}"
-                                        data-price="{{ $item->price }}">
-                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                @empty
-                    <div class="col-span-full text-center py-16 text-gray-500 dark:text-gray-400">
-                        <svg class="w-16 h-16 mx-auto text-gray-300 dark:text-gray-600 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                        </svg>
-                        <p class="text-lg">No menu items available</p>
-                    </div>
-                @endforelse
-            </div>
+            @endforelse
+        </div>
         </div>
 
         {{-- RIGHT SIDE: Cart (sticky) --}}
@@ -167,8 +185,8 @@
     </div>
 </div>
 
-{{-- Hidden form for submitting the order --}}
-<form id="order-form" action="{{ route('admin.orders.store') }}" method="POST" class="hidden">
+{{-- Hidden form for submitting the order (opens in new tab) --}}
+<form id="order-form" action="{{ route('admin.orders.store') }}" method="POST" class="hidden" target="_blank">
     @csrf
     <input type="hidden" name="total_amount" id="total_amount_hidden" value="0">
 </form>
@@ -212,7 +230,7 @@ function renderCart() {
     if (cart.length === 0) {
         cartContainer.innerHTML = `
             <div class="text-center py-8 text-gray-500 dark:text-gray-400">
-                <svg class="w-12 h-12 mx-auto text-gray-300 dark:text-gray-600 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg class="w-12 h-12 mx-auto dark:text-gray-600 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
                 <p class="text-sm font-medium">Your cart is empty</p>
@@ -236,29 +254,21 @@ function renderCart() {
         subtotal += itemTotal;
 
         const itemRow = document.createElement('div');
-        itemRow.className = 'flex justify-between items-center bg-gray-50 dark:bg-gray-900 p-3 rounded-lg border border-gray-200 dark:border-gray-700';
+        itemRow.className = 'flex items-center gap-3 bg-gray-50 dark:bg-gray-900/60 p-3 rounded-xl border border-gray-100 dark:border-gray-700 group';
         itemRow.innerHTML = `
             <div class="flex-1 min-w-0">
-                <div class="font-medium text-gray-900 dark:text-white text-sm truncate">
-                    ${item.name}
-                </div>
-                <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                    $${item.price.toFixed(2)} × ${item.quantity}
-                </div>
+                <p class="font-semibold text-gray-900 dark:text-white text-sm truncate">${item.name}</p>
+                <p class="text-xs text-gray-400 mt-0.5">$${item.price.toFixed(2)} each</p>
             </div>
-
-            <div class="flex items-center gap-3">
-                <div class="flex items-center gap-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-2 py-1">
-                    <button type="button" class="text-gray-600 dark:text-gray-400 hover:text-amber-600 text-sm font-bold decrease-qty" data-index="${index}">−</button>
-                    <span class="w-6 text-center font-medium text-sm text-gray-900 dark:text-white">${item.quantity}</span>
-                    <button type="button" class="text-gray-600 dark:text-gray-400 hover:text-amber-600 text-sm font-bold increase-qty" data-index="${index}">+</button>
-                </div>
-                <button type="button" class="text-red-500 hover:text-red-700 text-xs font-medium remove-item" data-index="${index}">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                </button>
+            <div class="flex items-center gap-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-1.5 py-1">
+                <button type="button" class="decrease-qty w-5 h-5 flex items-center justify-center rounded text-gray-500 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/30 transition text-sm font-bold" data-index="${index}">−</button>
+                <span class="w-6 text-center text-sm font-bold text-gray-900 dark:text-white">${item.quantity}</span>
+                <button type="button" class="increase-qty w-5 h-5 flex items-center justify-center rounded text-gray-500 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/30 transition text-sm font-bold" data-index="${index}">+</button>
             </div>
+            <span class="text-xs font-bold text-amber-600 w-14 text-right">$${itemTotal.toFixed(2)}</span>
+            <button type="button" class="remove-item w-6 h-6 flex items-center justify-center rounded-full text-gray-300 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition opacity-0 group-hover:opacity-100" data-index="${index}">
+                <svg class="w-3.5 h-3.5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
         `;
         cartContainer.appendChild(itemRow);
     });
@@ -299,12 +309,14 @@ if (document.querySelectorAll('.category-tab').length) {
     document.querySelectorAll('.category-tab').forEach(tab => {
         tab.addEventListener('click', function() {
             document.querySelectorAll('.category-tab').forEach(t => {
-                t.classList.remove('bg-amber-600', 'text-white', 'shadow-md');
-                t.classList.add('text-gray-700', 'dark:text-gray-300', 'hover:bg-gray-200', 'dark:hover:bg-gray-700', 'border', 'border-gray-300', 'dark:border-gray-600');
+                t.classList.remove('bg-amber-500', 'text-white', 'shadow-md', 'shadow-amber-200', 'scale-105');
+                t.classList.add('text-gray-600', 'dark:text-gray-300', 'bg-white', 'dark:bg-gray-800',
+                    'border', 'border-gray-200', 'hover:bg-amber-50', 'hover:border-amber-300', 'hover:text-amber-600');
             });
 
-            this.classList.add('bg-amber-600', 'text-white', 'shadow-md');
-            this.classList.remove('text-gray-700', 'dark:text-gray-300', 'hover:bg-gray-200', 'dark:hover:bg-gray-700', 'border', 'border-gray-300', 'dark:border-gray-600');
+            this.classList.add('bg-amber-500', 'text-white', 'shadow-md', 'scale-105');
+            this.classList.remove('text-gray-600', 'dark:text-gray-300', 'bg-white', 'dark:bg-gray-800',
+                'border', 'border-gray-200', 'hover:bg-amber-50', 'hover:border-amber-300', 'hover:text-amber-600');
 
             const category = this.dataset.category;
             document.querySelectorAll('.menu-item').forEach(item => {
@@ -494,6 +506,11 @@ orderTypeSelect?.addEventListener('change', updateFieldsForOrderType);
 
 // Submit handler for place order button
 placeOrderBtn?.addEventListener('click', () => {
+    if (paymentMethodEl?.value === 'khqr') {
+        window.location.href = '{{ route('admin.orders.qr') }}';
+        return;
+    }
+
     const orderFormEl = document.getElementById('order-form');
     if (!orderFormEl) return;
 
@@ -578,6 +595,14 @@ placeOrderBtn?.addEventListener('click', () => {
         if (typeof submitFormHandler === 'function') submitFormHandler();
         orderFormEl.submit();
     }
+
+    // Immediately clear cart on the POS page for the next order
+    cart = [];
+    saveCart();
+    renderCart();
+    
+    // Optional: focus back on search
+    document.getElementById('search-dishes')?.focus();
 });
 </script>
 @endpush

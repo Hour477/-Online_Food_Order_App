@@ -93,8 +93,12 @@ Route::prefix('checkout')->name('customerOrder.checkout.')->middleware('auth')->
 });
 
 Route::get('/orders/history', [customerOrderController::class, 'history'])
-    ->middleware('auth')                                      // ← only logged-in customers
+    ->middleware('auth')
     ->name('customerOrder.orders.history');
+
+Route::get('/orders/{order}/rate', [customerOrderController::class, 'showRatePage'])
+    ->middleware('auth')
+    ->name('customerOrder.orders.rate.page');
 
 Route::post('/orders/rate', [customerOrderController::class, 'rate'])
     ->middleware('auth')
@@ -131,6 +135,14 @@ Route::middleware(['auth', 'role:admin'])
         Route::resource('customers',    CustomerController::class);
         Route::put('/customers/{id}', [CustomerController::class, 'update'])->name('admin.customers.update');
 
+        Route::get('orders/all', [AdminOrderController::class, 'index'])->name('orders.all');
+        Route::get('orders/qr', [AdminOrderController::class, 'createKhqr'])->name('orders.qr');
+        Route::get('orders/pending', [AdminOrderController::class, 'pending'])->name('orders.pending');
+        Route::get('orders/confirmed', [AdminOrderController::class, 'confirmed'])->name('orders.confirmed');
+        
+        Route::get('orders/completed', [AdminOrderController::class, 'completed'])->name('orders.completed');
+        Route::get('orders/refunded', [AdminOrderController::class, 'refunded'])->name('orders.refunded');
+        Route::get('orders/cancelled', [AdminOrderController::class, 'cancelled'])->name('orders.cancelled');
         Route::resource('orders', AdminOrderController::class);
         Route::post('orders/{order}/checkout', [AdminOrderController::class, 'checkout'])->name('orders.checkout');
         Route::post('orders/{order}/payment', [AdminOrderController::class, 'processPayment'])->name('orders.payment');
@@ -168,6 +180,7 @@ Route::middleware(['auth', 'role:admin'])
         });
 
         Route::resource('payment', PaymentController::class);
+        Route::patch('payment/{payment}/status', [PaymentController::class, 'updateStatus'])->name('payment.update-status');
         Route::resource('settings', SettingController::class);
         Route::resource('banners', BannerController::class);
         Route::get('banners/{id}/toggle-status', [BannerController::class, 'toggleStatus'])->name('banners.toggle-status');

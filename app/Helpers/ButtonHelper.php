@@ -23,12 +23,12 @@ if (!function_exists('action_btn_icon')) {
     function action_btn_icon(string $type = 'view'): string
     {
         return match ($type) {
-            'view'   => 'fas fa-eye text-lg',
-            'edit'   => 'fas fa-edit text-lg',
-            'delete' => 'fas fa-trash-alt text-lg',
-            'status_on'  => 'fas fa-toggle-on text-lg', 
-            'status_off' => 'fas fa-toggle-off text-lg',
-            default  => 'fas fa-eye text-lg',
+            'view'   => 'fa fa-regular fa-eye text-lg',
+            'edit'   => 'fa-solid fa-edit text-lg',
+            'delete' => 'fa-solid fa-trash-alt text-lg',
+            'status_on'  => 'fa-solid fa-toggle-on text-lg', 
+            'status_off' => 'fa-solid fa-toggle-off text-lg',
+            default  => 'fa fa-regular fa-eye text-lg',
         };
     }
 }

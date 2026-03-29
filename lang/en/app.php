@@ -2,7 +2,7 @@
 
 return [
     // General
-    'site_name' => 'Restaurant Ordering System',
+    'site_name' => 'Food Online Order App',
     'welcome' => 'Welcome',
     'loading' => 'Loading...',
     'loading_more' => 'Loading more items',
@@ -131,10 +131,10 @@ return [
     'customer_info' => 'Customer Information',
     'payment_method' => 'Payment Method',
     'payment' => 'Payment',
-    'cash' => 'Cash',
+    'cash' => 'Cash On Delivery',
     'cash_description' => 'Pay in cash when your order arrives',
     'khqr' => 'KHQR Payment',
-    'khqr_description' => 'Scan QR code with banking app',
+    'khqr_description' => 'Scan KHQR code with banking app',
     'place_order' => 'Place Order',
     'order_placed' => 'Order Placed Successfully!',
     'order_confirmation' => 'Order Confirmation',
@@ -144,9 +144,9 @@ return [
     'street_address' => 'Street Address',
     'address_placeholder' => '123 Main Street, Apt 4B',
     'city' => 'City',
-    'zip_code' => 'ZIP Code',
+    // 'zip_code' => 'ZIP Code',
     'delivery_notes' => 'Delivery Notes (optional)',
-    'notes_placeholder' => 'Ring doorbell, leave at door…',
+    'notes_placeholder' => 'leave at door…',
     'secure_checkout' => 'Secure checkout — your data is protected',
 
     // Order Confirmation
@@ -256,9 +256,8 @@ return [
     'payment_cash' => 'Cash',
     'payment_card' => 'Card',
     'payment_khqr' => 'KHQR',
-    'payment_aba' => 'ABA',
-    'payment_qr' => 'QR Code',
-    'payment_failed' => 'Failed',
+    
+    
     'payment_refunded' => 'Refunded',
     'all_payments' => 'All Payments',
     'waiting_payment' => 'Waiting Payment',
@@ -329,7 +328,18 @@ return [
     'rate' => 'Rate',
     'rate_item' => 'Rate Item',
     'how_was_your' => 'How was your',
-    'write_review' => 'Write a review (optional)',
+    'write_review' => 'Write a Review',
     'submit_review' => 'Submit Review',
+    'update_review' => 'Update Review',
     'thank_you_rating' => 'Thank you for your rating!',
+    'rate_your_order' => 'Rate Your Order',
+    'order' => 'Order',
+    'all_items_rated' => 'All items rated!',
+    'optional' => 'optional',
+    'share_your_experience' => 'Share your experience…',
+    'back_to_orders' => 'Back to Orders',
+    'order_more' => 'Order More',
+
+    // estimated_delivery_time
+    'estimated_delivery_time'=> '10-30 minutes',
 ];

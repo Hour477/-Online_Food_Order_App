@@ -1,4 +1,5 @@
 @extends('admin.layouts.app')
+@section('title', 'Dashboard')
 
 @section('content')
 <div class="mx-auto">
@@ -10,7 +11,7 @@
                 <h1 class="text-3xl font-bold text-gray-900 tracking-tight">
                     {{ __('app.dashboard') }}
                 </h1>
-                <p class="mt-2 text-gray-600">
+                <p class="mt-2 ">
                     {{ now()->format('l, d F Y') }} • Quick overview of your restaurant's performance
                 </p>    
             </div>
@@ -47,7 +48,7 @@
                             Total Revenue: <span class="font-semibold text-emerald-600">${{ number_format($incomeToday ?? 0, 2) }}</span>
                         </p>
                     </div>
-                    <div class="p-4 bg-indigo-100 rounded-xl group-hover:scale-125 group-hover:rotate-6 transition-all duration-300">
+                    <div class="p-4 bg-indigo-100 rounded-lg group-hover:scale-125 group-hover:rotate-6 transition-all duration-300">
                         <i class="fas fa-shopping-bag text-4xl text-indigo-600"></i>
                     </div>
                 </div>
@@ -69,7 +70,7 @@
                             Revenue: <span class="font-semibold text-emerald-600">${{ number_format($totalRevenue ?? 0, 2) }}</span>
                         </p>
                     </div>
-                    <div class="p-4 bg-indigo-100 rounded-xl group-hover:scale-125 group-hover:rotate-6 transition-all duration-300">
+                    <div class="p-4 bg-indigo-100 rounded-lg group-hover:scale-125 group-hover:rotate-6 transition-all duration-300">
                         <i class="fas fa-receipt text-4xl text-indigo-600"></i>
                     </div>
                 </div>
@@ -91,7 +92,7 @@
                             Menu Items: <span class="font-semibold text-indigo-600">{{ $totalMenuItems ?? 0 }}</span>
                         </p>
                     </div>
-                    <div class="p-4 bg-emerald-100 rounded-xl group-hover:scale-125 group-hover:rotate-6 transition-all duration-300">
+                    <div class="p-4 bg-emerald-100 rounded-lg group-hover:scale-125 group-hover:rotate-6 transition-all duration-300">
                         <i class="fas fa-users text-4xl text-emerald-600"></i>
                     </div>
                 </div>
@@ -115,7 +116,7 @@
                             Needs attention
                         </p>
                     </div>
-                    <div class="p-4 bg-rose-100 rounded-xl group-hover:scale-125 group-hover:rotate-6 transition-all duration-300">
+                    <div class="p-4 bg-rose-100 rounded-lg group-hover:scale-125 group-hover:rotate-6 transition-all duration-300">
                         <i class="fas fa-clock text-4xl text-rose-600"></i>
                     </div>
                 </div>
@@ -134,7 +135,7 @@
                     <i class="fas fa-receipt text-indigo-600"></i>
                     Recent Orders
                 </h2>
-                <a href="{{ route('admin.orders.index') }}" class="text-sm text-amber-600 hover:text-amber-700 font-medium">
+                <a href="{{ route('admin.orders.all') }}" class="text-sm text-amber-600 hover:text-amber-700 font-medium">
                     View All →
                 </a>
             </div>
@@ -143,7 +144,7 @@
                 <div class="space-y-4">
                     @foreach($recentOrders as $order)
                         <a href="{{ route('admin.orders.show', $order->id) }}" 
-                           class="block p-4 rounded-xl border border-gray-100 hover:border-amber-300 hover:bg-amber-50 transition-all">
+                           class="block p-4 rounded-lg border border-gray-100 hover:border-amber-300 hover:bg-amber-50 transition-all">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-3">
                                     <div class="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
@@ -229,28 +230,28 @@
         </h2>
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
             <a href="{{ route('admin.orders.create') }}"
-               class="flex flex-col items-center justify-center p-4 bg-white rounded-xl hover:bg-indigo-50 transition group hover:shadow-lg hover:-translate-y-1">
+               class="flex flex-col items-center justify-center p-4 bg-white rounded-lg hover:bg-indigo-50 transition group hover:shadow-lg hover:-translate-y-1">
                 <i class="fas fa-plus-circle text-3xl text-indigo-600 mb-2 group-hover:scale-110 transition-all"></i>
                 <span class="text-sm font-medium text-gray-700">New Order</span>
             </a>
             <a href="{{ route('admin.menu_items.index') }}"
-               class="flex flex-col items-center justify-center p-4 bg-white rounded-xl hover:bg-emerald-50 transition group hover:shadow-lg hover:-translate-y-1">
+               class="flex flex-col items-center justify-center p-4 bg-white rounded-lg hover:bg-emerald-50 transition group hover:shadow-lg hover:-translate-y-1">
                 <i class="fas fa-utensils text-3xl text-emerald-600 mb-2 group-hover:scale-110 transition-all"></i>
                 <span class="text-sm font-medium text-gray-700">Menu Items</span>
             </a>
             <a href="{{ route('admin.categories.index') }}"
-               class="flex flex-col items-center justify-center p-4 bg-white rounded-xl hover:bg-blue-50 transition group hover:shadow-lg hover:-translate-y-1">
+               class="flex flex-col items-center justify-center p-4 bg-white rounded-lg hover:bg-blue-50 transition group hover:shadow-lg hover:-translate-y-1">
                 <i class="fas fa-tags text-3xl text-blue-600 mb-2 group-hover:scale-110 transition-all"></i>
                 <span class="text-sm font-medium text-gray-700">Categories</span>
             </a>
             
             <a href="{{ route('admin.customers.index') }}"
-               class="flex flex-col items-center justify-center p-4 bg-white rounded-xl hover:bg-pink-50 transition group hover:shadow-lg hover:-translate-y-1">
+               class="flex flex-col items-center justify-center p-4 bg-white rounded-lg hover:bg-pink-50 transition group hover:shadow-lg hover:-translate-y-1">
                 <i class="fas fa-users text-3xl text-pink-600 mb-2 group-hover:scale-110 transition-all"></i>
                 <span class="text-sm font-medium text-gray-700">Customers</span>
             </a>
             <a href="{{ route('admin.reports.index') }}"
-               class="flex flex-col items-center justify-center p-4 bg-white rounded-xl hover:bg-purple-50 transition group hover:shadow-lg hover:-translate-y-1">
+               class="flex flex-col items-center justify-center p-4 bg-white rounded-lg hover:bg-purple-50 transition group hover:shadow-lg hover:-translate-y-1">
                 <i class="fas fa-chart-line text-3xl text-purple-600 mb-2 group-hover:scale-110 transition-all"></i>
                 <span class="text-sm font-medium text-gray-700">Reports</span>
             </a>

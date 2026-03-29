@@ -7,6 +7,7 @@ use App\Models\Banner;
 use Devrabiul\ToastMagic\Facades\ToastMagic;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Helpers\ImageHelper;
 
 class BannerController extends Controller
 {
@@ -57,10 +58,7 @@ class BannerController extends Controller
 
         // Handle image upload
         if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $filename = time() . '_' . preg_replace('/[^A-Za-z0-9\.\-_]/', '_', $file->getClientOriginalName());
-            $path = $file->storeAs('banners', $filename, 'public');
-            $validated['image'] = $path;
+            $validated['image'] = ImageHelper::upload($request->file('image'), 'banners');
         }
 
         // Set default is_active if not provided
@@ -95,15 +93,7 @@ class BannerController extends Controller
 
         // Handle image upload
         if ($request->hasFile('image')) {
-            // Delete old image
-            if ($banner->image && Storage::disk('public')->exists($banner->image)) {
-                Storage::disk('public')->delete($banner->image);
-            }
-
-            $file = $request->file('image');
-            $filename = time() . '_' . preg_replace('/[^A-Za-z0-9\.\-_]/', '_', $file->getClientOriginalName());
-            $path = $file->storeAs('banners', $filename, 'public');
-            $validated['image'] = $path;
+            $validated['image'] = ImageHelper::update($request->file('image'), $banner->image, 'banners');
         }
 
         // Handle is_active checkbox

@@ -10,7 +10,7 @@
 
 [theme="dark"] {
     --cc-card-bg-color: #161a1c;
-    --cc-card-text-color: #f0f0f0;
+    --cc-card-text-color: #ffffff;
     --cc-button-bg-color-rgb: 194, 208, 224;
     --cc-button-text-color: #161a1c;
 }
@@ -22,7 +22,7 @@
     --cc-button-bg-color-rgb: 37, 99, 235; /* blue-600 */
     --cc-button-text-color: #ffffff;
 
-    --cc-border-color: #e5e7eb;
+    --cc-border-color: #ffffff;
 }
 
 [cookie-consent-theme-preset="trust-green"] {

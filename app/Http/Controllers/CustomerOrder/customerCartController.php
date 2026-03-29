@@ -5,6 +5,9 @@ namespace App\Http\Controllers\CustomerOrder;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\MenuItem;
+use App\Models\Order;
+use App\Models\Customer;
+use Illuminate\Support\Facades\Auth;
 
 class customerCartController extends Controller
 {
@@ -87,16 +90,46 @@ class customerCartController extends Controller
 
     public function reorder(Request $request)
     {
-        $orders  = session('orders', []);
-        $orderId = $request->order_id;
-        $order   = collect($orders)->firstWhere('id', $orderId);
+        $request->validate(['order_id' => 'required|integer|exists:orders,id']);
 
-        if (!$order) return back()->with('error', 'Order not found.');
+        $customer = Customer::where('user_id', Auth::id())->first();
 
-        $cart = [];
-        foreach ($order['items'] as $item) {
-            $cart[$item['id']] = $item;
+        if (!$customer) {
+            return back()->with('error', 'Customer record not found.');
         }
+
+        // Load the order from DB, verifying it belongs to this customer
+        $order = Order::with('orderItems.menuItem')
+            ->where('id', $request->order_id)
+            ->where('customer_id', $customer->id)
+            ->where('status', 'completed')
+            ->first();
+
+        if (!$order) {
+            return back()->with('error', 'Order not found or cannot be reordered.');
+        }
+
+        $cart = session('cart', []);
+        foreach ($order->orderItems as $item) {
+            $menuItem = $item->menuItem;
+            if (!$menuItem) continue;
+
+            $id = $menuItem->id;
+            if (isset($cart[$id])) {
+                $cart[$id]['qty'] = min(99, $cart[$id]['qty'] + $item->quantity);
+            } else {
+                $cart[$id] = [
+                    'id'            => $menuItem->id,
+                    'name'          => $menuItem->name,
+                    'price'         => $menuItem->price,
+                    'image'         => $menuItem->image,
+                    'display_image' => $menuItem->display_image,
+                    'category'      => $menuItem->category?->name ?? '',
+                    'qty'           => $item->quantity,
+                ];
+            }
+        }
+
         session(['cart' => $cart]);
         return redirect()->route('customerOrder.cart.index')->with('success', 'Items added to your basket!');
     }

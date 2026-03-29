@@ -1,4 +1,5 @@
 @extends('admin.layouts.app')
+@section('title', 'Order Reports')
 
 @section('content')
 <div class="mx-auto">
@@ -24,7 +25,7 @@
     {{-- Order Type Breakdown --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         @foreach($ordersByType as $type)
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-100 dark:border-gray-700 shadow-sm">
                 <p class="text-xs font-medium text-gray-500 uppercase mb-1">{{ str_replace('_', ' ', $type->order_type) }}</p>
                 <div class="flex items-end justify-between">
                     <h3 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $type->count }} <span class="text-sm font-normal text-gray-400 ml-1">Orders</span></h3>
@@ -35,7 +36,8 @@
     </div>
 
     {{-- Transaction Logs --}}
-    <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
+    
+    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
         <div class="p-6 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
             <h3 class="text-lg font-bold text-gray-900 dark:text-white">Recent Transactions</h3>
             <span class="text-xs font-medium text-gray-400 uppercase">Page {{ $recentOrders->currentPage() }} of {{ $recentOrders->lastPage() }}</span>

@@ -61,7 +61,7 @@
                     <div id="notification-list" class="max-h-96 overflow-y-auto">
                         <div class="px-4 py-8 text-center text-gray-500 italic text-sm">{{ __('app.no_new_orders') }}</div>
                     </div>
-                    <a href="{{ route('admin.orders.index') }}"
+                    <a href="{{ route('admin.orders.all') }}"
                         class="block px-4 py-3 text-center text-xs font-medium text-amber-600 hover:bg-gray-50 border-t border-gray-100">
                         {{ __('app.view_all_orders') }}
 
@@ -126,13 +126,13 @@
                     </div>
 
                     {{-- Links --}}
-                    <a href="#"
-                        class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors">
+                    <a href="{{ route('admin.users.show', Auth::user()->id) }}"
+                        class="flex items-center gap-3 px-4 py-2.5 text-sm  hover:bg-gray-50 hover:text-gray-900 transition-colors">
                         <i class="fas fa-user-circle w-4 text-center text-gray-400"></i>
                         {{ __('app.profile') }}
                     </a>
-                    <a href="#"
-                        class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors">
+                    <a href="{{ route('admin.settings.index') }}"
+                        class="flex items-center gap-3 px-4 py-2.5 text-sm  hover:bg-gray-50 hover:text-gray-900 transition-colors">
                         <i class="fas fa-cog w-4 text-center text-gray-400"></i>
                         {{ __('app.settings') }}
                     </a>
@@ -156,7 +156,7 @@
             {{-- Guest Links --}}
             <div class="flex items-center gap-3">
                 <a href="{{ route('login') }}"
-                    class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
+                    class="px-4 py-2 text-sm font-medium  hover:text-gray-900 transition-colors">
                     {{ __('app.login') }}
                 </a>
                 <a href="{{ route('register') }}"

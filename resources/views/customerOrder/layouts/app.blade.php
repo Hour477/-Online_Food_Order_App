@@ -1,11 +1,14 @@
 @php
     $sidebarSettings = \App\Models\Setting::query()
-        ->whereIn('key', ['logo', 'resturant_name'])
-        ->pluck('value', 'key');
-    $sidebarLogo = $sidebarSettings['logo'] ?? null;
-    $sidebarName = $sidebarSettings['resturant_name'] ?? config('app.name');
+        ->whereIn('key', ['logo', 'resturant_name', 'favicon'])
+        ->pluck('value', 'key', 'favicon');
+    $sidebarLogo = $sidebarSettings['logo'] ?? '';
+    $sidebarName = $sidebarSettings['resturant_name'] ?? __('app.site_name');
+    $favicon = $sidebarSettings['favicon'] ?? '';
     $logoExists = !empty($sidebarLogo) && \Illuminate\Support\Facades\Storage::disk('public')->exists($sidebarLogo);
     $sidebarLogoUrl = $logoExists ? \Illuminate\Support\Facades\Storage::url($sidebarLogo) : null;
+    $faviconExists = !empty($favicon) && \Illuminate\Support\Facades\Storage::disk('public')->exists($favicon);
+    $faviconUrl = $faviconExists ? \Illuminate\Support\Facades\Storage::url($favicon) : null;
   
 @endphp
 
@@ -17,7 +20,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="description" content="{{ $sidebarSettings['description'] ?? 'Order System' }}">
-    <title>{{ $sidebarName ?? config('app.name') }}</title>
+    <link rel="icon" href="{{ $faviconUrl ?? asset('assets/img/placeholder.png') }}" type="image/png">
+    
+    <title>{{ $sidebarName}}</title>
+    
+    
+    
     
     {{-- Google Fonts - Kantumruy Pro and Battambang --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -123,8 +131,8 @@
 
             {{-- Nav Links --}}
             <div class="hidden md:flex items-center gap-8">
-                <a href="{{ route('customerOrder.menu.index') }}" class="text-sm font-medium touch-target px-2 {{ request()->routeIs('menu.*') ? 'text-amber-600' : 'text-gray-600 hover:text-gray-900' }}">{{ __('app.menu') }}</a>
-                <a href="{{ route('customerOrder.orders.history') }}" class="text-sm font-medium touch-target px-2 {{ request()->routeIs('orders.*') ? 'text-amber-600' : 'text-gray-600 hover:text-gray-900' }}">{{ __('app.my_orders') }}</a>
+                <a href="{{ route('customerOrder.menu.index') }}" class="text-sm font-medium touch-target px-2 {{ request()->routeIs('menu.*') ? 'text-amber-600' : ' hover:text-gray-900' }}">{{ __('app.menu') }}</a>
+                <a href="{{ route('customerOrder.orders.history') }}" class="text-sm font-medium touch-target px-2 {{ request()->routeIs('orders.*') ? 'text-amber-600' : ' hover:text-gray-900' }}">{{ __('app.my_orders') }}</a>
             </div>
 
             {{-- Cart + Language + Mobile --}}
@@ -178,7 +186,7 @@
                 </div>
                 @else
                 <div class="flex items-center gap-2 ml-2">
-                    <a href="{{ route('login') }}" class="text-sm font-medium text-gray-600 hover:text-amber-600 px-3 py-2 transition touch-target">{{ __('app.login') }}</a>
+                    <a href="{{ route('login') }}" class="text-sm font-medium  hover:text-amber-600 px-3 py-2 transition touch-target">{{ __('app.login') }}</a>
                     <a href="{{ route('register') }}" class="text-xs font-bold px-4 py-2 rounded-lg shadow-sm bg-amber-600 text-white hover:bg-amber-700 transition touch-target">{{ __('app.register') }}</a>
                 </div>
                 @endauth
@@ -200,7 +208,7 @@
             <div class="flex gap-2">
                 @foreach(config('app.available_locales', ['en' => 'English', 'km' => 'Khmer']) as $locale => $label)
                 <a href="{{ route('language.switch', $locale) }}" 
-                   class="px-3 py-1.5 rounded-lg text-sm {{ app()->getLocale() === $locale ? 'bg-amber-100 text-amber-700 font-medium' : 'bg-gray-100 text-gray-600' }}">
+                   class="px-3 py-1.5 rounded-lg text-sm {{ app()->getLocale() === $locale ? 'bg-amber-100 text-amber-700 font-medium' : 'bg-gray-100 ' }}">
                     {{ $label }}
                 </a>
                 @endforeach
@@ -241,7 +249,7 @@
                     </span>
                     @endif
                     <span class="text-xl font-bold text-white">{{ $sidebarName ?? __('app.site_name') }}</span>
-                </div>
+                        </div>
                 <p class="text-sm leading-relaxed text-gray-400">{{ __('app.footer_description') }}</p>
             </div>
             <div>

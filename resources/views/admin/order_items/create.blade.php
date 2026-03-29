@@ -1,4 +1,5 @@
-@extends('layouts.app')
+@extends('admin.layouts.app')
+@section('title', 'Create Order Item')
 
 @section('content')
 
@@ -20,12 +21,12 @@
             <h1 class="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
                 New Order
             </h1>
-            <p class="mt-1 text-gray-600 dark:text-gray-400">
+            <p class="mt-1  dark:text-gray-400">
                 Select items, add to cart, and place the order
             </p>
         </div>
 
-        <a href="{{ route('admin.orders.index') }}"
+        <a href="{{ route('admin.orders.all') }}"
            class="inline-flex items-center px-6 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-xl shadow-sm hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors">
             ← Back to Orders
         </a>
@@ -74,7 +75,7 @@
                                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                             @else
                                 <div class="absolute inset-0 flex items-center justify-center">
-                                    <i class="fas fa-utensils text-6xl text-gray-300 dark:text-gray-600"></i>
+                                    <i class="fas fa-utensils text-6xl text-gray-300 dark:"></i>
                                 </div>
                             @endif
                         </div>
@@ -84,7 +85,7 @@
                             <h3 class="font-semibold text-lg text-gray-900 dark:text-white line-clamp-1">
                                 {{ $item->name }}
                             </h3>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 line-clamp-2 min-h-10">
+                            <p class="text-sm  dark:text-gray-400 mt-1 line-clamp-2 min-h-10">
                                 {{ Str::limit($item->description ?? 'Delicious signature dish', 70) }}
                             </p>
 
@@ -188,16 +189,16 @@ function renderCart() {
                 <div class="font-medium text-gray-900 dark:text-white truncate">
                     ${item.name}
                 </div>
-                <div class="text-sm text-gray-600 dark:text-gray-400 mt-0.5">
+                <div class="text-sm  dark:text-gray-400 mt-0.5">
                     $${item.price.toFixed(2)} × ${item.quantity}
                 </div>
             </div>
 
             <div class="flex items-center gap-4">
                 <div class="flex items-center gap-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-1">
-                    <button type="button" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 text-lg font-bold decrease-qty" data-index="${index}">-</button>
+                    <button type="button" class=" dark:text-gray-300 hover:text-indigo-600 text-lg font-bold decrease-qty" data-index="${index}">-</button>
                     <span class="w-8 text-center font-medium">${item.quantity}</span>
-                    <button type="button" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 text-lg font-bold increase-qty" data-index="${index}">+</button>
+                    <button type="button" class=" dark:text-gray-300 hover:text-indigo-600 text-lg font-bold increase-qty" data-index="${index}">+</button>
                 </div>
                 <button type="button" class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 text-sm font-medium remove-item" data-index="${index}">×</button>
             </div>

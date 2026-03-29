@@ -85,7 +85,7 @@
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center">
                         <i class="fa-solid fa-envelope text-gray-400 mr-2 text-xs"></i>
-                        <span class="text-sm text-gray-600 dark:text-gray-300">{{ $customer->email }}</span>
+                        <span class="text-sm  dark:text-gray-300">{{ $customer->email }}</span>
                     </div>
                     @if($customer->phone)
                         <div class="mt-1 flex items-center text-xs text-gray-500 dark:text-gray-400">
@@ -118,7 +118,7 @@
         @empty
             <tr>
                 <td colspan="5" class="px-6 py-12 text-center">
-                    <i class="fa-solid fa-users-slash text-5xl text-gray-300 dark:text-gray-600 mb-4"></i>
+                    <i class="fa-solid fa-users-slash text-5xl text-gray-300 dark: mb-4"></i>
                     <p class="text-gray-500 dark:text-gray-400 text-lg">No customers found</p>
                     @if(request('search'))
                         <p class="text-gray-400 dark:text-gray-500 text-sm mt-2">Try searching with different keywords</p>

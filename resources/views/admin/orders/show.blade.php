@@ -1,4 +1,5 @@
 @extends('admin.layouts.app')
+@section('title', 'Order Details')
 
 @section('content')
 <div class="mx-auto">
@@ -15,24 +16,20 @@
             </p>
         </div>
         <div class="flex items-center gap-3">
-            <a href="{{ route('admin.orders.index') }}"
-               class="text-sm text-gray-500 hover:text-gray-900 flex items-center gap-1 transition-colors">
+            <a href="{{ route('admin.orders.all') }}"
+               class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors shadow-sm">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
                 Back to Orders
             </a>
             
-            @if($orders->status === 'completed' )
-                <a href="{{ route('admin.orders.receipt', $orders->id) }}"
-                   target="_blank"
-                   class="ml-4 px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    Download Receipt
-                </a>
-            @endif
+            <a href="{{ route('admin.orders.receipt', $orders->id) }}"
+               target="_blank"
+               class="ml-4 px-4 py-2.5 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-2 shadow-sm">
+                <i class="fa-solid fa-print"></i>
+                Print Receipt
+            </a>
             
         </div>
     </div>
@@ -40,7 +37,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {{-- Order Info Card --}}
         <div class="lg:col-span-1">
-            <div class="bg-white shadow-sm rounded-xl border border-gray-200 p-6">
+            <div class="bg-white shadow-sm rounded-lg border border-gray-200 p-6">
                 <h5 class="text-lg font-semibold text-gray-900 mb-6 border-b pb-4">Order Information</h5>
                 
                 <div class="space-y-5">
@@ -99,8 +96,10 @@
 
         {{-- Order Items Card --}}
         <div class="lg:col-span-2">
-            <div class="bg-white shadow-sm rounded-xl border border-gray-200 p-6 lg:p-8">
+            <div class="bg-white shadow-sm rounded-lg border border-gray-200 p-6 lg:p-8">
                 <div class="flex items-center justify-between mb-6 border-b pb-4">
+                    @if($orders->status === 'pending')
+
                     <h5 class="text-lg font-semibold text-gray-900">Ordered Items</h5>
                     <form action="{{ route('admin.orders.items.store', $orders->id) }}" method="POST" class="flex items-center gap-2">
                         @csrf
@@ -115,6 +114,7 @@
                             Add
                         </button>
                     </form>
+                    @endif
                 </div>
 
                 @if($orders->orderItems->isEmpty())
@@ -176,6 +176,58 @@
                         <span class="text-gray-500">Payment Method</span>
                         <span class="text-gray-900 font-medium uppercase">{{ $orders->payment_method ?? 'N/A' }}</span>
                     </div>
+                    
+                    @if($orders->payments->isNotEmpty())
+                        @foreach($orders->payments as $payment)
+                            <div class="bg-gray-50 rounded-lg p-4 mb-3">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-xs font-medium text-gray-500 uppercase">Payment #{{ $payment->id }}</span>
+                                    <form action="{{ route('admin.payment.update-status', $payment->id) }}" method="POST" class="flex items-center gap-2">
+                                        @csrf
+                                        @method('PATCH')
+                                        @if($payment->status === 'pending' || $payment->status === 'failed' || $payment->status === 'refunded')
+                                        <select name="status" class=" px-2 py-1 text-xs border border-gray-300 rounded focus:ring-amber-500 focus:border-amber-500" {{ $payment->status === 'paid' || $payment->status === 'refunded' ? 'disabled' : '' }}>
+                                            <option value="pending" {{ $payment->status === 'pending' ? 'selected' : '' }}>Pending</option>
+                                            <option value="paid" {{ $payment->status === 'paid' ? 'selected' : '' }}>Paid</option>
+                                            <option value="failed" {{ $payment->status === 'failed' ? 'selected' : '' }}>Failed</option>
+                                            <option value="refunded" {{ $payment->status === 'refunded' ? 'selected' : '' }}>Refunded</option>
+                                        </select>
+                                        <button type="submit" class="px-3 py-1 bg-amber-600 text-white text-xs font-medium rounded hover:bg-amber-700 transition-colors">
+                                            Update
+                                        </button>
+                                        @endif
+                                    </form>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2 text-xs">
+                                    <div>
+                                        <span class="text-gray-500">Amount:</span>
+                                        <span class="text-gray-900 font-medium ml-1">${{ number_format($payment->paid_amount, 2) }}</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-500">Status:</span>
+                                        <span class="inline-flex px-2 py-0.5 text-xs font-semibold rounded-full
+                                            {{ $payment->status === 'pending' ? 'bg-yellow-100 text-yellow-800' : '' }}
+                                            {{ $payment->status === 'paid' ? 'bg-green-100 text-green-800' : '' }}
+                                            {{ $payment->status === 'failed' ? 'bg-red-100 text-red-800' : '' }}
+                                            {{ $payment->status === 'refunded' ? 'bg-purple-100 text-purple-800' : '' }}">
+                                            {{ ucfirst($payment->status) }}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-500">Paid at:</span>
+                                        <span class="text-gray-900">{{ $payment->paid_at ? $payment->paid_at->format('M d, Y h:i A') : 'N/A' }}</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-500">Method:</span>
+                                        <span class="text-gray-900 font-medium uppercase">{{ $payment->payment_method }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="text-sm text-gray-500 italic mt-2">No payment recorded yet</div>
+                    @endif
+                    
                     <div class="flex justify-between text-sm mb-2">
                         <span class="text-gray-500">Subtotal</span>
                         <span class="text-gray-900 font-medium">${{ number_format($orders->subtotal ?? 0, 2) }}</span>
@@ -192,18 +244,19 @@
             </div>
 
             {{-- Status Update Card --}}
-            <div class="bg-white shadow-sm rounded-xl border border-gray-200 p-6 mt-6">
+            <div class="bg-white shadow-sm rounded-lg border border-gray-200 p-6 mt-6">
                 <h5 class="text-lg font-semibold text-gray-900 mb-4 border-b pb-4">Update Status</h5>
                 <form action="{{ route('admin.orders.updateStatus', $orders->id) }}" method="POST" class="flex items-center gap-4">
                     @csrf
                     @method('PATCH')
-                    <select name="status" class="flex-1 px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-amber-500 focus:border-amber-500">
-                        <option value="pending" {{ $orders->status === 'pending' ? 'selected' : '' }}>Pending</option>
-                        <option value="confirmed" {{ $orders->status === 'confirmed' ? 'selected' : '' }}>Confirmed</option>
-                        <option value="delivered" {{ $orders->status === 'delivered' ? 'selected' : '' }}>Delivered</option>
-                        <option value="completed" {{ $orders->status === 'completed' ? 'selected' : '' }}>Completed</option>
-                        <option value="refunded" {{ $orders->status === 'refunded' ? 'selected' : '' }}>Refunded</option>
-                        <option value="cancelled" {{ $orders->status === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                    <select name="status" class="flex-1 px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-amber-500 focus:border-amber-500" {{ $orders->status === 'completed' ? 'disabled' : '' }}>
+                        
+                            <option value="pending" {{ $orders->status === 'pending' ? 'selected' : '' }}>Pending</option>
+                            <option value="confirmed" {{ $orders->status === 'confirmed' ? 'selected' : '' }}>Confirmed</option>
+                            <option value="completed" {{ $orders->status === 'completed' ? 'selected' : '' }}>Completed</option>
+                            <option value="refunded" {{ $orders->status === 'refunded' ? 'selected' : '' }}>Refunded</option>
+                            <option value="cancelled" {{ $orders->status === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                        
                     </select>
                     <button type="submit" class="px-6 py-2.5 bg-amber-600 text-white text-sm font-medium rounded-lg hover:bg-amber-700 transition-colors">
                         Update Status

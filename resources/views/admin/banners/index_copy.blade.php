@@ -53,11 +53,11 @@
 
     {{-- Table Card use x-data --}}
     
-    <div class="bg-white shadow-sm rounded-xl border border-gray-200 overflow-hidden">
+    <div class="bg-white shadow-sm rounded-lg border border-gray-200 overflow-hidden">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-100">
 
-                <thead class="bg-gray-50">
+                <thead class="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-700 whitespace-nowrap">
                     <tr>
                         <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">No</th>
                         <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Image</th>

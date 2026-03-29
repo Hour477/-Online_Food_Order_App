@@ -1,4 +1,5 @@
 @extends('admin.layouts.app')
+@section('title', 'Sales Reports')
 
 @section('content')
 <div class="mx-auto">
@@ -23,7 +24,7 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {{-- Top Selling Items --}}
-        <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
+        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
             <div class="p-6 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
                 <h3 class="text-lg font-bold text-gray-900 dark:text-white">Top 10 Selling Items</h3>
                 <span class="text-xs font-medium text-gray-400 uppercase">By Quantity</span>
@@ -55,7 +56,7 @@
         </div>
 
         {{-- Category Breakdown --}}
-        <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
+        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
             <div class="p-6 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
                 <h3 class="text-lg font-bold text-gray-900 dark:text-white">Sales by Category</h3>
                 <span class="text-xs font-medium text-gray-400 uppercase">Revenue Share</span>

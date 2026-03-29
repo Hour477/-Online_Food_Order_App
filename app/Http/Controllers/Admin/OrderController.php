@@ -13,6 +13,7 @@ use App\Models\OrderItem;
 use App\Models\Payment;
 use App\Models\Setting;
 use App\Models\Table;
+use App\Services\BakongService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Devrabiul\ToastMagic\Facades\ToastMagic;
 use Illuminate\Http\Request;
@@ -22,46 +23,92 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class OrderController extends Controller
 {
+    public function __construct(protected BakongService $bakongService)
+    {
+    }
+
     public function index(Request $request)
     {
-        $orderNo = $request->get('order_no');
-        $customerName = $request->get('customer_name');
+        return $this->renderOrderListing($request, 'admin.orders.index', null, 'All Orders');
+    }
+
+    public function pending(Request $request)
+    {
+        return $this->renderOrderListing($request, 'admin.orders.pending', 'pending', 'Pending');
+    }
+
+    public function confirmed(Request $request)
+    {
+        return $this->renderOrderListing($request, 'admin.orders.confirmed', 'confirmed', 'Confirmed');
+    }
+
+    
+
+    public function completed(Request $request)
+    {
+        return $this->renderOrderListing($request, 'admin.orders.completed', 'completed', 'Completed');
+    }
+
+    public function refunded(Request $request)
+    {
+        return $this->renderOrderListing($request, 'admin.orders.refunded', 'refunded', 'Refunded');
+    }
+
+    public function cancelled(Request $request)
+    {
+        return $this->renderOrderListing($request, 'admin.orders.cancelled', 'cancelled', 'Cancelled');
+    }
+
+    protected function renderOrderListing(Request $request, string $view, ?string $forcedStatus, string $pageTitle)
+    {
+        $keyword = trim((string) $request->get('search', ''));
+        $customerName = trim((string) $request->get('customer_name', ''));
         $amount = $request->get('amount');
         $startDate = $request->get('start_date');
         $endDate = $request->get('end_date');
-        $status = $request->get('status');
+        $statusFilter = $forcedStatus ?? $request->get('status');
 
         $orders = Order::with('customer', 'payments')
-
-            ->when($orderNo, function ($query, $orderNo) {
-                $query->where('order_no', 'like', '%' . $orderNo . '%');
+            ->when($keyword !== '', function ($query) use ($keyword) {
+                $query->where(function ($q) use ($keyword) {
+                    $q->where('order_no', 'like', '%' . $keyword . '%')
+                        ->orWhereHas('customer', function ($c) use ($keyword) {
+                            $c->where('name', 'like', '%' . $keyword . '%');
+                        });
+                });
             })
-            ->when($customerName, function ($query, $customerName) {
+            ->when($customerName !== '', function ($query) use ($customerName) {
                 $query->whereHas('customer', function ($q) use ($customerName) {
                     $q->where('name', 'like', '%' . $customerName . '%');
                 });
             })
             ->when($amount !== null && $amount !== '', function ($query) use ($amount) {
-                $normalizedAmount = str_replace(',', '', trim((string) $amount));
-                $query->where('total_amount', 'like', '%' . $normalizedAmount . '%');
+                $normalized = str_replace(',', '', trim((string) $amount));
+                if ($normalized === '') {
+                    return;
+                }
+                if (is_numeric($normalized)) {
+                    $query->where('total_amount', $normalized);
+                }
             })
-            ->when($startDate, function ($query, $startDate) {
+            ->when(filled($startDate), function ($query) use ($startDate) {
                 $query->whereDate('created_at', '>=', $startDate);
             })
-            ->when($endDate, function ($query, $endDate) {
+            ->when(filled($endDate), function ($query) use ($endDate) {
                 $query->whereDate('created_at', '<=', $endDate);
             })
-            ->when($status, function ($query, $status) {
-                $query->where('status', $status);
+            ->when(filled($statusFilter), function ($query) use ($statusFilter) {
+                $query->where('status', $statusFilter);
             })
             ->latest()
             ->paginate(10)
             ->withQueryString();
 
-        return view('admin.orders.index', compact('orders'));
+        return view($view, compact('orders', 'pageTitle'));
     }
 
     /**
@@ -99,22 +146,39 @@ class OrderController extends Controller
 
     public function create()
     {
-        
+        return view('admin.orders.create', $this->getOrderCreationData());
+    }
+
+    public function createKhqr()
+    {
+        $data = $this->getOrderCreationData();
+        $total = ($data['subtotal'] * 1.10);
+        $reference = 'ADMIN-' . now()->format('YmdHis');
+        $khqrString = $this->bakongService->generateLocalKHQR($reference, $total);
+        $qrImageUrl = $this->bakongService->getQRImageURL($khqrString);
+
+        return view('admin.orders.qr.index', array_merge($data, [
+            'khqrString' => $khqrString,
+            'qrImageUrl' => $qrImageUrl,
+            'qrReference' => $reference,
+            'tax' => $data['subtotal'] * 0.10,
+            'total' => $total,
+        ]));
+    }
+
+    protected function getOrderCreationData(): array
+    {
         $cart = session('cart', []);
         $subtotal = collect($cart)->sum(fn($item) => $item['price'] * $item['qty']);
 
-        // active categories and menu items
-        $categories = Category::where('status', 1)->get();
-        $menuItems  = MenuItem::where('status', 'available')->with('category')->get();
-
-        
-        $customers = Customer::all();
-        
-        $order_types = ['dine_in', 'takeaway', 'delivery'];
-
-
-
-        return view('admin.orders.create', compact('categories', 'menuItems', 'customers', 'cart', 'subtotal', 'order_types'));
+        return [
+            'cart' => $cart,
+            'subtotal' => $subtotal,
+            'categories' => Category::where('status', 1)->get(),
+            'menuItems' => MenuItem::where('status', 'available')->with('category')->get(),
+            'customers' => Customer::all(),
+            'order_types' => ['dine_in', 'takeaway', 'delivery'],
+        ];
     }
 
 
@@ -209,7 +273,8 @@ class OrderController extends Controller
                 return $order;
             });
             ToastMagic::success('Order #' . $order->order_no . ' created successfully!');
-            return redirect()->route('admin.orders.show', $order->id);
+            // Redirect to receipt view (which opens in new tab thanks to target="_blank" on the form)
+            return redirect()->route('admin.orders.receipt', $order->id);
         } catch (ValidationException $e) {
             return back()
                 ->withErrors($e->errors())
@@ -224,7 +289,7 @@ class OrderController extends Controller
     public function show($id)
     {
         $order_items = OrderItem::where('order_id', $id)->first();
-        $orders = Order::with(['orderItems.menuItem', 'customer', 'user'])->findOrFail($id);
+        $orders = Order::with(['orderItems.menuItem', 'customer', 'user', 'payments'])->findOrFail($id);
         $total_amount = $orders->total_amount;
         $menuItems = MenuItem::where('status', 'available')
             ->orderBy('name')
@@ -241,8 +306,40 @@ class OrderController extends Controller
         $validated = $request->validate([
             'status' => 'required|in:pending,confirmed,delivered,completed,refunded,cancelled',
         ]);
-        $order->status = $validated['status'];
-        $order->save();
+
+        DB::transaction(function () use ($order, $validated) {
+            $order->update([
+                'status' => $validated['status'],
+            ]);
+
+            $payment = $order->payment;
+
+            if (!$payment) {
+                return;
+            }
+
+            if ($validated['status'] === 'completed') {
+                $payment->update([
+                    'status' => 'paid',
+                    'paid_amount' => $payment->paid_amount > 0 ? $payment->paid_amount : $order->total_amount,
+                    'change_amount' => $payment->change_amount ?? 0,
+                    'paid_at' => $payment->paid_at ?? now(),
+                ]);
+            }
+
+            if ($validated['status'] === 'refunded') {
+                $payment->update([
+                    'status' => 'refunded',
+                ]);
+            }
+
+            if ($validated['status'] === 'cancelled' && $payment->status !== 'paid') {
+                $payment->update([
+                    'status' => 'failed',
+                ]);
+            }
+        });
+
         ToastMagic::success('Order status updated to ' . $validated['status']);
         return redirect()->route('admin.orders.show', $order->id);
     }
@@ -255,7 +352,6 @@ class OrderController extends Controller
         $paymentMethods = [
             'cash',
             'card',
-            'aba',
             'qr'
         ];
         return view('admin.orders.checkout', compact('order', 'paymentMethods'));
@@ -291,25 +387,25 @@ class OrderController extends Controller
     }
 
     /**
-     * Generate PDF receipt for completed orders
+     * Generate receipt for orders
      */
     public function generateReceipt(Order $order)
     {
-        // Only allow receipt generation for completed orders
-        if ($order->status !== 'completed') {
-            return redirect()
-                ->route('admin.orders.show', $order->id)
-                ->with('error', 'Receipt can only be generated for completed orders.');
-        }
-
         $order->load(['orderItems.menuItem', 'customer', 'user', 'payments']);
         
         $settings = Setting::query()
             ->whereIn('key', ['resturant_name', 'logo', 'address', 'phone', 'email'])
             ->pluck('value', 'key');
 
-        $pdf = Pdf::loadView('admin.orders.receipt', compact('order', 'settings'));
-        
-        return $pdf->download('receipt-' . $order->order_no . '.pdf');
+        // Return the HTML view directly (printable)
+        return view('admin.orders.receipt', compact('order', 'settings'));
+    }
+
+    public function destroy(Order $order)
+    {
+        $order->delete(); // soft delete
+
+        ToastMagic::success('Order Deleted Successfully');
+        return redirect()->route('admin.orders.index');
     }
 }

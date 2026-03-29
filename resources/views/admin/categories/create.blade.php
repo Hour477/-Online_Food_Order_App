@@ -1,4 +1,5 @@
 @extends('admin.layouts.app')
+@section('title', 'Create Category')
 
 @section('content')
 
@@ -8,7 +9,7 @@
     <div class="mb-8 flex items-center justify-between">
         <h3 class="text-2xl font-bold text-gray-900">Add New Category</h3>
         <a href="{{ route('admin.categories.index') }}"
-           class="text-sm text-gray-500 hover:text-gray-900 flex items-center gap-1 transition-colors">
+           class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium  dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors shadow-sm">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
@@ -17,7 +18,7 @@
     </div>
 
     {{-- Form Card --}}
-    <div class="bg-white shadow-sm rounded-xl border border-gray-200 p-6 lg:p-8">
+    <div class="bg-white shadow-sm rounded-lg border border-gray-200 p-6 lg:p-8">
 
         <form action="{{ route('admin.categories.store') }}" method="POST">
             @csrf
@@ -66,7 +67,7 @@
                                 after:h-5 after:w-5 after:transition-all
                                 peer-checked:after:translate-x-full peer-checked:after:border-white
                                 peer-focus:ring-2 peer-focus:ring-amber-500"></div>
-                    <span class="text-sm text-gray-600" id="status-label">
+                    <span class="text-sm " id="status-label">
                         {{ old('status', 1) ? 'Active' : 'Inactive' }}
                     </span>
                 </label>
@@ -78,7 +79,7 @@
             {{-- Actions --}}
             <div class="flex justify-end gap-3 pt-5 border-t border-gray-100">
                 <a href="{{ route('admin.categories.index') }}"
-                   class="px-5 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                   class="px-5 py-2.5 text-sm font-medium  hover:bg-gray-100 rounded-lg transition-colors">
                     Cancel
                 </a>
                 <button type="submit"

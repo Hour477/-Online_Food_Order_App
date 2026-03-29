@@ -39,7 +39,21 @@
                         $folderKey = $menu['folder'] ?? 'folder-' . \Illuminate\Support\Str::slug($menu['title']);
                         $parentActive = false;
                         foreach ($menu['children'] as $child) {
-                            if (request()->routeIs($child['active'] ?? '')) { $parentActive = true; break; }
+                            $childRouteActive = request()->routeIs($child['active'] ?? '');
+                            $childParams = $child['params'] ?? [];
+                            $paramsMatch = true;
+
+                            foreach ($childParams as $key => $value) {
+                                if ((string) request()->query($key) !== (string) $value) {
+                                    $paramsMatch = false;
+                                    break;
+                                }
+                            }
+
+                            if ($childRouteActive && $paramsMatch) {
+                                $parentActive = true;
+                                break;
+                            }
                         }
                         $isOpen = $parentActive;
                     @endphp
@@ -47,7 +61,7 @@
                         <button type="button"
                                 data-folder="{{ $folderKey }}"
                                 aria-expanded="{{ $isOpen ? 'true' : 'false' }}"
-                                class="sidebar-folder-toggle orders-toggle group relative w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 {{ $parentActive ? 'is-active' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                                class="sidebar-folder-toggle orders-toggle group relative w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 {{ $parentActive ? 'is-active' : 'text-gray-800 hover:bg-gray-100 hover:text-gray-900' }}">
                             <span class="sidebar-link-accent absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-amber-600 transition-opacity {{ $parentActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-50' }}"></span>
                             <div class="flex items-center gap-3">
                                 @include('admin.layouts.partials.sidebar-icon', ['icon' => $menu['icon'] ?? 'circle'])
@@ -61,21 +75,10 @@
                             @foreach($menu['children'] as $child)
                                 @php 
                                     $childActive = request()->routeIs($child['active'] ?? '');
-                                    // Also check if params match for status filtering
-                                    if (isset($child['params'])) {
-                                        foreach ($child['params'] as $key => $value) {
-                                            if (request()->get($key) !== $value) {
-                                                $childActive = false;
-                                            }
-                                        }
-                                        // If this child has params and current request has no params, it's not active
-                                        if (empty(request()->all()) && !empty($child['params'])) {
+                                    foreach (($child['params'] ?? []) as $key => $value) {
+                                        if ((string) request()->query($key) !== (string) $value) {
                                             $childActive = false;
-                                        }
-                                    } elseif (empty($child['params']) && request()->get('status')) {
-                                        // If child has no params but request has status, not active
-                                        if ($child['title'] !== 'All Payments' && $child['title'] !== 'All Customer') {
-                                            $childActive = false;
+                                            break;
                                         }
                                     }
                                 @endphp
@@ -103,11 +106,11 @@
                         </ul>
                     </li>
                 @else
-                    {{-- Single link --}}
+                    
                     @php $isActive = request()->routeIs($menu['active'] ?? ''); @endphp
                     <li>
                         <a href="{{ route($menu['route']) }}"
-                           class="sidebar-link group relative flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 {{ $isActive ? 'is-active' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}"
+                           class="sidebar-link group relative flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 {{ $isActive ? 'is-active' : 'text-gray-800 hover:bg-gray-100 hover:text-gray-900' }}"
                            title="{{ $menu['title'] }}">
                             <span class="sidebar-link-accent absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-amber-600 transition-opacity {{ $isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-50' }}"></span>
                             @include('admin.layouts.partials.sidebar-icon', ['icon' => $menu['icon'] ?? 'circle'])
@@ -128,7 +131,7 @@
 <div class="p-3 border-t border-gray-100 mt-auto">
     <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
         class="logout-link group relative flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium
-                  text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all duration-150" title="Logout">
+                   hover:bg-red-50 hover:text-red-600 transition-all duration-150" title="Logout">
         <span
             class="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-red-500 opacity-0 group-hover:opacity-100 transition-opacity"></span>
         <svg class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
@@ -143,8 +146,4 @@
 </div>
 
 </aside>
-
-<style>
-   
-</style>
 

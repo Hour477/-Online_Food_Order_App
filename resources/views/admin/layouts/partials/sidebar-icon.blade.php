@@ -17,6 +17,9 @@
         @case('menu')
             menu_book
             @break
+        @case('orders')
+            receipt_long
+            @break
         @case('role')
             shield_person
             @break

@@ -32,7 +32,7 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div class="col-span-2 sm:col-span-1">
                             <label class="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide ">{{ __('app.first_name') }}</label>
-                            <input type="text" name="first_name" value="{{ old('first_name', $firstName) }}" required
+                            <input type="text" name="first_name" value="{{ old('first_name', $firstName)}} " required
                                 class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 bg-gray-50">
                             @error('first_name')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                         </div>
@@ -48,7 +48,7 @@
                                 class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 bg-gray-50">
                             @error('phone')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                         </div>
-                        <div class="col-span-2">
+                        <div class="">
                             <label class="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide ">{{ __('app.street_address') }}</label>
                             <input type="text" name="address" value="{{ old('address', $customer->address ?? '') }}" required
                                 placeholder="{{ __('app.address_placeholder') }}"
@@ -60,11 +60,11 @@
                             <input type="text" name="city" value="{{ old('city', $customer->city ?? '') }}" required
                                 class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 bg-gray-50">
                         </div>
-                        <div>
+                        {{-- <div>
                             <label class="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide ">{{ __('app.zip_code') }}</label>
                             <input type="text" name="zip" value="{{ old('zip') }}" required
                                 class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 bg-gray-50">
-                        </div>
+                        </div> --}}
                         <div class="col-span-2">
                             <label class="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide ">{{ __('app.delivery_notes') }}</label>
                             <textarea name="notes" rows="2" placeholder="{{ __('app.notes_placeholder') }}"
@@ -85,14 +85,14 @@
                     <div class="space-y-3" id="payment-options">
                         @foreach([
                             ['cash', 'fa-money-bills', __('app.cash'), __('app.cash_description')],
-                            ['khqr', 'fa-qrcode', 'KHQR', __('app.khqr_description')],
+                            ['khqr', 'fa-qrcode', __('app.khqr'), __('app.khqr_description')],
                         ] as [$val, $icon, $label, $desc])
                         <label class="payment-option flex items-center gap-4 p-4 border-2 rounded-lg cursor-pointer transition
-                            {{ old('payment', 'cash') == $val ? 'border-amber-500 bg-amber-50' : 'border-gray-200 hover:border-gray-300' }}"
-                            data-value="{{ $val }}">
+                            {{ old('payment', '') == $val ? 'border-amber-500 bg-amber-50' : 'border-gray-200 hover:border-gray-300' }}"
+                            data-value="{{ $val }}">    
                             <input type="radio" name="payment" value="{{ $val }}"
                                 class="sr-only"
-                                {{ old('payment', 'cash') == $val ? 'checked' : '' }}>
+                                {{ old('payment', '') == $val ? 'checked' : '' }}>
                             <span class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
                                 <i class="fa-solid {{ $icon }} text-amber-600"></i>
                             </span>
@@ -170,7 +170,7 @@
                 {{-- Loading State --}}
                 <div id="khqr-loading" class="py-12">
                     <div class="animate-spin w-12 h-12 border-4 border-amber-200 border-t-amber-600 rounded-full mx-auto mb-4"></div>
-                    <p class="text-gray-600">Generating QR code...</p>
+                    <p class="text-gray-900">Generating QR code...</p>
                 </div>
 
                 {{-- QR Code (hidden initially) --}}

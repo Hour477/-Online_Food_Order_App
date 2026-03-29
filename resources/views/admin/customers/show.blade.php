@@ -30,7 +30,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {{-- Profile Card --}}
         <div class="lg:col-span-1">
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
                 <div class="p-6 text-center">
                     <div class="relative inline-block mb-4">
                         <img src="{{ $customer->user?->display_image ?? asset('assets/img/placeholder.png') }}" 
@@ -91,7 +91,7 @@
         {{-- Information Details --}}
         <div class="lg:col-span-2 space-y-6">
             {{-- Personal Information --}}
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
                 <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center gap-2">
                     <i class="fas fa-user text-amber-600"></i>
                     <h5 class="font-semibold text-gray-900 dark:text-white">Personal Information</h5>
@@ -125,7 +125,7 @@
             </div>
 
             {{-- Account Information --}}
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
                 <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center gap-2">
                     <i class="fas fa-shield-alt text-amber-600"></i>
                     <h5 class="font-semibold text-gray-900 dark:text-white">Account Security</h5>

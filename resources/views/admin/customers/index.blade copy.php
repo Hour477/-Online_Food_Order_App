@@ -11,13 +11,13 @@
             <h1 class="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
                 Customers
             </h1>
-            <p class="mt-2 text-gray-600 dark:text-gray-400">
+            <p class="mt-2  dark:text-gray-400">
                 Manage your restaurant customers and contact details
             </p>
         </div>
 
         <a href="{{ route('admin.customers.create') }}"
-           class="inline-flex items-center px-6 py-3 text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 rounded-xl shadow-sm transition-all transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500
+           class="inline-flex items-center px-6 py-3 text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 rounded-lg shadow-sm transition-all transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500
            ">
             <i class="fas fa-user-plus mr-2"></i>
             Add New Customer
@@ -72,10 +72,10 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                                     {{ $customer->name }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm  dark:text-gray-300">
                                     {{ $customer->email ?? '—' }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm  dark:text-gray-300">
                                     {{ $customer->phone ?? '—' }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-3">

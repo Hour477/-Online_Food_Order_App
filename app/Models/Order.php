@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\User;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
 {
+    use SoftDeletes;
     //
     protected $fillable = [
         'order_no',
@@ -17,6 +19,7 @@ class Order extends Model
         'user_id',
         'status', 
         // New fields for totals
+        'notes',
         'subtotal',
         'tax',
         'total_amount',
@@ -48,6 +51,11 @@ class Order extends Model
     public function payments()
     {
         return $this->hasMany(Payment::class);
+    }
+
+    public function menuItemRatings(): HasMany
+    {
+        return $this->hasMany(MenuItemRating::class);
     }
 
    

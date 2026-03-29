@@ -9,7 +9,6 @@ use App\Models\Customer;
 use App\Models\MenuItemRating;
 use App\Models\MenuItem;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Devrabiul\ToastMagic\Facades\ToastMagic;
 
 class customerOrderController extends Controller
@@ -71,6 +70,56 @@ class customerOrderController extends Controller
         return back();
     }
 
+    /**
+     * Show the dedicated rating page for a single completed order.
+     */
+    public function showRatePage(Order $order)
+    {
+        $customer = Customer::where('user_id', Auth::id())->first();
+
+        if (!$customer || $order->customer_id !== $customer->id) {
+            abort(403, 'Unauthorized.');
+        }
+
+        if ($order->status !== 'completed') {
+            return redirect()->route('customerOrder.orders.history')
+                ->with('error', 'Only completed orders can be rated.');
+        }
+
+        $order->load([
+            'orderItems.menuItem',
+            'menuItemRatings' => fn($q) => $q->where('customer_id', $customer->id),
+        ]);
+
+        $ratingsByMenuItem = $order->menuItemRatings->keyBy('menu_item_id');
+
+        $items = $order->orderItems->map(function ($item) use ($ratingsByMenuItem) {
+            $existingRating = $ratingsByMenuItem->get($item->menu_item_id);
+            return [
+                'id'            => $item->menu_item_id,
+                'name'          => $item->menuItem->name ?? 'Unknown Item',
+                'qty'           => $item->quantity,
+                'price'         => $item->price,
+                'display_image' => $item->menuItem?->display_image ?? asset('assets/img/placeholder.png'),
+                'rating'        => $existingRating?->rating,
+                'comment'       => $existingRating?->comment,
+                'has_rating'    => $existingRating !== null,
+            ];
+        });
+
+        $orderData = [
+            'db_id'      => $order->id,
+            'id'         => $order->order_no,
+            'status'     => $order->status,
+            'subtotal'   => $order->subtotal,
+            'total'      => $order->total_amount,
+            'created_at' => $order->created_at,
+            'items'      => $items,
+        ];
+
+        return view('customerOrder.orders.rate', ['order' => $orderData]);
+    }
+
     public function history()
     {
         // Get the authenticated user's customer record
@@ -83,7 +132,11 @@ class customerOrderController extends Controller
 
         // Fetch orders from database
         $dbOrders = Order::where('customer_id', $customer->id)
-            ->with(['orderItems.menuItem', 'payments'])
+            ->with([
+                'orderItems.menuItem',
+                'payments',
+                'menuItemRatings' => fn ($query) => $query->where('customer_id', $customer->id),
+            ])
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -99,8 +152,13 @@ class customerOrderController extends Controller
                 $address = $matches[1];
             }
 
+            $ratingsByMenuItem = $order->menuItemRatings
+                ->keyBy('menu_item_id');
+
             // Transform order items
-            $items = $order->orderItems->map(function ($item) {
+            $items = $order->orderItems->map(function ($item) use ($ratingsByMenuItem) {
+                $existingRating = $ratingsByMenuItem->get($item->menu_item_id);
+
                 return [
                     'id' => $item->menu_item_id,
                     'name' => $item->menuItem->name ?? 'Unknown Item',
@@ -108,6 +166,9 @@ class customerOrderController extends Controller
                     'price' => $item->price,
                     'image' => $item->menuItem->image ?? null,
                     'display_image' => $item->menuItem?->display_image ?? asset('assets/img/placeholder.png'),
+                    'rating' => $existingRating?->rating,
+                    'comment' => $existingRating?->comment,
+                    'has_rating' => $existingRating !== null,
                 ];
             })->toArray();
 

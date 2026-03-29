@@ -50,7 +50,7 @@ class CustomerCheckoutController extends Controller
             'phone'      => 'required|string|max:20',
             'address'    => 'required|string|max:200',
             'city'       => 'required|string|max:60',
-            'zip'        => 'required|string|max:20',
+            'notes'      => 'nullable|string|max:200',
             'payment'    => 'required|in:cash,khqr',
         ]);
 
@@ -85,7 +85,7 @@ class CustomerCheckoutController extends Controller
                     'order_type'   => 'delivery',
                     'user_id'      => Auth::id(),
                     'status'       => 'pending',
-                    'notes'        => $request->notes . "\nDelivery to: {$request->first_name} {$request->last_name}, {$request->address}, {$request->city} {$request->zip}, Phone: {$request->phone}",
+                    'notes'        => $request->notes,
                     'subtotal'     => $subtotal,
                     'tax'          => $tax,
                     'total_amount' => $total,
@@ -110,7 +110,7 @@ class CustomerCheckoutController extends Controller
                     'order_id'       => $order->id,
                     'payment_method' => $request->payment,
                     'total_amount'   => $total,
-                    'status'         => 'pending', // Default to pending for all customer orders
+                    'status'         => 'pending',
                 ];
 
                 // For cash payment (delivery), keep it as pending until it's delivered and paid
@@ -118,14 +118,15 @@ class CustomerCheckoutController extends Controller
                     $paymentData['paid_amount'] = 0;
                     $paymentData['change_amount'] = 0;
                     $paymentData['paid_at'] = null;
-                    
-                    // Order status remains 'pending'
+
+                    // Cash on delivery remains unpaid until delivery/collection.
                     $order->update(['status' => 'pending']);
                 }
 
-                // For KHQR, generate QR code
+                // KHQR stays pending until the QR payment is confirmed.
                 if ($request->payment === 'khqr') {
-                    $paymentData['paid_amount'] = 0; // Not paid yet
+                    $paymentData['paid_amount'] = 0;
+                    $paymentData['change_amount'] = 0;
                     $paymentData['paid_at'] = null;
                     
                     $khqrResult = $this->bakongService->generateKHQR($order->order_no, $total);
@@ -236,10 +237,11 @@ class CustomerCheckoutController extends Controller
         $result = $this->bakongService->checkPaymentStatus($order->payment->khqr_md5);
 
         if ($result['success'] && $result['status'] === 'success') {
-            // Update payment status
+            // KHQR payment is now fully paid.
             $order->payment->update([
                 'status' => 'paid',
                 'paid_amount' => $order->total_amount,
+                'change_amount' => 0,
                 'paid_at' => now(),
                 'khqr_transaction_id' => $result['transaction_id'] ?? null,
             ]);
@@ -268,7 +270,7 @@ class CustomerCheckoutController extends Controller
         $order->load('payments');
         
         if ($order->payment && $order->payment->payment_method === 'khqr') {
-            $order->payment->update(['status' => 'cancelled']);
+            $order->payment->update(['status' => 'failed']);
         }
 
         return redirect()->route('customerOrder.menu.index')

@@ -46,8 +46,7 @@ class CheckoutController extends Controller
             'phone'      => 'required|string|max:20',
             'address'    => 'required|string|max:200',
             'city'       => 'required|string|max:60',
-            'zip'        => 'required|string|max:20',
-            'payment'    => 'required|in:cod,card,wallet',
+            'payment'    => 'required|in:cash,khqr',
         ]);
         // customer defualt walk-in order
         
@@ -83,7 +82,7 @@ class CheckoutController extends Controller
                     'order_type'   => 'takeaway',
                     'user_id'      => Auth::id(),
                     'status'       => 'pending',
-                    'notes'        => $request->notes . "\nDelivery to: {$request->first_name} {$request->last_name}, {$request->address}, {$request->city} {$request->zip}, Phone: {$request->phone}",
+                    'notes'        => null,
                     'subtotal'     => $subtotal,
                     'tax'          => $tax,
                     'total_amount' => $total,
@@ -103,27 +102,27 @@ class CheckoutController extends Controller
                 // 4. Create Payment record
                 // Map frontend payment method to backend enum: cod -> cash, card -> card, wallet -> qr
                 $methodMap = [
-                    'cod'    => 'cash',
-                    'card'   => 'card',
-                    'wallet' => 'qr'
+                    'cash'    => 'cash on delivery',
+                    'khqr' => 'qr code'
                 ];
                 
                 // Update order status based on payment method
-                // For non-COD payments, mark as confirmed since it's paid
-                if ($request->payment !== 'cod') {
-                    $order->update(['status' => 'confirmed']);
+                // For non-cash on delivery payments, mark as confirmed since it's paid immediately
+                // For cash on delivery, mark as pending since it's not paid immediately
+                if ($request->payment !== 'cash') {
+                    $order->update(['status' => 'pending']);
                 }
 
                 Payment::create([
                     'order_id'       => $order->id,
                     'payment_method' => $methodMap[$request->payment],
                     'total_amount'   => $total,
-                    'paid_amount'    => $request->payment === 'cod' ? 0 : $total,
+                    'paid_amount'    => $request->payment === 'cash' ? 0 : $total,
                     'change_amount'  => 0,
-                    'paid_at'        => $request->payment === 'cod' ? null : now(),
-                    'status'         => $request->payment === 'cod' ? 'pending' : 'paid'
+                    'paid_at'        => $request->payment === 'cash' ? null : now(),
+                    'status'         => $request->payment === 'cash' ? 'pending' : 'paid',
                 ]);
-
+                   
                 return $order;
             });
 
@@ -135,9 +134,9 @@ class CheckoutController extends Controller
 
             // Clear cart
             session()->forget('cart');
-
+            
             return redirect()->route('admin.checkout.confirmation');
-
+            
         } catch (\Exception $e) {
             Log::error('Admin checkout failed: ' . $e->getMessage());
             return back()->with('error', 'Something went wrong while placing your order. ' . $e->getMessage());

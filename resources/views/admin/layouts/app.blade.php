@@ -11,8 +11,8 @@
     @endphp
 
     <link rel="icon" type="image/x-icon"
-          href="{{ !empty($appFavicon) ? Storage::url($appFavicon) : asset('Restaurant-System.ico') }}">
-    <title>@yield('title') | {{ $appTitle ?? config('app.name') }}</title>
+          href="{{ !empty($appFavicon) ? Storage::url($appFavicon) : asset('assets/img/Restaurant-System.png') }}">
+    <title>@yield('title')</title>
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet">
@@ -47,11 +47,12 @@
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
 
     {!! ToastMagic::styles() !!}
     @stack('styles')
 </head>
-<body>
+<body class="bg-slate-100 text-slate-900 antialiased">
     
 
     <div class="flex min-h-screen">
@@ -68,7 +69,7 @@
         <div class="flex-1 flex flex-col">
 
             {{-- Header --}}
-            <header class="bg-white border-b border-gray-200 sticky top-0 z-40">
+            <header class="bg-white/95 border-b border-slate-200 sticky top-0 z-40 backdrop-blur">
                 <div class="flex items-center justify-between px-4 py-3 lg:px-6">
 
                     {{-- Navbar --}}
@@ -78,11 +79,11 @@
             </header>
 
             {{-- Page Content --}}
-            <main class="flex-1 p-4 lg:p-4">
+            <main class="flex-1 p-4 lg:p-6">
                 @yield('content')
             </main>
 
-            @include('admin.layouts.footer')
+            <!-- @include('admin.layouts.footer') -->
 
         </div>
     </div>

@@ -3,7 +3,7 @@
 
     {{-- Image --}}
     <div class="relative">
-        <img src="{{ $item->display_image }}" alt="{{ $item->name }}" class="w-full h-48 object-cover">
+        <img src="{{ $item->display_image ?? asset('assets/img/placeholder.png') }}" alt="{{ $item->name }}" class="w-full h-48 object-cover">
         <span class="absolute top-3 left-3 bg-white/90 backdrop-blur text-xs font-semibold px-2 py-1 rounded-full text-gray-700 battambang-regular">
             🍽 {{ $item->category->name ?? __('app.uncategorized') }}
         </span>

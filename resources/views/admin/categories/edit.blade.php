@@ -1,4 +1,5 @@
 @extends('admin.layouts.app')
+@section('title', 'Edit Category')
 
 @section('content')
 
@@ -11,8 +12,8 @@
             <p class="mt-1 text-sm text-gray-500">Update "{{ $category->name }}" details</p>
         </div>
         <a href="{{ route('admin.categories.index') }}"
-           class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-600
-                  bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors shadow-sm">
+           class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium 
+                  bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors shadow-sm">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
@@ -21,7 +22,7 @@
     </div>
 
     {{-- Form Card --}}
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
         <div class="p-6 lg:p-8">
 
             <form action="{{ route('admin.categories.update', $category->id) }}" method="POST" class="space-y-6">
@@ -82,7 +83,7 @@
                                     after:h-5 after:w-5 after:transition-all
                                     peer-checked:after:translate-x-full peer-checked:after:border-white
                                     peer-focus:ring-2 peer-focus:ring-amber-500"></div>
-                        <span class="text-sm text-gray-600" id="status-label">
+                        <span class="text-sm " id="status-label">
                             {{ old('status', $category->status ?? 1) ? 'Active' : 'Inactive' }}
                         </span>
                     </label>
@@ -94,7 +95,7 @@
                 {{-- Actions --}}
                 <div class="flex justify-end gap-3 pt-5 border-t border-gray-100">
                     <a href="{{ route('admin.categories.index') }}"
-                       class="px-5 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                       class="px-5 py-2.5 text-sm font-medium  hover:bg-gray-100 rounded-lg transition-colors">
                         Cancel
                     </a>
                     <button type="submit"

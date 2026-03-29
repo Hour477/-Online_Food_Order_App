@@ -4,7 +4,7 @@
 <div class="container-fluid py-8">
     <div class="mb-8">
         <h1 class="text-4xl font-bold text-gray-900 mb-2">Design System & Style Guide</h1>
-        <p class="text-lg text-gray-600">Updated for full responsiveness, accessibility (WCAG 2.2 AA), and mobile-first architecture.</p>
+        <p class="text-lg ">Updated for full responsiveness, accessibility (WCAG 2.2 AA), and mobile-first architecture.</p>
     </div>
 
     {{-- Breakpoints --}}
@@ -60,7 +60,7 @@
             @foreach([50, 100, 200, 300, 400, 500, 600, 700, 800, 900] as $shade)
                 <div class="space-y-1">
                     <div class="h-16 w-full rounded-lg bg-amber-{{ $shade }} shadow-inner"></div>
-                    <p class="text-center text-xs font-medium text-gray-600">{{ $shade }}</p>
+                    <p class="text-center text-xs font-medium ">{{ $shade }}</p>
                 </div>
             @endforeach
         </div>

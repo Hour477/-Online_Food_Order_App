@@ -101,14 +101,14 @@
                                 onclick="showDeleteModal('{{ route('admin.banners.destroy', $banner->id) }}', 'Are you sure you want to delete the banner \'{{ $banner->title ?? 'Untitled' }}\'?')"
                                 class="{{ action_btn_class('delete') }}"
                                 title="Delete">
-                                <i class="fas text-lg fa-trash"></i>
+                                <i class="{{ action_btn_icon('delete') }}"></i>
                     
                 </td>
             </tr>
         @empty
             <tr>
                 <td colspan="5" class="px-6 py-12 text-center">
-                    <i class="fa-solid fa-users-slash text-5xl text-gray-300 dark:text-gray-600 mb-4"></i>
+                    
                     <p class="text-gray-500 dark:text-gray-400 text-lg">No banners found</p>
                     @if(request('search'))
                         <p class="text-gray-400 dark:text-gray-500 text-sm mt-2">Try searching with different keywords</p>

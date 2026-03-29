@@ -43,6 +43,11 @@ class customerMenuController extends Controller
         
         $query = MenuItem::query()->where('status', 'available');
 
+        // Only show menu items that have an active category
+        $query->whereHas('category', function($q) {
+            $q->where('status', 1);
+        });
+
         // Apply Search
         if ($request->filled('search')) {
             /** @phpstan-ignore-next-line */
@@ -55,6 +60,7 @@ class customerMenuController extends Controller
                 $categoryName = (string)$request->input('category');
                 
                 if (strtolower($categoryName) === 'uncategorized' || strtolower($categoryName) === 'null') {
+                    // Show items without category (but they still need active category - this won't show anything)
                     $q->whereNull('category_id');
                 } else {
                     $q->whereHas('category', function($subQ) use ($categoryName) {

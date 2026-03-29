@@ -39,13 +39,13 @@ class HelperSidebar
                 'folder'  => 'orders',
                 'active'  => 'admin.orders.*',
                 'children' => [
-                    ['title' => __('app.all_orders'), 'route' => 'admin.orders.index', 'active' => 'admin.orders.index', 'params' => []],
-                    ['title' => __('app.pending'), 'route' => 'admin.orders.index', 'active' => 'admin.orders.index', 'params' => ['status' => 'pending'], 'badge' => 'pending'],
-                    ['title' => __('app.confirmed'), 'route' => 'admin.orders.index', 'active' => 'admin.orders.index', 'params' => ['status' => 'confirmed'], 'badge' => 'confirmed'],
-                    ['title' => __('app.delivered'), 'route' => 'admin.orders.index', 'active' => 'admin.orders.index', 'params' => ['status' => 'delivered'], 'badge' => 'delivered'],
-                    ['title' => __('app.completed'), 'route' => 'admin.orders.index', 'active' => 'admin.orders.index', 'params' => ['status' => 'completed'], 'badge' => 'completed'],
-                    ['title' => __('app.refunded'), 'route' => 'admin.orders.index', 'active' => 'admin.orders.index', 'params' => ['status' => 'refunded'], 'badge' => 'refunded'],
-                    ['title' => __('app.cancelled'), 'route' => 'admin.orders.index', 'active' => 'admin.orders.index', 'params' => ['status' => 'cancelled'], 'badge' => 'cancelled'],
+                    ['title' => __('app.all_orders'), 'route' => 'admin.orders.all', 'active' => 'admin.orders.all', 'params' => []],
+                    ['title' => __('app.pending'), 'route' => 'admin.orders.pending', 'active' => 'admin.orders.pending', 'params' => [], 'badge' => 'pending'],
+                    ['title' => __('app.confirmed'), 'route' => 'admin.orders.confirmed', 'active' => 'admin.orders.confirmed', 'params' => [], 'badge' => 'confirmed'],
+                    
+                    ['title' => __('app.completed'), 'route' => 'admin.orders.completed', 'active' => 'admin.orders.completed', 'params' => [], 'badge' => 'completed'],
+                    ['title' => __('app.refunded'), 'route' => 'admin.orders.refunded', 'active' => 'admin.orders.refunded', 'params' => [], 'badge' => 'refunded'],
+                    ['title' => __('app.cancelled'), 'route' => 'admin.orders.cancelled', 'active' => 'admin.orders.cancelled', 'params' => [], 'badge' => 'cancelled'],
                 ],
             ],
 
@@ -72,7 +72,7 @@ class HelperSidebar
                     ['title' => __('app.all_payments'), 'route' => 'admin.payment.index', 'active' => 'admin.payment.index'],
                     ['title' => __('app.waiting_payment'), 'route' => 'admin.payment.index', 'active' => 'admin.payment.index', 'params' => ['status' => 'pending']],
                     ['title' => __('app.success'), 'route' => 'admin.payment.index', 'active' => 'admin.payment.index', 'params' => ['status' => 'paid']],
-                    ['title' => __('app.error'), 'route' => 'admin.payment.index', 'active' => 'admin.payment.index', 'params' => ['status' => 'failed']],
+                    
                     ['title' => __('app.refunded'), 'route' => 'admin.payment.index', 'active' => 'admin.payment.index', 'params' => ['status' => 'refunded']],
                 ],
             ],

@@ -1,4 +1,5 @@
 @extends('admin.layouts.app')
+@section('title', 'Reports Overview')
 
 @section('content')
 <div class="mx-auto">
@@ -28,7 +29,7 @@
 
     {{-- Quick Stats Cards --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-100 dark:border-gray-700 shadow-sm">
             <div class="flex items-center gap-4">
                 <div class="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600">
                     <i class="fas fa-dollar-sign text-xl"></i>
@@ -40,7 +41,7 @@
             </div>
         </div>
 
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-100 dark:border-gray-700 shadow-sm">
             <div class="flex items-center gap-4">
                 <div class="p-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-600">
                     <i class="fas fa-shopping-cart text-xl"></i>
@@ -52,7 +53,7 @@
             </div>
         </div>
 
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-100 dark:border-gray-700 shadow-sm">
             <div class="flex items-center gap-4">
                 <div class="p-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 text-amber-600">
                     <i class="fas fa-receipt text-xl"></i>
@@ -64,7 +65,7 @@
             </div>
         </div>
 
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-100 dark:border-gray-700 shadow-sm">
             <div class="flex items-center gap-4">
                 <div class="p-3 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-600">
                     <i class="fas fa-times-circle text-xl"></i>
@@ -80,7 +81,7 @@
     {{-- Hub Links --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <a href="{{ route('admin.reports.sales', request()->all()) }}"
-           class="group p-6 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm hover:border-amber-300 transition-all">
+           class="group p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700 shadow-sm hover:border-amber-300 transition-all">
             <div class="flex items-center gap-4 mb-4">
                 <div class="p-3 rounded-xl bg-purple-50 dark:bg-purple-900/20 text-purple-600 group-hover:bg-purple-100 transition-colors">
                     <i class="fas fa-chart-pie text-xl"></i>
@@ -91,7 +92,7 @@
         </a>
 
         <a href="{{ route('admin.reports.orders', request()->all()) }}"
-           class="group p-6 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm hover:border-amber-300 transition-all">
+           class="group p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700 shadow-sm hover:border-amber-300 transition-all">
             <div class="flex items-center gap-4 mb-4">
                 <div class="p-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 group-hover:bg-blue-100 transition-colors">
                     <i class="fas fa-list-alt text-xl"></i>
@@ -102,7 +103,7 @@
         </a>
 
         <a href="{{ route('admin.reports.income', request()->all()) }}"
-           class="group p-6 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm hover:border-amber-300 transition-all">
+           class="group p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700 shadow-sm hover:border-amber-300 transition-all">
             <div class="flex items-center gap-4 mb-4">
                 <div class="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 group-hover:bg-emerald-100 transition-colors">
                     <i class="fas fa-chart-line text-xl"></i>
@@ -116,7 +117,7 @@
     {{-- Trends & Charts --}}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         {{-- Daily Revenue Chart --}}
-        <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
+        <div class="bg-white dark:bg-gray-800 p-8 rounded-lg border border-gray-100 dark:border-gray-700 shadow-sm">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">Daily Revenue Trend</h3>
             <div class="h-80 w-full">
                 <canvas id="revenueChart"></canvas>
@@ -124,7 +125,7 @@
         </div>
 
         {{-- Monthly Sales Comparison (Multiple Lines) --}}
-        <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
+        <div class="bg-white dark:bg-gray-800 p-8 rounded-lg border border-gray-100 dark:border-gray-700 shadow-sm">
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Monthly Sales Comparison</h3>
                 <div class="flex items-center gap-4 text-xs">

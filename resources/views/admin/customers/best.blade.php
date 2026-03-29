@@ -1,7 +1,8 @@
 @extends('admin.layouts.app')
 
-@section('content')
+@section('title', 'Top Customers')
 
+@section('content')
 <div class="mx-auto">
 
     
@@ -38,7 +39,7 @@
                     Customers with orders will appear here ranked by their order count and total spending.
                 </p>
                 <a href="{{ route('admin.customers.index') }}"
-                   class="inline-flex items-center px-6 py-3 bg-amber-600 text-white rounded-xl hover:bg-amber-700 transition">
+                   class="inline-flex items-center px-6 py-3 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition">
                     <i class="fas fa-users mr-2"></i>
                     View All Customers
                 </a>
@@ -48,7 +49,7 @@
             <div class="overflow-x-auto p-4">
                 <x-table.base-table>
                 <x-slot name="head">
-                    <thead class="bg-gray-50 dark:bg-gray-700/50">
+                    <thead class="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-700 whitespace-nowrap">
                         <tr>
                             <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                 Rank
@@ -95,10 +96,10 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                                     {{ $customer->name }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm  dark:text-gray-300">
                                     {{ $customer->email ?? '—' }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm  dark:text-gray-300">
                                     {{ $customer->phone ?? '—' }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-center">

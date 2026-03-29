@@ -1,4 +1,7 @@
 @extends('admin.layouts.app')
+@section('title', 'Income Reports')
+
+
 
 @section('content')
 <div class="mx-auto">
@@ -24,7 +27,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {{-- Payment Methods --}}
         <div class="lg:col-span-1 space-y-6">
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-100 dark:border-gray-700 shadow-sm">
                 <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-6">Payment Methods</h3>
                 <div class="space-y-4">
                     @php $totalIncome = $paymentMethods->sum('total') ?: 1; @endphp
@@ -33,7 +36,7 @@
                         <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-900/50">
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 rounded-lg bg-white dark:bg-gray-800 flex items-center justify-center text-amber-600 shadow-sm border border-gray-100 dark:border-gray-700">
-                                    <i class="fas fa-{{ $method->payment_method === 'cash' ? 'money-bill-wave' : ($method->payment_method === 'khqr' ? 'qrcode' : 'credit-card') }}"></i>
+                                    <i class="fas fa-{{ $method->payment_method === 'cash' ? 'money-bill-wave' : ($method->payment_method === 'qr' ? 'qrcode' : 'credit-card') }}"></i>
                                 </div>
                                 <div>
                                     <p class="text-sm font-bold text-gray-900 dark:text-white uppercase">{{ $method->payment_method }}</p>
@@ -52,7 +55,7 @@
 
         {{-- Daily Totals --}}
         <div class="lg:col-span-2">
-            <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
+            <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
                 <div class="p-6 border-b border-gray-100 dark:border-gray-700">
                     <h3 class="text-lg font-bold text-gray-900 dark:text-white">Daily Income Log</h3>
                 </div>

@@ -1,4 +1,5 @@
-@extends('layouts.app')
+@extends('admin.layouts.app')
+@section('title', 'Payment Receipt')
 
 @section('content')
 <div class="card">

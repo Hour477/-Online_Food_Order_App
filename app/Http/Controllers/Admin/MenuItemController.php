@@ -81,8 +81,11 @@ class MenuItemController extends Controller
 
     public function show(string $id)
     {
-        //
-        $menu_item = MenuItem::findOrFail($id);
+        $menu_item = MenuItem::with([
+            'ratings.customer.user',
+            'ratings.order',
+        ])->findOrFail($id);
+
         return view('admin.menu_items.show', compact('menu_item'));
     }
 

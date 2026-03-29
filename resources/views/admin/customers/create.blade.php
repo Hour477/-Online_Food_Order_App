@@ -91,15 +91,21 @@
                         Profile Image
                     </label>
                     <div class="relative group w-32 h-32">
-                        <img id="image-preview" 
-                             src="https://ui-avatars.com/api/?name=New+Customer&background=f3f4f6&color=a1a1aa"
-                             class="w-32 h-32 rounded-2xl border-4 border-white dark:border-gray-700 shadow-md object-cover bg-gray-50 dark:bg-gray-700 transition-all group-hover:brightness-90">
-                        
-                        <label for="image-upload" class="absolute inset-0 flex items-center justify-center bg-black/40 text-white rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
-                            <i class="fa-solid fa-camera text-xl"></i>
-                        </label>
-                        <input type="file" id="image-upload" name="image" class="hidden" accept="image/*" onchange="previewImage(this)">
-                    </div>
+                    <img id="image-preview" 
+                        src="{{ asset('assets/img/placeholder.png') }}" 
+                        alt="Preview"
+                        class="w-32 h-32 rounded-2xl border-4 border-white dark:border-gray-700 shadow-md object-cover bg-gray-50 dark:bg-gray-700 transition-all group-hover:brightness-90">
+
+                    <label for="image-upload" class="absolute inset-0 flex items-center justify-center bg-black/40 text-white rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                        <i class="fa-solid fa-camera text-xl"></i>
+                    </label>
+                    
+                    <input type="file" id="image-upload"
+                        name="image" 
+                        class="hidden" 
+                        accept="image/*" 
+                        onchange="previewImage(this)">
+                </div>
                     <p class="mt-2 text-[10px] text-gray-500 dark:text-gray-400 italic">Recommended: Square image, max 2MB</p>
                     @error('image')
                         <p class="mt-1.5 text-xs text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -109,7 +115,7 @@
             
             <div class="flex justify-end gap-3 pt-6 border-t border-gray-100 dark:border-gray-700">
                 <a href="{{ route('admin.customers.index') }}"
-                   class="px-5 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                   class="px-5 py-2.5 text-sm font-medium dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
                     <i class="fas fa-arrow-left mr-2"></i>
                     Cancel
                 </a>
@@ -129,13 +135,16 @@
 function previewImage(input) {
     if (input.files && input.files[0]) {
         const reader = new FileReader();
+        
         reader.onload = function(e) {
             document.getElementById('image-preview').src = e.target.result;
         }
+        
         reader.readAsDataURL(input.files[0]);
     }
 }
 </script>
+
 @endpush
     
 @endsection

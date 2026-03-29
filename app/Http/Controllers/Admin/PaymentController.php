@@ -10,51 +10,85 @@ use Illuminate\Support\Arr; // Added for Arr::flatten
 use Illuminate\Support\Facades\DB; // Added for DB transactions
 use Illuminate\Support\Facades\Log; // Added for logging errors
 use Illuminate\Validation\ValidationException; // Added for validation exceptions
+use Illuminate\Support\Str;
 
 class PaymentController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+
+    private function resolveStatusFromKeyword(string $keyword): ?string
     {
-        $orderNo = request()->get('order_no');
-        $paymentMethod = request()->get('payment_method');
-        $status = request()->get('status');
+        $normalized = (string) Str::of($keyword)
+            ->lower()
+            ->replace(['_', '-'], ' ')
+            ->squish();
 
-        $payments = Payment::with('order.customer')
-            ->when($orderNo, function ($query, $orderNo) {
-                $query->whereHas('order', function ($q) use ($orderNo) {
-                    $q->where('order_no', 'like', '%' . $orderNo . '%');
+        $map = [
+            'paid' => 'paid',
+            'success' => 'paid',
+            'pending' => 'pending',
+            'waiting' => 'pending',
+            'waiting payment' => 'pending',
+            'failed' => 'failed',
+            'error' => 'failed',
+            'refunded' => 'refunded',
+            'refund' => 'refunded',
+        ];
+
+        return $map[$normalized] ?? null;
+    }
+
+    public function index(Request $request)
+    {
+        $query = Payment::query()->with(['order.customer', 'order.user']);
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->get('status'));
+        }
+
+        $search = trim((string) $request->get('search', ''));
+        if ($search !== '') {
+            $statusFromSearch = $this->resolveStatusFromKeyword($search);
+            if ($statusFromSearch) {
+                $query->where('status', $statusFromSearch);
+            } else {
+                $query->where(function ($q) use ($search) {
+                    $q->where('khqr_transaction_id', 'like', '%' . $search . '%')
+                        ->orWhereHas('order', function ($orderQuery) use ($search) {
+                            $orderQuery->where('order_no', 'like', '%' . $search . '%')
+                                ->orWhereHas('customer', function ($customerQuery) use ($search) {
+                                    $customerQuery->where('name', 'like', '%' . $search . '%');
+                                });
+                        });
+
+                    if (ctype_digit($search)) {
+                        $q->orWhere('id', (int) $search);
+                    }
                 });
-            })
-            ->when($paymentMethod, function ($query, $paymentMethod) {
-                $query->where('payment_method', $paymentMethod);
-            })
-            ->when($status, function ($query, $status) {
-                $query->where('status', $status);
-            });
+            }
+        }
 
-        $payments = $payments->latest()->paginate(10)->withQueryString();
+        $payments = $query->latest()->paginate(10)->withQueryString();
 
-        // Get status counts for sidebar badges
         $statusCounts = [
-            'all'      => Payment::count(),
-            'pending'  => Payment::where('status', 'pending')->count(),
-            'paid'     => Payment::where('status', 'paid')->count(),
-            'failed'   => Payment::where('status', 'failed')->count(),
+            'all' => Payment::count(),
+            'pending' => Payment::where('status', 'pending')->count(),
+            'paid' => Payment::where('status', 'paid')->count(),
+            'failed' => Payment::where('status', 'failed')->count(),
             'refunded' => Payment::where('status', 'refunded')->count(),
         ];
 
-        // Calculate total revenue (only paid payments)
         $totalRevenue = Payment::where('status', 'paid')->sum('paid_amount');
 
-        // For filtering options in the view
-        $availablePaymentMethods = Payment::select('payment_method')->distinct()->pluck('payment_method');
+        $availablePaymentMethods = Payment::query()->select('payment_method')->distinct()->pluck('payment_method');
 
         return view('admin.payments.index', compact(
-            'payments', 'orderNo', 'paymentMethod', 'status',
-            'availablePaymentMethods', 'statusCounts', 'totalRevenue'
+            'payments',
+            'availablePaymentMethods',
+            'statusCounts',
+            'totalRevenue'
         ));
     }
 
@@ -73,10 +107,7 @@ class PaymentController extends Controller
         $paymentMethods = [
             'cash'   => 'Cash',
             'card'   => 'Card',
-            'aba'    => 'ABA Bank',
-            'wing'   => 'Wing Money',
-            'bakong' => 'Bakong',
-            'qr'     => 'QR Code', // Added 'qr' as seen in customerCheckoutController
+            'khqr'   => 'KHQR', // Added 'qr' as seen in customerCheckoutController
         ];
 
         return view('admin.payments.create', compact('orders', 'paymentMethods'));
@@ -180,6 +211,38 @@ class PaymentController extends Controller
     public function update(Request $request, Payment $payment)
     {
         //
+    }
+
+    /**
+     * Update payment status
+     */
+    public function updateStatus(Request $request, Payment $payment)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:pending,paid,failed,refunded',
+        ]);
+
+        try {
+            $payment->update([
+                'status' => $validated['status'],
+            ]);
+
+            // If payment is marked as paid, update order status if needed
+            if ($validated['status'] === 'paid') {
+                $order = $payment->order;
+                $totalPaid = $order->payments()->sum('paid_amount');
+                
+                if ($totalPaid >= $order->total_amount) {
+                    $newStatus = ($order->order_type === 'dine_in') ? 'completed' : 'confirmed';
+                    $order->update(['status' => $newStatus]);
+                }
+            }
+
+            return back()->with('success', 'Payment status updated successfully!');
+        } catch (\Exception $e) {
+            Log::error('Payment status update failed: ' . $e->getMessage());
+            return back()->with('error', 'Failed to update payment status: ' . $e->getMessage());
+        }
     }
 
     /**
