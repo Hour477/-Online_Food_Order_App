@@ -185,8 +185,8 @@
     </div>
 </div>
 
-{{-- Hidden form for submitting the order (opens in new tab) --}}
-<form id="order-form" action="{{ route('admin.orders.store') }}" method="POST" class="hidden" target="_blank">
+{{-- Hidden form for submitting the order --}}
+<form id="order-form" action="{{ route('admin.orders.store') }}" method="POST" class="hidden">
     @csrf
     <input type="hidden" name="total_amount" id="total_amount_hidden" value="0">
 </form>
@@ -437,7 +437,7 @@ const submitFormHandler = e => {
    
     // Add payment fields
     if (paymentMethodEl.value) {
-        let paymentMethodHidden = document.querySelector('input[name="payment_method"]');
+        let paymentMethodHidden = orderFormEl.querySelector('input[name="payment_method"]');
         if (!paymentMethodHidden) {
             paymentMethodHidden = document.createElement('input');
             paymentMethodHidden.type = 'hidden';
@@ -446,7 +446,7 @@ const submitFormHandler = e => {
         }
         paymentMethodHidden.value = paymentMethodEl.value;
 
-        let paidAmountHidden = document.querySelector('input[name="paid_amount"]');
+        let paidAmountHidden = orderFormEl.querySelector('input[name="paid_amount"]');
         if (!paidAmountHidden) {
             paidAmountHidden = document.createElement('input');
             paidAmountHidden.type = 'hidden';
@@ -518,6 +518,16 @@ placeOrderBtn?.addEventListener('click', () => {
     const subtotal = parseFloat(subtotalEl.textContent.replace('$', '')) || 0;
     const tax = parseFloat(taxEl.textContent.replace('$', '')) || 0;
     const grandTotal = subtotal + tax;
+
+    if (paymentMethodEl?.value === 'cash' || paymentMethodEl?.value === 'card') {
+        const paid = parseFloat(paidAmountEl.value) || 0;
+        if (paid < grandTotal) {
+            alert('Error: Paid amount ($' + paid.toFixed(2) + ') must be greater than or equal to the total order amount ($' + grandTotal.toFixed(2) + ').');
+            // Re-enable or just return to let them fix it
+            return;
+        }
+    }
+
     const totalHidden = document.getElementById('total_amount_hidden');
     if (totalHidden) {
         totalHidden.value = grandTotal.toFixed(2);
@@ -566,7 +576,7 @@ placeOrderBtn?.addEventListener('click', () => {
     
     // Add payment fields
     if (paymentMethodEl.value) {
-        let paymentMethodHidden = document.querySelector('input[name="payment_method"]');
+        let paymentMethodHidden = orderFormEl.querySelector('input[name="payment_method"]');
         if (!paymentMethodHidden) {
             paymentMethodHidden = document.createElement('input');
             paymentMethodHidden.type = 'hidden';
@@ -575,7 +585,7 @@ placeOrderBtn?.addEventListener('click', () => {
         }
         paymentMethodHidden.value = paymentMethodEl.value;
 
-        let paidAmountHidden = document.querySelector('input[name="paid_amount"]');
+        let paidAmountHidden = orderFormEl.querySelector('input[name="paid_amount"]');
         if (!paidAmountHidden) {
             paidAmountHidden = document.createElement('input');
             paidAmountHidden.type = 'hidden';

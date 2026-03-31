@@ -253,6 +253,15 @@ class OrderController extends Controller
                     
                     $isDeliveryCash = ($order->order_type === 'delivery' && $request->input('payment_method') === 'cash');
 
+                    // Backend validation: if cash or card is paid across the counter, it must fully cover the order
+                    if (!$isDeliveryCash && in_array($request->input('payment_method'), ['cash', 'card']) && $paidAmount < $total) {
+                        throw ValidationException::withMessages([
+                            'paid_amount' => 'Paid amount ($' . number_format($paidAmount, 2) . ') cannot be less than the order total ($' . number_format($total, 2) . ').',
+                        ]);
+                    }
+                    
+                    $isDeliveryCash = ($order->order_type === 'delivery' && $request->input('payment_method') === 'cash');
+
                     Payment::create([
                         'order_id'       => $order->id,
                         'payment_method' => $request->input('payment_method'),
@@ -273,8 +282,7 @@ class OrderController extends Controller
                 return $order;
             });
             ToastMagic::success('Order #' . $order->order_no . ' created successfully!');
-            // Redirect to receipt view (which opens in new tab thanks to target="_blank" on the form)
-            return redirect()->route('admin.orders.receipt', $order->id);
+            return redirect()->route('admin.orders.show', $order->id);
         } catch (ValidationException $e) {
             return back()
                 ->withErrors($e->errors())

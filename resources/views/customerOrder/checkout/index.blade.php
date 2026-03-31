@@ -209,7 +209,7 @@
                     </div>
 
                     {{-- Instructions --}}
-                    <div class="text-left bg-blue-50 rounded-lg p-4 mb-4">
+                    {{-- <div class="text-left bg-blue-50 rounded-lg p-4 mb-4">
                         <h3 class="font-semibold text-blue-900 text-sm mb-2">How to pay:</h3>
                         <ol class="text-xs text-blue-700 space-y-1 list-decimal list-inside">
                             <li>Open your banking app (ABA, ACLEDA, etc.)</li>
@@ -217,17 +217,17 @@
                             <li>Confirm the payment</li>
                             <li>Wait for confirmation</li>
                         </ol>
-                    </div>
+                    </div> --}}
 
                     {{-- Actions --}}
-                    <div class="flex gap-3">
+                    {{-- <div class="flex gap-3">
                         <button type="button" onclick="cancelKhqrPayment()" class="flex-1 py-2.5 px-4 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition">
                             Cancel
                         </button>
                         <button type="button" onclick="checkKhqrStatusManual()" class="flex-1 py-2.5 px-4 rounded-lg bg-amber-600 text-white font-medium hover:bg-amber-700 transition">
                             Check Status
                         </button>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
@@ -334,7 +334,9 @@
     function closeKhqrModal() {
         document.getElementById('khqr-modal').classList.add('hidden');
         clearInterval(khqrCheckInterval);
-        clearInterval(khqrCountdownInterval);
+        clearInterval(khqrCountdownInterval);   
+        // back menu 
+        window.location.href = "{{ route('customerOrder.menu.index') }}";
     }
 
     function startKhqrCountdown(expiresAt) {

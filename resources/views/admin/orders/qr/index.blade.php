@@ -256,7 +256,7 @@
     </div>
 </div>
 
-<form id="order-form" action="{{ route('admin.orders.store') }}" method="POST" class="hidden" target="_blank">
+<form id="order-form" action="{{ route('admin.orders.store') }}" method="POST" class="hidden">
     @csrf
     <input type="hidden" name="payment_method" value="khqr">
     <input type="hidden" name="paid_amount" id="paid_amount_hidden" value="{{ number_format($total, 2, '.', '') }}">
